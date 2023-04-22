@@ -6,6 +6,14 @@
 
 - `Docker`提供了一种叫`容器`的隔离环境，来运行应用程序的功能。可以在指定的主机同时运行多个容器。占用的内存和资源较少，它是安全的，因为容器是相互隔离。
 
+**Docker的用途**
+
+- 提供一次性环境
+
+- 提供弹性的云服务
+
+- 组建微服务架构
+
 **Docker引擎**
 
 `Docker引擎`是一个包含以下组件的客户端服务器应用程序。
@@ -24,7 +32,13 @@
 
 **Docker名词解释**
 
-- `Docker image`：镜像。镜像是只读的，里面包含要运行的文件。镜像是用来创建容器（`container`）。一个镜像可以运行多个容器，镜像可以通过`Dockerfile`创建，也可以在Docker hub/registry上下载。
+- `Docker image`：
+  - 镜像。
+  - 镜像是只读的，里面包含要运行的文件。
+  - 镜像是用来创建容器（`container`），是`Docker container`的设计蓝图。
+  - `Docker image`可以通过`Dockerfile`创建，也可以在Docker hub/registry上下载。
+  - `Docker image`包括`Dockerfile`、依赖和程序的代码。
+  - `Dockerfile`文件中包含了一系列的指令来创建`Docker image`。
 - `Docker container`：容器。Docker的运行组件，启动一个镜像就是一个容器，多个容器是相互隔离的。保证运行在容器中的程序运行在一个安全的环境中。
 - `Docker hub/registry`：共享和管理docker镜像。用户可以往上面上传或从上面下载镜像，[Docker hub官网](https://registry.hub.docker.com/)
 
@@ -55,6 +69,90 @@ chkconfig docker on
 **MacOS安装**
 
 进入[官网](https://www.docker.com/)下载软件，安装即可会得到客户端
+
+# 尝试第一个Docker制作过程
+
+以go为例，先编写一个go例子
+
+```go
+// filename:floot_type_view.go
+package main
+
+import "fmt"
+
+func reverseWithGenerics[T any](s []T) []T {
+	l := len(s)
+	r := make([]T, l)
+
+	for i, e := range s {
+		r[l-i-1] = e
+	}
+	return r
+}
+
+func main() {
+	fmt.Println(reverseWithGenerics[int]([]int{1, 2, 3, 4}))
+	fmt.Println(reverseWithGenerics[float64]([]float64{0.1, 0.2, 0.3, 0.4}))
+}
+```
+
+编译一个go可执行文件
+
+```shell
+# 将floot_type_view.go编译成一个名为floot_type_view-app的可执行文件
+# 注意目标机器的系统
+go build -o floot_type_view-app floot_type_view.go
+```
+
+编写Dockerfile
+
+```dockerfile
+# 导入官方go对应的版本
+FROM golang:1.19.3
+
+# 将当前目录下的所有文件（除了.dockerignore排除的路径或文件），都拷贝到 image 文件的 /app 目录里面
+COPY . /app
+
+# 指定工作目录为/app
+WORKDIR /app
+
+# 将可执行文件添加到工作目录下
+ADD floot_type_view-app $WORKDIR/
+
+# 运行go程序
+CMD /app/floot_type_view-app
+```
+
+制作Docker  image
+
+```shell
+# 根据当前目录下的Dockerfile制作Docker image
+docker image build -t floot_type_view-app .
+# 或
+docker build -t floot_type_view-app .
+```
+
+查看images
+
+```shell
+docker image ls
+# 或
+docker images
+```
+
+运行容器
+
+```shell
+docker container run floot_type_view-app
+# 或
+docker run floot_type_view-app
+
+# 结果
+[4 3 2 1]
+[0.4 0.3 0.2 0.1]
+```
+
+
 
 # Docker基础操作
 
@@ -131,6 +229,10 @@ docker pull library/hello-world
 
 ```shell
 docker images
+
+# 或
+
+docker image ls
 ```
 
 **删除本地镜像**
