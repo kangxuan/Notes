@@ -77,6 +77,11 @@ hello-world   latest    feb5d9fea6a5   19 months ago   13.3kB
 
 - `-q`只显示镜像ID
 
+```shell
+# 列出所有的镜像ID
+docker images -qa
+```
+
 **搜索镜像**
 
 ```shell
@@ -96,19 +101,81 @@ centos/postgresql-96-centos7                 PostgreSQL is an advanced Object-Re
 # AUTOMATED：是否自动构建，表示该镜像由Docker Hub自动构建流程创建的
 ```
 
-**拉取镜像**
-
-从远程仓库拉取镜像到本地
+- `--limit N`只列出多少条记录，默认是25条
 
 ```shell
-docker pull library/hello-world
+docker search --limit 5 redis
+```
+
+**拉取镜像**
+
+从远程仓库拉取（下载）镜像到本地
+
+```shell
+# 默认下载latest版本
+docker pull Hello-world
+
+# 下载特定版本
+docker pull redis:6.0.8
+```
+
+**查看镜像/容器/数据卷占用空间**
+
+```shell
+docker system df
+
+# 结果
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          2         1         104.2MB   104.2MB (99%)
+Containers      2         0         0B        0B
+Local Volumes   0         0         0B        0B
+Build Cache     0         0         0B        0B
+
+# TYPE 类型 Images镜像、Containers容器、Local Volumes本地数据卷 Build Cache缓存
+# TOTAL 总数
+# ACTIVE 激活数
+# SIZE 大小
+# RECLAIMABLE 可回收的
 ```
 
 **删除本地镜像**
 
 ```shell
-docker rmi docker.io/hello-world
+# 按仓库源名称删除
+docker rmi hello-world
+
+# 或 按IMAGE ID删除
+docker rmi feb5d9fea6a5
 ```
+
+- 强制删除单个镜像
+
+```shell
+docker rmi -f feb5d9fea6a5
+# 结果
+Untagged: hello-world:latest
+Untagged: hello-world@sha256:4e83453afed1b4fa1a3500525091dbfca6ce1e66903fd4c01ff015dbcb1ba33e
+Deleted: sha256:feb5d9fea6a5e9606aa995e879d862b825965ba48de054caab5ef356dc6b3412
+```
+
+- 强制删除多个镜像
+
+```shell
+docker rmi -f feb5d9fea6a5 16ecd2772934
+# 或
+docker rmi -f hello-world:latest redis:6.0.8
+```
+
+- 强制删除全部镜像
+
+```shell
+# 慎重操作
+docker rmi -f $(docker images -qa)
+```
+
+**虚悬镜像**
+
+仓库名和版本号都是`none`的镜像。
 
 # 容器操作
 
@@ -119,6 +186,7 @@ docker rmi docker.io/hello-world
   创建启动容器后，直接进入容器（即分配一个伪终端）。exit退出容器后，容器停止工作。
 
 ```shell
+# 以/bin/bash命令模式
 docker run -it --name=mycentos centos:7 /bin/bash
 ```
 
@@ -132,14 +200,15 @@ docker run -id --name=mycentos centos:7 /bin/bash
 
 docker run 参数解析
 
-| 参数     | 解释                                          |
-| ------ | ------------------------------------------- |
-| -i     | 表示运行容器                                      |
-| -t     | 表示创建运行容器后直接进入                               |
-| --name | 表示容器名称，容器名称不能重复                             |
-| -d     | 表示创建启动一个守护式容器                               |
-| -p     | 表示端口映射，前者是宿主机端口，后者是容器内的映射端口。可以使用多个-p做多个端口映射 |
-| -v     | 表示目录映射                                      |
+| 参数     | 解释                                         |
+| ------ | ------------------------------------------ |
+| -i     | 表示以交互模式运行容器（interactive），通常和t一起使用          |
+| -t     | 为容器重新分配一个伪终端（tyy），通常和i一起使用                 |
+| --name | 表示容器名称，容器名称不能重复，如果不指定Docker会为容器默认一个名称      |
+| -d     | 表示以守护式容器运行容器，也就是后台运行运行容器                   |
+| -p     | 表示端口映射，前者是宿主机端口，后者是容器的映射端口。可以使用多个-p做多个端口映射 |
+| -P     | 端口映射，Docker默认端口                            |
+| -v     | 表示目录映射                                     |
 
 **查看容器**
 
