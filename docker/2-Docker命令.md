@@ -216,7 +216,6 @@ docker run -d redis
 docker ps
 CONTAINER ID   IMAGE     COMMAND                   CREATED          STATUS         PORTS      NAMES
 060010454a99   redis     "docker-entrypoint.s…"   11 seconds ago   Up 7 seconds   6379/tcp   charming_brahmagupta
-
 ```
 
 docker run 参数解析
@@ -358,7 +357,7 @@ docker cp <container_name>:/cba.txt /
 
 *注意：容器在停止状态下也可以cp*
 
-**导入和导出容器**
+**导出和导入容器**
 
 - `export`导出容器的内容为一个`tar`归档文件
 
@@ -396,8 +395,6 @@ f03ec825c760   4d5d8df08527   "/bin/bash"               30 seconds ago   Up 28 s
 # 进入容器会发现以前的数据还在
 docker exec -it f03ec825c760 /bin/bash
 ```
-
-
 
 **挂载目录**
 
