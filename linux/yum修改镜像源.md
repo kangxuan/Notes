@@ -36,5 +36,3 @@ sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /
 **参考文献**
 
 [centos镜像_centos下载地址_centos安装教程-阿里巴巴开源镜像站](https://developer.aliyun.com/mirror/centos?spm=a2c6h.13651102.0.0.3e221b11kNuBTt)
-
-
