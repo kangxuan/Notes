@@ -89,6 +89,107 @@ docker run --privileged -tid --net=host 镜像名称
 
 - yum安装访问外网缓慢（或403），需要替换成国内镜像，参考yum修改镜像源笔记。
 
+# 镜像仓库管理
+
+**阿里云镜像服务**
+
+- 首先开通阿里云镜像服务、创建命名空间、创建仓库
+
+- 将镜像推送到Registry
+
+```shell
+# 先登录远程仓库
+docker login --username=*** registry.cn-hangzhou.aliyuncs.com
+# 将已有镜像打上符合阿里云镜像标准的tag
+docker tag [ImageId] registry.cn-hangzhou.aliyuncs.com/shanla/my_centos:[镜像版本号]
+# 推送到仓库
+docker push registry.cn-hangzhou.aliyuncs.com/shanla/my_centos:[镜像版本号]
+```
+
+- 从Registry拉取仓库
+
+```shell
+# 拉取
+docker pull registry.cn-hangzhou.aliyuncs.com/shanla/my_centos:1.1
+
+# 结果
+docker images
+REPOSITORY                                           TAG       IMAGE ID       CREATED         SIZE
+registry.cn-hangzhou.aliyuncs.com/shanla/my_centos   1.1       1863ecc1a5ab   47 hours ago    315MB
+```
+
+**Docker Registry**
+
+Docker提供了一个镜像专门用于私有仓库管理
+
+- 下载镜像Docker Registry
+
+```shell
+docker pull registry
+```
+
+- 运行私有库
+
+```shell
+# 映射端口，默认情况下仓库被创建在容器的/var/lib/registry，建议用容器数据卷映射方便管理
+docker run -d -p 5000:5000 --privileged=true --net=host registry
+
+# 或-v数据卷映射
+docker run -d -p 5000:5000 -v xxx:xxx --privileged=true --net=host registry
+
+docker ps
+# 结果
+CONTAINER ID   IMAGE      COMMAND                   CREATED         STATUS         PORTS                                       NAMES
+7b0db17251b1   registry   "/entrypoint.sh /etc…"   3 minutes ago   Up 3 minutes   0.0.0.0:5000->5000/tcp, :::5000->5000/tcp   condescending_brahmagupta
+```
+
+- 查看私有库有哪些镜像
+
+```shell
+curl -XGET http://192.168.33.10:5000/v2/_catalog
+```
+
+- 将镜像打上符合私有库标准的tag
+
+```shell
+docker tag 1863ecc1a5ab 192.168.33.10:5000/my_centos:1.1
+
+docker images
+REPOSITORY                                           TAG       IMAGE ID       CREATED         SIZE
+registry.cn-hangzhou.aliyuncs.com/shanla/my_centos   1.1       1863ecc1a5ab   2 days ago      315MB
+192.168.33.10:5000/my_centos                         1.1       1863ecc1a5ab   2 days ago      315MB
+```
+
+- 修改Docker配置使之能支持http
+
+```shell
+vim /etc/docker/daemon.json
+
+# 增加配置
+"insecure-registries": ["192.168.33.10:5000"]
+
+# 修改配置后需要重新docker
+systemctl restart docker
+```
+
+- push到私有库
+
+```shell
+docker push 192.168.33.10:5000/my_centos:1.1
+```
+
+- 从私有库拉取镜像
+
+```shell
+curl -XGET http://192.168.33.10:5000/v2/_catalog
+
+# 结果
+{"repositories":["my_centos"]}
+
+# pull
+docker pull 192.168.33.10:5000/my_centos:1.1
+```
+
 # 尝试第一个Docker制作过程
 
 以go为例，先编写一个go例子
