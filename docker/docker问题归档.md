@@ -1,6 +1,8 @@
 # 常见问题
 
-1. 空间不足问题
+**空间不足问题**
+
+[Docker run出现no space left on device错误的解决_乐事一下的博客-CSDN博客](https://blog.csdn.net/baidu_23433185/article/details/114398301)
 
 ```
 # docker pull报错”write /var/lib/docker/tmp/GetImageBlob129067360: no space left on device“

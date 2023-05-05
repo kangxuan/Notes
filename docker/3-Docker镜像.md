@@ -190,6 +190,70 @@ curl -XGET http://192.168.33.10:5000/v2/_catalog
 docker pull 192.168.33.10:5000/my_centos:1.1
 ```
 
+# 容器数据卷
+
+容器数据卷是一个目录或文件，存在于一个或多个容器中，由docker挂载到容器，但不属于文件联合系统（UnionFS），因此可以提供持续化或共享数据的特性。其目的就是数据的持久化，完全独立于容器的生存周期，不会因为容器被删除而被删除。类似于redis的rdb和aof文件用于持久化数据。
+
+**容器卷特性**
+
+- 数据卷可以在容器之间共享或重用数据
+
+- 卷中的更改立即生效
+
+- 数据卷中的更改不会包含在镜像的更新中。
+
+- 数据卷的生命周期会一直持续到没有容器使用它。
+
+**运行一个带数据卷的容器**
+
+```shell
+# docker run -it --privileged=true -v 宿主机目录:容器内目录 镜像名/镜像ID
+docker run -it --privileged=true -v /tmp/data_host:/tmp/data_docker --name=centos1 192.168.33.10:5000/my_centos:1.1 /bin/bash
+```
+
+- 如果没有对应目录会自动创建
+
+- 在宿主机上创建修改文件对应容器也会有相应的更新，双向同步。
+
+- 注意在容器停止之后，在宿主机上新建文件，重启容器后文件也会同步。
+
+- 对于已存在宿主机的目录，新启动容器，数据卷数据依然会同步到容器对应的目录下。
+
+**查看数据卷是否绑定成功**
+
+```shell
+# docker inspect 容器ID
+docker inspect 36a6ece76a97
+
+# 这就是容器卷的信息
+"Mounts": [
+            {
+                "Type": "bind", # 类型为bind
+                "Source": "/tmp/data_host", # 宿主机的目录
+                "Destination": "/tmp/data_docker", # 容器内目录
+                "Mode": "",
+                "RW": true, # 读写，默认是rw，可选项为ro-只读
+                "Propagation": "rprivate"
+            }
+        ],
+```
+
+**限制容器对数据卷只读**
+
+```shell
+# docker run -it --privileged=true -v 宿主机目录:容器内目录:ro 镜像名/镜像ID
+docker run -it --privileged=true -v /tmp/data_host:/tmp/data_docker:ro --name=centos1 192.168.33.10:5000/my_centos:1.1 /bin/bash
+```
+
+**数据卷继承**
+
+```shell
+# --volumes-from 容器名/容器ID
+docker run -it --privileged=true --volumes-from centos2 --name centos3 192.168.33.10:5000/my_centos:1.1 /bin/bash
+```
+
+- 如果继承的容器停止或删除数据卷数据依然存在，我感觉这个数据卷就像软连接一样
+
 # 尝试第一个Docker制作过程
 
 以go为例，先编写一个go例子
