@@ -252,146 +252,179 @@ docker run -it --privileged=true -v /tmp/data_host:/tmp/data_docker:ro --name=ce
 docker run -it --privileged=true --volumes-from centos2 --name centos3 192.168.33.10:5000/my_centos:1.1 /bin/bash
 ```
 
-- 如果继承的容器停止或删除数据卷数据依然存在，我感觉这个数据卷就像软连接一样
+- 如果继承的容器停止或删除数据卷数据依然存在，我感觉数据卷就像软连接一样
 
-# 尝试第一个Docker制作过程
+# 常见软件安装
 
-以go为例，先编写一个go例子
+**mysql**
 
-```go
-// filename:floot_type_view.go
-package main
-
-import "fmt"
-
-func reverseWithGenerics[T any](s []T) []T {
-    l := len(s)
-    r := make([]T, l)
-
-    for i, e := range s {
-        r[l-i-1] = e
-    }
-    return r
-}
-
-func main() {
-    fmt.Println(reverseWithGenerics[int]([]int{1, 2, 3, 4}))
-    fmt.Println(reverseWithGenerics[float64]([]float64{0.1, 0.2, 0.3, 0.4}))
-}
-```
-
-编译一个go可执行文件
+- 搜索镜像
 
 ```shell
-# 将floot_type_view.go编译成一个名为floot_type_view-app的可执行文件
-# 注意目标机器的系统
-go build -o floot_type_view-app floot_type_view.go
-```
-
-编写Dockerfile
-
-```dockerfile
-# 导入官方go对应的版本
-FROM golang:1.19.3
-
-# 将当前目录下的所有文件（除了.dockerignore排除的路径或文件），都拷贝到 image 文件的 /app 目录里面
-COPY . /app
-
-# 指定工作目录为/app
-WORKDIR /app
-
-# 将可执行文件添加到工作目录下
-ADD floot_type_view-app $WORKDIR/
-
-# 运行go程序
-CMD /app/floot_type_view-app
-```
-
-制作Docker image
-
-```shell
-# 根据当前目录下的Dockerfile制作Docker image
-docker image build -t floot_type_view-app .
-# 或
-docker build -t floot_type_view-app .
-```
-
-查看images
-
-```shell
-docker image ls
-# 或
-docker images
-```
-
-运行容器
-
-```shell
-docker container run floot_type_view-app
-# 或
-docker run floot_type_view-app
+# 如果想安装具体版本需要去镜像官网查看
+docker search mysql --limit=4
 
 # 结果
-[4 3 2 1]
-[0.4 0.3 0.2 0.1]
+NAME         DESCRIPTION                                      STARS     OFFICIAL   AUTOMATED
+mysql        MySQL is a widely used, open-source relation…   14096     [OK]
+mariadb      MariaDB Server is a high performing open sou…   5385      [OK]
+percona      Percona Server is a fork of the MySQL relati…   606       [OK]
+phpmyadmin   phpMyAdmin - A web interface for MySQL and M…   789       [OK]
 ```
 
-# 本地制作镜像
-
-**编辑Dockerfile**
-
-```dockerfile
-FROM xxx
-
-ENV WORKDIR /app
-ADD config.json $WORKDIR/
-ADD shorturl $WORKDIR/
-CMD /app/shorturl
-```
-
-**生成image**
+- 拉取镜像
 
 ```shell
-# short-url:0.0.1 image名称和tag
-docker build -t short-url:0.0.1 .
+# 拉取最新
+docker pull mysql
+
+# 或 拉取指定版本，去镜像官网查看
+docker pull mysql:5.7
 ```
 
-**本地运行测试**
+- 启动容器
+
+简单启动MySQL
 
 ```shell
-# --name 容器名称
-# -p 8001:9999 端口 8001是提供给外部的端口 9999是容器内部的端口
-# -v 挂载盘
-# short-url:0.0.1 image名称和tag
-docker run -itd -p 8001:9999 --name aaa -v /xxx/go/src/shorurl:/config short-url:0.0.1
+# docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag
+# 要注意宿主机端口有没有被占用 
+docker run -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 -d --privileged=true mysql:5.7
 ```
 
-# 将本地镜像推送到远程仓库
-
-**先将本地镜像tag到远程**
+持久化数据启动MySQL
 
 ```shell
-# short-url:0.0.1 本地镜像名称和tag
-# xxx.xxx.com/gn_dev/shorturl:0.0.2 远程仓库
-docker tag short-url:0.0.1 xxx.xxx.com/gn_dev/shorturl:0.0.2
+# 注意实战中上面简单方式不满足，需要增加数据卷用于持久化数据
+docker run -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 -d
+--privileged=true
+-v /Users/kx/workspace/docker/mysql/log:/var/log/mysql # MySQL日志
+-v /Users/kx/workspace/docker/mysql/data:/var/lib/mysql # MySQL数据
+-v /Users/kx/workspace/docker/mysql/conf:/etc/mysql/conf.d # mysql配置
+--name=mysql01
+mysql:5.7
+
+# 通过容器卷管理MySQL配置
+vim /Users/kx/workspace/docker/mysql/conf/my.cnf
+
+# 创建my.cnf增加配置
+[client]
+default_character_set=utf8
+[mysqld]
+collation_server=utf8_general_ci
+character_set_server=utf8
+
+# 配置更新
+docker restart d60b8ae990e0
+
+# 即使删除了容器，重新run依然数据依然会恢复
 ```
 
-**推送到远程**
+- 查看容器
 
 ```shell
-docker push xxx.xxx.com/gn_dev/shorturl:0.0.2
+docker ps
+
+# 结果
+CONTAINER ID   IMAGE       COMMAND                   CREATED          STATUS          PORTS                                                  NAMES
+a0c1d48d31d8   mysql:5.7   "docker-entrypoint.s…"   49 seconds ago   Up 34 seconds   0.0.0.0:3306->3306/tcp, :::3306->3306/tcp, 33060/tcp   sleepy_cohen
 ```
 
-**如果是私有仓库则需要登录**
+- 进入容器
 
 ```shell
-docker login --username=xxx xxx.xxx.com
+docker exec -it a0c1d48d31d8 /bin/bash
 
-# 输入密码
+# 连接MySQL
+mysql -uroot -p123456
 ```
 
-# 服务端运行远程镜像
+**redis**
+
+- 拉取镜像
 
 ```shell
-docker run -itd -p 9998:9999 --restart=always --name short-url-new -v /data/short-url:/config xxx,xxx.com/gn-dev/shorturl:0.0.2
+docker pull redis:6.0.8
+```
+
+- 配置数据卷的redis.conf
+
+```shell
+# 拷贝一份redis.conf到数据卷种，一定要对应的版本的redis.conf
+
+# 修改redis.conf
+vim redis.conf
+
+# 修改如下配置
+# 1. 配置密码，打开注释
+requirepass 123
+
+# 2. 允许外网访问，注释掉
+# bind 127.0.0.1
+
+# 3. 将daemonize配置从yes改成no，因为这个会和docker run -d冲突，导致docker run一直失败
+daemonize no
+
+# 4. 开启redis持久化
+appendonly yes
+```
+
+- 启动容器
+
+```shell
+docker run -p 6379:6379 -d --privileged=true
+--name=redis01
+-v /Users/kx/workspace/docker/redis/redis.conf:/etc/redis/redis.conf # 配置文件
+-v /Users/kx/workspace/docker/redis/data:/data # 数据
+redis:6.0.8
+redis-server /etc/redis/redis.conf # 启动redis服务按数据卷的配置启动
+```
+
+- 查看容器
+
+```shell
+docker ps
+
+# 结果
+CONTAINER ID   IMAGE         COMMAND                  CREATED             STATUS             PORTS                               NAMES
+05558f5e69d8   redis:6.0.8   "docker-entrypoint.s…"   4 seconds ago       Up 3 seconds       0.0.0.0:6379->6379/tcp              redis01
+```
+
+- 进入容器
+
+```shell
+docker exec -it 05558f5e69d8 /bin/bash
+
+redis-cli
+127.0.0.1:6379> auth 123
+OK
+127.0.0.1:6379> set k1 v1
+OK
+127.0.0.1:6379> get k1
+"v1"
+```
+
+- 修改数据卷配置并重启容器使之生效
+
+```shell
+vim redis.conf
+
+# 将数据库数量变成10
+databases=10
+
+# 重启redis容器
+docker restart 05558f5e69d8
+
+# 进入redis
+docker exec -it 05558f5e69d8 /bin/bash
+
+redis-cli
+127.0.0.1:6379> auth 123
+OK
+127.0.0.1:6379> SELECT 15
+(error) ERR DB index is out of range
+127.0.0.1:6379> SELECT 10
+(error) ERR DB index is out of range
+127.0.0.1:6379> SELECT 9
+OK
 ```
