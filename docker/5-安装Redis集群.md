@@ -2,8 +2,6 @@
 
 **理论**
 
-
-
 哈希槽算法
 
 **新建6个Redis容器实例**
@@ -145,4 +143,368 @@ d38ee9755d159524733c8cdadf142ef641deb1c5 127.0.0.1:6382@16382 master - 0 1683553
 7dc5673f6f5cdd652395f1dfa7c399c6366ac88e 127.0.0.1:6385@16385 slave 587a8c64afbe43f080aa2ae7cd293c07fb08713b 0 1683553389087 3 connected
 ```
 
+**测试集群**
 
+```shell
+# 进入第一台Redis容器
+docker exec -it redis-node-1 /bin/bash
+
+# 连接Redis
+redis-cli -p 6381
+127.0.0.1:6381> SET k1 v1
+# 落点在12706在第三个节点，但现在连接的是第一台redis，所以需要通过集群的方式连接
+(error) MOVED 12706 127.0.0.1:6383
+# 通过集群方式连接
+redis-cli -p 6381 -c
+127.0.0.1:6381> set k1 v1
+# 会自动跳转到6383这一个节点然后写入数据
+-> Redirected to slot [12706] located at 127.0.0.1:6383
+OK
+```
+
+**查看集群信息**
+
+```shell
+redis-cli --cluster check 127.0.0.1:6381
+# 结果
+127.0.0.1:6381 (e9f6799d...) -> 0 keys | 5461 slots | 1 slaves.
+127.0.0.1:6382 (d38ee975...) -> 0 keys | 5462 slots | 1 slaves.
+# 在6383节点上，有1个key，5461个槽位，1个slave
+127.0.0.1:6383 (587a8c64...) -> 1 keys | 5461 slots | 1 slaves.
+[OK] 1 keys in 3 masters.
+0.00 keys per slot on average.
+>>> Performing Cluster Check (using node 127.0.0.1:6381)
+M: e9f6799de802f01ef0a001e02f7fc63b76ec003b 127.0.0.1:6381
+   slots:[0-5460] (5461 slots) master
+   1 additional replica(s)
+S: 0a70839c1edb064753f820623e7ab17e9fd19992 127.0.0.1:6384
+   slots: (0 slots) slave
+   replicates d38ee9755d159524733c8cdadf142ef641deb1c5
+M: d38ee9755d159524733c8cdadf142ef641deb1c5 127.0.0.1:6382
+   slots:[5461-10922] (5462 slots) master
+   1 additional replica(s)
+M: 587a8c64afbe43f080aa2ae7cd293c07fb08713b 127.0.0.1:6383
+   slots:[10923-16383] (5461 slots) master
+   1 additional replica(s)
+S: 0ee0471c589de48408ff0d3eb897b0daa04b1f77 127.0.0.1:6386
+   slots: (0 slots) slave
+   replicates e9f6799de802f01ef0a001e02f7fc63b76ec003b
+S: 7dc5673f6f5cdd652395f1dfa7c399c6366ac88e 127.0.0.1:6385
+   slots: (0 slots) slave
+   replicates 587a8c64afbe43f080aa2ae7cd293c07fb08713b
+[OK] All nodes agree about slots configuration.
+>>> Check for open slots...
+>>> Check slots coverage...
+[OK] All 16384 slots covered.
+```
+
+# 容错切换
+
+**停止一台master**
+
+```shell
+# 将第一台节点停止（模拟宕机），正常情况下它的slave会上位
+docker stop redis-node-1
+```
+
+**测试上位情况**
+
+```shell
+# 进入一台节点
+docker exec -it redis-node-2 /bin/bash
+# 查看节点信息
+redis-cli -p 6382 -c
+127.0.0.1:6382> cluster nodes
+0a70839c1edb064753f820623e7ab17e9fd19992 127.0.0.1:6384@16384 slave d38ee9755d159524733c8cdadf142ef641deb1c5 0 1683595722985 2 connected
+# 6381 master,fail 6381死了，它的slave6386变成了master
+e9f6799de802f01ef0a001e02f7fc63b76ec003b 127.0.0.1:6381@16381 master,fail - 1683595566707 1683595563000 1 disconnected
+587a8c64afbe43f080aa2ae7cd293c07fb08713b 127.0.0.1:6383@16383 master - 0 1683595721967 3 connected 10923-16383
+7dc5673f6f5cdd652395f1dfa7c399c6366ac88e 127.0.0.1:6385@16385 slave 587a8c64afbe43f080aa2ae7cd293c07fb08713b 0 1683595723000 3 connected
+d38ee9755d159524733c8cdadf142ef641deb1c5 127.0.0.1:6382@16382 myself,master - 0 1683595722000 2 connected 5461-10922
+0ee0471c589de48408ff0d3eb897b0daa04b1f77 127.0.0.1:6386@16386 master - 0 1683595723991 7 connected 0-5460
+
+# 数据操作看是否正常
+127.0.0.1:6383> set k2 v2
+# 此时6386已经成为了master
+-> Redirected to slot [449] located at 127.0.0.1:6386
+OK
+```
+
+**还原成之前的状态**
+
+```shell
+# 将第一个节点启动起来
+docker start redis-node-1
+
+# 查看节点信息
+127.0.0.1:6382> cluster nodes
+0a70839c1edb064753f820623e7ab17e9fd19992 127.0.0.1:6384@16384 slave d38ee9755d159524733c8cdadf142ef641deb1c5 0 1683596113000 2 connected
+# 此时发现6381变成了slave，并没有恢复成6381为master、6386为slave
+e9f6799de802f01ef0a001e02f7fc63b76ec003b 127.0.0.1:6381@16381 slave 0ee0471c589de48408ff0d3eb897b0daa04b1f77 0 1683596113817 7 connected
+587a8c64afbe43f080aa2ae7cd293c07fb08713b 127.0.0.1:6383@16383 master - 0 1683596112000 3 connected 10923-16383
+7dc5673f6f5cdd652395f1dfa7c399c6366ac88e 127.0.0.1:6385@16385 slave 587a8c64afbe43f080aa2ae7cd293c07fb08713b 0 1683596112767 3 connected
+d38ee9755d159524733c8cdadf142ef641deb1c5 127.0.0.1:6382@16382 myself,master - 0 1683596111000 2 connected 5461-10922
+0ee0471c589de48408ff0d3eb897b0daa04b1f77 127.0.0.1:6386@16386 master - 0 1683596112000 7 connected 0-5460
+
+# 关闭6386再开启
+docker stop redis-node-6
+docker start redis-node-6
+
+# 再次查看节点信息（需要等待一小段时间，需要等待心跳检测结束）
+127.0.0.1:6382> cluster nodes
+0a70839c1edb064753f820623e7ab17e9fd19992 127.0.0.1:6384@16384 slave d38ee9755d159524733c8cdadf142ef641deb1c5 0 1683596377000 2 connected
+# 发现此时已经还原了
+e9f6799de802f01ef0a001e02f7fc63b76ec003b 127.0.0.1:6381@16381 master - 0 1683596378384 8 connected 0-5460
+587a8c64afbe43f080aa2ae7cd293c07fb08713b 127.0.0.1:6383@16383 master - 0 1683596378000 3 connected 10923-16383
+7dc5673f6f5cdd652395f1dfa7c399c6366ac88e 127.0.0.1:6385@16385 slave 587a8c64afbe43f080aa2ae7cd293c07fb08713b 0 1683596375000 3 connected
+d38ee9755d159524733c8cdadf142ef641deb1c5 127.0.0.1:6382@16382 myself,master - 0 1683596375000 2 connected 5461-10922
+0ee0471c589de48408ff0d3eb897b0daa04b1f77 127.0.0.1:6386@16386 slave e9f6799de802f01ef0a001e02f7fc63b76ec003b 0 1683596376372 8 connected
+```
+
+# 主从扩容
+
+当遇到高并发时，原来的3主3从已经抗不住了，需要扩成4主4从。
+
+**步骤**
+
+- 将新的主和从启动起来
+
+- 然后主机加入到集群
+
+- 再将从机加入集群成为新的主机的从节点
+
+**问题**
+
+原本的哈希槽位已经分配好了（之前3主3从哈希槽被分成了3段），此时再扩需要重新分配哈希槽位，如何重新分配？
+
+**启动2台新节点**
+
+```shell
+docker run -d --name redis-node-7 --net host --privileged=true -v /Users/kx/workspace/docker/redis-node-7:/data redis:6.0.8 --cluster-enabled yes --appendonly yes --port 6387
+docker run -d --name redis-node-8 --net host --privileged=true -v /Users/kx/workspace/docker/redis-node-8:/data redis:6.0.8 --cluster-enabled yes --appendonly yes --port 6388
+
+docker ps
+CONTAINER ID   IMAGE         COMMAND                  CREATED         STATUS          PORTS     NAMES
+541d8cee10e4   redis:6.0.8   "docker-entrypoint.s…"   3 seconds ago   Up 2 seconds              redis-node-8
+0f32f0f50f54   redis:6.0.8   "docker-entrypoint.s…"   3 seconds ago   Up 2 seconds              redis-node-7
+c6dfa2ad1302   redis:6.0.8   "docker-entrypoint.s…"   13 hours ago    Up 32 minutes             redis-node-6
+c152935d5714   redis:6.0.8   "docker-entrypoint.s…"   13 hours ago    Up 13 hours               redis-node-5
+6d58f9cffcb3   redis:6.0.8   "docker-entrypoint.s…"   13 hours ago    Up 13 hours               redis-node-4
+df82077db68f   redis:6.0.8   "docker-entrypoint.s…"   13 hours ago    Up 13 hours               redis-node-3
+85c5788b4d19   redis:6.0.8   "docker-entrypoint.s…"   13 hours ago    Up 13 hours               redis-node-2
+55feef5b54d2   redis:6.0.8   "docker-entrypoint.s…"   13 hours ago    Up 37 minutes             redis-node-1**将新的master加入到原集群**# 进入新的masterdocker exec -it redis-node-7 /bin/bash# 将新增的6387作为master节点加入集群redis-cli --cluster add-node
+```
+
+**将新的master节点加入到集群**
+
+```shell
+# 进入新的master节点容器
+docker exec -it redis-node-7 /bin/bash
+# 将新增的6387作为master节点加入集群
+redis-cli --cluster add-node 127.0.0.1:6387 127.0.0.1:6381
+# 6387 就是将要作为master新增节点
+# 6381 就是原来集群节点里面的领路人，相当于6387拜拜6381的码头从而找到组织加入集群
+>>> Adding node 127.0.0.1:6387 to cluster 127.0.0.1:6381
+>>> Performing Cluster Check (using node 127.0.0.1:6381)
+M: e9f6799de802f01ef0a001e02f7fc63b76ec003b 127.0.0.1:6381
+   slots:[0-5460] (5461 slots) master
+   1 additional replica(s)
+S: 7dc5673f6f5cdd652395f1dfa7c399c6366ac88e 127.0.0.1:6385
+   slots: (0 slots) slave
+   replicates 587a8c64afbe43f080aa2ae7cd293c07fb08713b
+M: d38ee9755d159524733c8cdadf142ef641deb1c5 127.0.0.1:6382
+   slots:[5461-10922] (5462 slots) master
+   1 additional replica(s)
+S: 0a70839c1edb064753f820623e7ab17e9fd19992 127.0.0.1:6384
+   slots: (0 slots) slave
+   replicates d38ee9755d159524733c8cdadf142ef641deb1c5
+S: 0ee0471c589de48408ff0d3eb897b0daa04b1f77 127.0.0.1:6386
+   slots: (0 slots) slave
+   replicates e9f6799de802f01ef0a001e02f7fc63b76ec003b
+M: 587a8c64afbe43f080aa2ae7cd293c07fb08713b 127.0.0.1:6383
+   slots:[10923-16383] (5461 slots) master
+   1 additional replica(s)
+[OK] All nodes agree about slots configuration.
+>>> Check for open slots...
+>>> Check slots coverage...
+[OK] All 16384 slots covered.
+>>> Send CLUSTER MEET to node 127.0.0.1:6387 to make it join the cluster.
+[OK] New node added correctly.
+```
+
+**检查集群状态**
+
+```shell
+redis-cli --cluster check 127.0.0.1:6381
+
+# 结果
+127.0.0.1:6381 (e9f6799d...) -> 1 keys | 5461 slots | 1 slaves.
+127.0.0.1:6382 (d38ee975...) -> 0 keys | 5462 slots | 1 slaves.
+# 新的6387还没有分配槽位
+127.0.0.1:6387 (bded87e6...) -> 0 keys | 0 slots | 0 slaves.
+127.0.0.1:6383 (587a8c64...) -> 1 keys | 5461 slots | 1 slaves.
+[OK] 2 keys in 4 masters.
+0.00 keys per slot on average.
+>>> Performing Cluster Check (using node 127.0.0.1:6381)
+M: e9f6799de802f01ef0a001e02f7fc63b76ec003b 127.0.0.1:6381
+   slots:[0-5460] (5461 slots) master
+   1 additional replica(s)
+S: 7dc5673f6f5cdd652395f1dfa7c399c6366ac88e 127.0.0.1:6385
+   slots: (0 slots) slave
+   replicates 587a8c64afbe43f080aa2ae7cd293c07fb08713b
+M: d38ee9755d159524733c8cdadf142ef641deb1c5 127.0.0.1:6382
+   slots:[5461-10922] (5462 slots) master
+   1 additional replica(s)
+M: bded87e6083159198b9159c40a9c8804e744df13 127.0.0.1:6387
+   slots: (0 slots) master
+S: 0a70839c1edb064753f820623e7ab17e9fd19992 127.0.0.1:6384
+   slots: (0 slots) slave
+   replicates d38ee9755d159524733c8cdadf142ef641deb1c5
+S: 0ee0471c589de48408ff0d3eb897b0daa04b1f77 127.0.0.1:6386
+   slots: (0 slots) slave
+   replicates e9f6799de802f01ef0a001e02f7fc63b76ec003b
+M: 587a8c64afbe43f080aa2ae7cd293c07fb08713b 127.0.0.1:6383
+   slots:[10923-16383] (5461 slots) master
+   1 additional replica(s)
+[OK] All nodes agree about slots configuration.
+>>> Check for open slots...
+>>> Check slots coverage...
+[OK] All 16384 slots covered.
+```
+
+**重新分配槽位**
+
+```shell
+redis-cli --cluster reshard 127.0.0.1:6381
+
+...
+# 如何分配操作，16384/master数量
+how many slots do you want to move (from 1 to 16384)? 4096
+# 分配给哪个节点，分配给新的master节点
+what is the receiving node ID? bded87e6083159198b9159c40a9c8804e744df13
+```
+
+**重新检查集群状态**
+
+```shell
+redis-cli --cluster check 127.0.0.1:6381
+# 结果
+127.0.0.1:6381 (e9f6799d...) -> 0 keys | 4096 slots | 1 slaves.
+127.0.0.1:6382 (d38ee975...) -> 0 keys | 4096 slots | 1 slaves.
+# 从这里可以看出新的节点已经得到4096个槽位，数据也重新进行了分配
+127.0.0.1:6387 (bded87e6...) -> 1 keys | 4096 slots | 0 slaves.
+127.0.0.1:6383 (587a8c64...) -> 1 keys | 4096 slots | 1 slaves.
+[OK] 2 keys in 4 masters.
+0.00 keys per slot on average.
+>>> Performing Cluster Check (using node 127.0.0.1:6381)
+# 根据新的槽位分配可以得知槽位分配的算法是将老的3个节点分别匀1364个槽位给新的节点
+# 这样效率会更高，不然重新分配成本也太高
+M: e9f6799de802f01ef0a001e02f7fc63b76ec003b 127.0.0.1:6381
+   slots:[1365-5460] (4096 slots) master
+   1 additional replica(s)
+S: 7dc5673f6f5cdd652395f1dfa7c399c6366ac88e 127.0.0.1:6385
+   slots: (0 slots) slave
+   replicates 587a8c64afbe43f080aa2ae7cd293c07fb08713b
+M: d38ee9755d159524733c8cdadf142ef641deb1c5 127.0.0.1:6382
+   slots:[6827-10922] (4096 slots) master
+   1 additional replica(s)
+M: bded87e6083159198b9159c40a9c8804e744df13 127.0.0.1:6387
+   slots:[0-1364],[5461-6826],[10923-12287] (4096 slots) master
+S: 0a70839c1edb064753f820623e7ab17e9fd19992 127.0.0.1:6384
+   slots: (0 slots) slave
+   replicates d38ee9755d159524733c8cdadf142ef641deb1c5
+S: 0ee0471c589de48408ff0d3eb897b0daa04b1f77 127.0.0.1:6386
+   slots: (0 slots) slave
+   replicates e9f6799de802f01ef0a001e02f7fc63b76ec003b
+M: 587a8c64afbe43f080aa2ae7cd293c07fb08713b 127.0.0.1:6383
+   slots:[12288-16383] (4096 slots) master
+   1 additional replica(s)
+[OK] All nodes agree about slots configuration.
+>>> Check for open slots...
+>>> Check slots coverage...
+[OK] All 16384 slots covered.
+```
+
+**为新的master节点分配一个slave节点**
+
+```shell
+# redis-cli --cluster add-node ip:新slave端口 ip:新master端口 --cluster-slave --cluster-master-id 新主机节点ID
+redis-cli --cluster add-node 127.0.0.1:6388 127.0.0.1:6387 --cluster-slave --cluster-master-id bded87e6083159198b9159c40a9c8804e744df13redis-cli --cluster add-node 127.0.0.1:6388 127.0.0.1:6387 --cluster-slave --cluster-master-id bded87e6083159198b9159c40a9c8804e744df13
+
+# 结果
+>>> Adding node 127.0.0.1:6388 to cluster 127.0.0.1:6387
+>>> Performing Cluster Check (using node 127.0.0.1:6387)
+M: bded87e6083159198b9159c40a9c8804e744df13 127.0.0.1:6387
+   slots:[0-1364],[5461-6826],[10923-12287] (4096 slots) master
+S: 0ee0471c589de48408ff0d3eb897b0daa04b1f77 127.0.0.1:6386
+   slots: (0 slots) slave
+   replicates e9f6799de802f01ef0a001e02f7fc63b76ec003b
+M: e9f6799de802f01ef0a001e02f7fc63b76ec003b 127.0.0.1:6381
+   slots:[1365-5460] (4096 slots) master
+   1 additional replica(s)
+M: d38ee9755d159524733c8cdadf142ef641deb1c5 127.0.0.1:6382
+   slots:[6827-10922] (4096 slots) master
+   1 additional replica(s)
+M: 587a8c64afbe43f080aa2ae7cd293c07fb08713b 127.0.0.1:6383
+   slots:[12288-16383] (4096 slots) master
+   1 additional replica(s)
+S: 7dc5673f6f5cdd652395f1dfa7c399c6366ac88e 127.0.0.1:6385
+   slots: (0 slots) slave
+   replicates 587a8c64afbe43f080aa2ae7cd293c07fb08713b
+S: 0a70839c1edb064753f820623e7ab17e9fd19992 127.0.0.1:6384
+   slots: (0 slots) slave
+   replicates d38ee9755d159524733c8cdadf142ef641deb1c5
+[OK] All nodes agree about slots configuration.
+>>> Check for open slots...
+>>> Check slots coverage...
+[OK] All 16384 slots covered.
+>>> Send CLUSTER MEET to node 127.0.0.1:6388 to make it join the cluster.
+Waiting for the cluster to join
+
+>>> Configure node as replica of 127.0.0.1:6387.
+[OK] New node added correctly.
+```
+
+**最后检查集群状态**
+
+```shell
+redis-cli --cluster check 127.0.0.1:6381
+# 结果
+127.0.0.1:6382 (d38ee975...) -> 0 keys | 4096 slots | 1 slaves.
+127.0.0.1:6381 (e9f6799d...) -> 0 keys | 4096 slots | 1 slaves.
+127.0.0.1:6383 (587a8c64...) -> 1 keys | 4096 slots | 1 slaves.
+# 可以看到6387多了一个slave
+127.0.0.1:6387 (bded87e6...) -> 1 keys | 4096 slots | 1 slaves.
+[OK] 2 keys in 4 masters.
+0.00 keys per slot on average.
+>>> Performing Cluster Check (using node 127.0.0.1:6382)
+M: d38ee9755d159524733c8cdadf142ef641deb1c5 127.0.0.1:6382
+   slots:[6827-10922] (4096 slots) master
+   1 additional replica(s)
+S: 0a70839c1edb064753f820623e7ab17e9fd19992 127.0.0.1:6384
+   slots: (0 slots) slave
+   replicates d38ee9755d159524733c8cdadf142ef641deb1c5
+# 从这里看出来6388是6387的从节点
+S: 2a51190a607881a423c0220d23db3f41e7fd0e65 127.0.0.1:6388
+   slots: (0 slots) slave
+   replicates bded87e6083159198b9159c40a9c8804e744df13
+M: e9f6799de802f01ef0a001e02f7fc63b76ec003b 127.0.0.1:6381
+   slots:[1365-5460] (4096 slots) master
+   1 additional replica(s)
+M: 587a8c64afbe43f080aa2ae7cd293c07fb08713b 127.0.0.1:6383
+   slots:[12288-16383] (4096 slots) master
+   1 additional replica(s)
+S: 7dc5673f6f5cdd652395f1dfa7c399c6366ac88e 127.0.0.1:6385
+   slots: (0 slots) slave
+   replicates 587a8c64afbe43f080aa2ae7cd293c07fb08713b
+M: bded87e6083159198b9159c40a9c8804e744df13 127.0.0.1:6387
+   slots:[0-1364],[5461-6826],[10923-12287] (4096 slots) master
+   1 additional replica(s)
+S: 0ee0471c589de48408ff0d3eb897b0daa04b1f77 127.0.0.1:6386
+   slots: (0 slots) slave
+   replicates e9f6799de802f01ef0a001e02f7fc63b76ec003b
+[OK] All nodes agree about slots configuration.
+>>> Check for open slots...
+>>> Check slots coverage...
+[OK] All 16384 slots covered.
+```
