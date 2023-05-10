@@ -2,7 +2,11 @@
 
 **理论**
 
-哈希槽算法
+- 哈希取余分区
+
+- 一致性哈希算法分区
+
+- 哈希槽分区
 
 **新建6个Redis容器实例**
 
@@ -267,11 +271,13 @@ d38ee9755d159524733c8cdadf142ef641deb1c5 127.0.0.1:6382@16382 myself,master - 0 
 
 **步骤**
 
-- 将新的主和从启动起来
+1. 将新的主和从启动起来
 
-- 然后主机加入到集群
+2. 然后主机加入到集群
 
-- 再将从机加入集群成为新的主机的从节点
+3. 重新分配槽位
+
+4. 再将从机加入集群成为新的主机的从节点
 
 **问题**
 
@@ -507,4 +513,133 @@ S: 0ee0471c589de48408ff0d3eb897b0daa04b1f77 127.0.0.1:6386
 >>> Check for open slots...
 >>> Check slots coverage...
 [OK] All 16384 slots covered.
+```
+
+# 主从缩容
+
+**步骤**
+
+1. 先清除slave节点6388
+
+2. 清出来的槽位重新分配
+
+3. 再删除master节点6387
+
+4. 恢复成3主3从
+
+**删除slave节点6388**
+
+```shell
+# 先查看6388的节点ID
+redis-cli --cluster check 127.0.0.1:6382
+127.0.0.1:6382 (d38ee975...) -> 0 keys | 4096 slots | 1 slaves.
+127.0.0.1:6381 (e9f6799d...) -> 0 keys | 4096 slots | 1 slaves.
+127.0.0.1:6383 (587a8c64...) -> 1 keys | 4096 slots | 1 slaves.
+127.0.0.1:6387 (bded87e6...) -> 1 keys | 4096 slots | 1 slaves.
+[OK] 2 keys in 4 masters.
+0.00 keys per slot on average.
+>>> Performing Cluster Check (using node 127.0.0.1:6382)
+M: d38ee9755d159524733c8cdadf142ef641deb1c5 127.0.0.1:6382
+   slots:[6827-10922] (4096 slots) master
+   1 additional replica(s)
+S: 0a70839c1edb064753f820623e7ab17e9fd19992 127.0.0.1:6384
+   slots: (0 slots) slave
+   replicates d38ee9755d159524733c8cdadf142ef641deb1c5
+# 从此处得知6388的节点ID
+S: 2a51190a607881a423c0220d23db3f41e7fd0e65 127.0.0.1:6388
+   slots: (0 slots) slave
+   replicates bded87e6083159198b9159c40a9c8804e744df13
+M: e9f6799de802f01ef0a001e02f7fc63b76ec003b 127.0.0.1:6381
+   slots:[1365-5460] (4096 slots) master
+   1 additional replica(s)
+M: 587a8c64afbe43f080aa2ae7cd293c07fb08713b 127.0.0.1:6383
+   slots:[12288-16383] (4096 slots) master
+   1 additional replica(s)
+S: 7dc5673f6f5cdd652395f1dfa7c399c6366ac88e 127.0.0.1:6385
+   slots: (0 slots) slave
+   replicates 587a8c64afbe43f080aa2ae7cd293c07fb08713b
+M: bded87e6083159198b9159c40a9c8804e744df13 127.0.0.1:6387
+   slots:[0-1364],[5461-6826],[10923-12287] (4096 slots) master
+   1 additional replica(s)
+S: 0ee0471c589de48408ff0d3eb897b0daa04b1f77 127.0.0.1:6386
+   slots: (0 slots) slave
+   replicates e9f6799de802f01ef0a001e02f7fc63b76ec003b
+[OK] All nodes agree about slots configuration.
+>>> Check for open slots...
+>>> Check slots coverage...
+[OK] All 16384 slots covered.
+
+# 删除slave节点
+# redis-cli --cluster del-node ip:从机端口 从机6388节点ID
+redis-cli --cluster del-node 127.0.0.1:6388 2a51190a607881a423c0220d23db3f41e7fd0e65
+>>> Removing node 2a51190a607881a423c0220d23db3f41e7fd0e65 from cluster 127.0.0.1:6388
+>>> Sending CLUSTER FORGET messages to the cluster...
+>>> Sending CLUSTER RESET SOFT to the deleted node.
+```
+
+**将6387的槽位清空并重新分配**
+
+```shell
+# 此例子将6387的槽位全部分配给6381
+redis-cli --cluster reshard 127.0.0.1:6381
+>>> Performing Cluster Check (using node 127.0.0.1:6381)
+M: e9f6799de802f01ef0a001e02f7fc63b76ec003b 127.0.0.1:6381
+   slots:[1365-5460] (4096 slots) master
+   1 additional replica(s)
+S: 7dc5673f6f5cdd652395f1dfa7c399c6366ac88e 127.0.0.1:6385
+   slots: (0 slots) slave
+   replicates 587a8c64afbe43f080aa2ae7cd293c07fb08713b
+M: d38ee9755d159524733c8cdadf142ef641deb1c5 127.0.0.1:6382
+   slots:[6827-10922] (4096 slots) master
+   1 additional replica(s)
+M: bded87e6083159198b9159c40a9c8804e744df13 127.0.0.1:6387
+   slots:[0-1364],[5461-6826],[10923-12287] (4096 slots) master
+S: 0a70839c1edb064753f820623e7ab17e9fd19992 127.0.0.1:6384
+   slots: (0 slots) slave
+   replicates d38ee9755d159524733c8cdadf142ef641deb1c5
+S: 0ee0471c589de48408ff0d3eb897b0daa04b1f77 127.0.0.1:6386
+   slots: (0 slots) slave
+   replicates e9f6799de802f01ef0a001e02f7fc63b76ec003b
+M: 587a8c64afbe43f080aa2ae7cd293c07fb08713b 127.0.0.1:6383
+   slots:[12288-16383] (4096 slots) master
+   1 additional replica(s)
+[OK] All nodes agree about slots configuration.
+>>> Check for open slots...
+>>> Check slots coverage...
+[OK] All 16384 slots covered.
+# 要移动的槽位个数
+How many slots do you want to move (from 1 to 16384)? 4096
+# 接收的节点ID
+What is the receiving node ID? e9f6799de802f01ef0a001e02f7fc63b76ec003b
+Please enter all the source node IDs.
+  Type 'all' to use all the nodes as source nodes for the hash slots.
+  Type 'done' once you entered all the source nodes IDs.
+# 从哪里分配，这里从6387节点分配
+Source node #1: bded87e6083159198b9159c40a9c8804e744df13
+Source node #2: done
+do you want to proceed with the proposed reshard plan (yes/no)? yes
+
+# 查看集群信息
+redis-cli --cluster check 127.0.0.1:6381
+127.0.0.1:6381 (e9f6799d...) -> 1 keys | 8192 slots | 1 slaves.
+127.0.0.1:6382 (d38ee975...) -> 0 keys | 4096 slots | 1 slaves.
+# 从这里看出6387没有槽位了
+127.0.0.1:6387 (bded87e6...) -> 0 keys | 0 slots | 0 slaves.
+127.0.0.1:6383 (587a8c64...) -> 1 keys | 4096 slots | 1 slaves.
+```
+
+**删除master节点**
+
+```shell
+redis-cli --cluster del-node 127.0.0.1:6387 bded87e6083159198b9159c40a9c8804e744df13
+>>> Removing node bded87e6083159198b9159c40a9c8804e744df13 from cluster 127.0.0.1:6387
+>>> Sending CLUSTER FORGET messages to the cluster...
+>>> Sending CLUSTER RESET SOFT to the deleted node.
+
+# 最后查看集群信息
+redis-cli --cluster check 127.0.0.1:6381
+# 6381得到了6387分配的4096个槽位
+127.0.0.1:6381 (e9f6799d...) -> 1 keys | 8192 slots | 1 slaves.
+127.0.0.1:6382 (d38ee975...) -> 0 keys | 4096 slots | 1 slaves.
+127.0.0.1:6383 (587a8c64...) -> 1 keys | 4096 slots | 1 slaves.
 ```
