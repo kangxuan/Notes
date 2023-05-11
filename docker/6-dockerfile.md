@@ -48,7 +48,7 @@ Dockerfile是构建Docker镜像的文本文件，是一条条构建镜像所需�
 
 - FROM
   
-  - 基础镜像，当前新镜像是基于哪个镜像的，指定一个已经存在的镜像作为模板，第一条必须是from。
+  - 基础镜像，当前新镜像是基于哪个镜像的，指定一个已经存在的镜像作为模板，第一条必须是FROM。
 
 - MAINTAINER
   
@@ -110,7 +110,7 @@ Dockerfile是构建Docker镜像的文本文件，是一条条构建镜像所需�
   
   - 如果 Dockerfile 中如果存在多个 ENTRYPOINT 指令，仅最后一个生效。
 
-# 尝试第一个Docker制作过程
+# 通过Dockerfile制作镜像
 
 以go为例，先编写一个go例子
 
@@ -160,23 +160,21 @@ WORKDIR /app
 ADD floot_type_view-app $WORKDIR/
 
 # 运行go程序
-CMD /app/floot_type_view-app
+CMD ./floot_type_view-app
 ```
 
 制作Docker image
 
 ```shell
 # 根据当前目录下的Dockerfile制作Docker image
-docker image build -t floot_type_view-app .
+docker image build -t floot_type_view-app:1.0 .
 # 或
-docker build -t floot_type_view-app .
+docker build -t floot_type_view-app:1.0 .
 ```
 
 查看images
 
 ```shell
-docker image ls
-# 或
 docker images
 ```
 
