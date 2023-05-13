@@ -242,6 +242,145 @@ root@71ac9efc44a8:/# ip addr
 
 - `docker run`网桥docker0会创建一对对等的虚拟设备接口，一个叫evth（docker0端）、一个叫eth0（docker 容器端）。
 
-![图片](./images/docker_pridge.png)
+<img src="./images/docker_pridge.png" title="" alt="bridge模式" data-align="center">
 
+**host**
 
+- 直接使用宿主机的IP地址直接和外界通信，容器不会虚拟出自己的网卡。
+
+<img src="./images/docker_host.png" title="" alt="host模式" data-align="center">
+
+通过host模式run一个容器
+
+```shell
+# 通过host模式不用指定-p，因为直接用了宿主机的端口3306
+# 如果宿主机端口3306则会自增
+docker run --network host -e MYSQL_ROOT_PASSWORD=123456 -d --privileged=true mysql:5.7
+
+# 查看网络信息
+docker inspect 296b039684b9 | tail -n 20
+# 结果
+"Networks": {
+    "host": {
+        "IPAMConfig": null,
+        "Links": null,
+        "Aliases": null,
+        "NetworkID": "19d4028146a35ad4357c01b38cb05b94d75979775d3415d26d69b985fa345933",
+        "EndpointID": "fe440ae71473d1b439031d18f8ecd223055ecfdcbfac4bf98c4a434c61aa89d1",
+        "Gateway": "",
+        "IPAddress": "",
+        "IPPrefixLen": 0,
+        "IPv6Gateway": "",
+        "GlobalIPv6Address": "",
+        "GlobalIPv6PrefixLen": 0,
+        "MacAddress": "",
+        "DriverOpts": null
+    }
+}
+```
+
+**none**
+
+- 意思就是没有网络功能，只有lo标识（也就是127.0.0.1本地回环）
+
+```shell
+docker run --network none -e MYSQL_ROOT_PASSWORD=123456 -d --privileged=true mysql:5.7
+
+# 查看容器网络信息
+docker inspect f7a428665b38 | tail -n 20
+
+# 结果
+"Networks": {
+    "none": {
+        "IPAMConfig": null,
+        "Links": null,
+        "Aliases": null,
+        "NetworkID": "d4f95f3800cc6e263fc5ba6f667e088b796a12bfbc8029bd3635d53e185456a1",
+        "EndpointID": "dbb2fb0e01aadd48acfcbeb5635483448d6212a35f152d57376e446d723a7ce6",
+        "Gateway": "",
+        "IPAddress": "",
+        "IPPrefixLen": 0,
+        "IPv6Gateway": "",
+        "GlobalIPv6Address": "",
+        "GlobalIPv6PrefixLen": 0,
+        "MacAddress": "",
+        "DriverOpts": null
+    }
+}
+```
+
+**container**
+
+- 新建容器和一个已经存在的容器进行网络共享，不会创建自己的网卡等。
+
+<img src="./images/docker_container.png" title="" alt="1" data-align="center">
+
+案例：
+
+```shell
+# run一个Alpine容器
+# Alpine操作系统是一个面向安全的轻型Linux发行版，很小
+
+docker run -it --name alpine1  alpine /bin/sh
+
+# 再run一个Alpine容器使用container模式使用alpine1的网络
+docker run -it --network container:alpine1 --name alpine2  alpine /bin/sh
+
+# 查看alpine1的ip
+ip addr
+...
+34: eth0@if35: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1500 qdisc noqueue state UP
+    link/ether 02:42:ac:11:00:02 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+
+# 查看alpine2的ip
+ip addr
+...
+34: eth0@if35: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1500 qdisc noqueue state UP
+    link/ether 02:42:ac:11:00:02 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+
+# 关闭alpine1再查看alpine2的ip
+exit
+ip addr
+...
+# 发现eth0不在了
+```
+
+# 自定义网络
+
+**什么要自定义网络**
+
+默认的docker0启动的容器IP可能会变，为了解决这个问题，我们用容器名采用容器名进行通信。自定义网络就是为了维护主机名和IP的对应关系，让IP和域名都能ping通。
+
+**例子**
+
+```shell
+# 添加新网络
+docker network create shanla_network
+
+# 查看docker网络
+docker network ls
+237aa603274f   bridge           bridge    local
+19d4028146a3   host             host      local
+d4f95f3800cc   none             null      local
+e33da5954a98   shanla_network   bridge    local
+
+# 使用新的网络创建容器
+docker run -it --network shanla_network  --name alpine3 alpine /bin/sh
+docker run -it --network shanla_network  --name alpine4 alpine /bin/sh
+
+# 在alpine3中ping alpine4
+ping alpine4
+PING alpine4 (172.20.0.3): 56 data bytes
+64 bytes from 172.20.0.3: seq=0 ttl=64 time=0.142 ms
+64 bytes from 172.20.0.3: seq=1 ttl=64 time=0.159 ms
+
+# 在 alpine4 中 ping alpine3
+ping alpine3
+PING alpine3 (172.20.0.2): 56 data bytes
+64 bytes from 172.20.0.2: seq=0 ttl=64 time=2.299 ms
+64 bytes from 172.20.0.2: seq=1 ttl=64 time=0.143 ms
+```
