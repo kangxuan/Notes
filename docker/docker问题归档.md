@@ -34,3 +34,16 @@ docker rm ...
 ```shell
 docker exec -it 容器ID env LANG=C.UTF-8 /bin/bash
 ```
+
+**systemctl stop docker出现**
+
+```shell
+systemctl stop docker
+Redirecting to /bin/systemctl stop  docker.service
+Warning: Stopping docker.service, but it can still be activated by:
+  docker.socket
+
+# 这是因为在关闭状态下被访问自动唤醒
+# 解决方法
+systemctl stop docker.socket
+```

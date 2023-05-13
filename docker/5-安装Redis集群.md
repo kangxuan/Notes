@@ -11,7 +11,7 @@
 **新建6个Redis容器实例**
 
 ```shell
-# --net host 使用宿主机的IP和端口，默认
+# --net host 使用宿主机的IP和端口，端口对应容器内的端口
 # --privileged=true 获取宿主机root用户权限
 # --cluster-enabled yes 开启redis集群
 # --appendonly yes 开启持久化
