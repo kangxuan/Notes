@@ -242,6 +242,6 @@ root@71ac9efc44a8:/# ip addr
 
 - `docker run`网桥docker0会创建一对对等的虚拟设备接口，一个叫evth（docker0端）、一个叫eth0（docker 容器端）。
 
-![图片](/Users/kx/workspace/Notes/docker/images/docker_pridge.png)
+![图片](./images/docker_pridge.png)
 
 
