@@ -32,4 +32,74 @@ Compose是Docker公司推出的软件工具，可以管理多个Docker容器组�
 
 3. 最后执行`docker-compose up`命令启动并运行整个应用程序，完成一键部署。
 
+# Docker-compose常用命令
 
+- 查看帮助
+
+```shell
+docker-compose -h
+```
+
+- 启动所有docker-compose服务
+
+```shell
+docker-compose up
+# 启动所有docker-compose服务并后台运行
+docker-compose up -d
+```
+
+- 停止并删除容器、网络、数据卷、镜像
+
+```shell
+docker-compose down
+```
+
+- 进入容器实例内部
+
+```shell
+docker-compose exec yml里面的服务id /bin/bash
+```
+
+- 展示当前docker-compose编排过的运行的所有容器
+
+```shell
+docker-compose ps
+```
+
+- 展示当前docker-compose编排过的容器进程
+
+```shell
+docker-compose top
+```
+
+- 查看容器输出日志
+
+```shell
+docker-compose logs yml里面的服务id
+```
+
+- 检查配置
+
+```shell
+docker-compose config
+# 检查配置，有问题裁输出
+docker-compose config -q
+```
+
+- 重启服务
+
+```shell
+docker-compose restart
+```
+
+- 启动服务
+
+```shell
+docker-compose start
+```
+
+- 停止服务
+
+```shell
+docker-compose stop
+```
