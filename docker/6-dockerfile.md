@@ -110,7 +110,7 @@ Dockerfile是构建Docker镜像的文本文件，是一条条构建镜像所需�
   
   - 如果 Dockerfile 中如果存在多个 ENTRYPOINT 指令，仅最后一个生效。
 
-# 通过Dockerfile制作镜像
+# 通过Dockerfile制作镜像的简单例子
 
 以go为例，先编写一个go例子
 
@@ -190,7 +190,108 @@ docker run floot_type_view-app
 [0.4 0.3 0.2 0.1]
 ```
 
-# 本地制作镜像
+# 通过Dockerfile制作镜像的完整例子
+
+**服务清单**
+
+- 制作项目服务镜像
+
+- MySQL服务
+
+- Redis服务
+
+**制作项目服务镜像**
+
+本例是一个go（gf框架）编写的blog项目
+
+- 代码打包
+
+```shell
+# 根据环境go build代码
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o main main.go
+```
+
+- 编写Dockerfile
+
+```dockerfile
+FROM loads/alpine:3.8
+
+###############################################################################
+#                                INSTALLATION
+###############################################################################
+
+# 设置固定的项目路径
+ENV WORKDIR /app/main
+
+# 添加应用可执行文件，并设置执行权限
+ADD ./main   $WORKDIR/main
+RUN chmod +x $WORKDIR/main
+
+# 添加静态资源文件
+ADD resource $WORKDIR/resource
+ADD manifest $WORKDIR/manifest
+
+###############################################################################
+#                                   START
+###############################################################################
+WORKDIR $WORKDIR
+CMD ./main
+```
+
+- 制作镜像
+
+```shell
+docker build -t myblog:1.0 .
+```
+
+- 启动项目服务容器
+
+```shell
+docker run -d -p 9090:9090 --name myblog1 myblog:1.0
+```
+
+**MySQL服务**
+
+```shell
+docker run -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 -d \
+--privileged=true \
+-v /Users/kx/workspace/docker/mysql/log:/var/log/mysql \
+-v /Users/kx/workspace/docker/mysql/data:/var/lib/mysql \
+-v /Users/kx/workspace/docker/mysql/conf:/etc/mysql/conf.d \
+--name=mysql01 \
+mysql:5.7
+```
+
+**Redis服务**
+
+```shell
+docker run -p 6379:6379 -d --privileged=true \
+--name=redis01 \
+-v /Users/kx/workspace/docker/redis/redis.conf:/etc/redis/redis.conf \
+-v /Users/kx/workspace/docker/redis/data:/data \
+redis:6.0.8 \
+redis-server /etc/redis/redis.conf
+```
+
+**查看服务是否启动**
+
+```shell
+docker ps
+
+# 结果
+CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS          PORTS                               NAMES
+ee8aedb90113   myblog:1.0    "/bin/sh -c ./main"      27 minutes ago   Up 27 minutes   0.0.0.0:9090->9090/tcp              myblog1
+aede1577f51f   redis:6.0.8   "docker-entrypoint.s…"   31 minutes ago   Up 31 minutes   0.0.0.0:6379->6379/tcp              redis01
+9845cf7fccd4   mysql:5.7     "docker-entrypoint.s…"   39 minutes ago   Up 39 minutes   0.0.0.0:3306->3306/tcp, 33060/tcp   mysql01
+```
+
+**测试访问**
+
+```shell
+curl -XGET http://127.0.0.1:9090/xxx/xxx
+```
+
+# 工作中的流程
 
 **编辑Dockerfile**
 
@@ -217,7 +318,7 @@ docker build -t short-url:0.0.1 .
 # -p 8001:9999 端口 8001是提供给外部的端口 9999是容器内部的端口
 # -v 挂载盘
 # short-url:0.0.1 image名称和tag
-docker run -itd -p 8001:9999 --name aaa -v /xxx/go/src/shorurl:/config short-url:0.0.1
+docker run -d -p 8001:9999 --name aaa -v /xxx/go/src/shorurl:/config short-url:0.0.1
 ```
 
 # 将本地镜像推送到远程仓库

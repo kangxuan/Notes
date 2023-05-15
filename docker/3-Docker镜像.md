@@ -296,12 +296,12 @@ docker run -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 -d --privileged=true mysql
 
 ```shell
 # 注意实战中上面简单方式不满足，需要增加数据卷用于持久化数据
-docker run -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 -d
---privileged=true
--v /Users/kx/workspace/docker/mysql/log:/var/log/mysql # MySQL日志
--v /Users/kx/workspace/docker/mysql/data:/var/lib/mysql # MySQL数据
--v /Users/kx/workspace/docker/mysql/conf:/etc/mysql/conf.d # mysql配置
---name=mysql01
+docker run -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 -d \
+--privileged=true \
+-v /Users/kx/workspace/docker/mysql/log:/var/log/mysql \ # MySQL日志
+-v /Users/kx/workspace/docker/mysql/data:/var/lib/mysql \ # MySQL数据
+-v /Users/kx/workspace/docker/mysql/conf:/etc/mysql/conf.d \ # mysql配置
+--name=mysql01 \
 mysql:5.7
 
 # 通过容器卷管理MySQL配置
@@ -372,11 +372,11 @@ appendonly yes
 - 启动容器
 
 ```shell
-docker run -p 6379:6379 -d --privileged=true
---name=redis01
--v /Users/kx/workspace/docker/redis/redis.conf:/etc/redis/redis.conf # 配置文件
--v /Users/kx/workspace/docker/redis/data:/data # 数据
-redis:6.0.8
+docker run -p 6379:6379 -d --privileged=true \
+--name=redis01 \
+-v /Users/kx/workspace/docker/redis/redis.conf:/etc/redis/redis.conf \ # 配置文件
+-v /Users/kx/workspace/docker/redis/data:/data \ # 数据
+redis:6.0.8 \
 redis-server /etc/redis/redis.conf # 启动redis服务按数据卷的配置启动
 ```
 
