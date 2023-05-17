@@ -110,5 +110,4 @@ services:
       - INFLUXDB_NAME=cadvisor
       - INFLUXDB_USER=root
       - INFLUXDB_PASS=root
-
 ```

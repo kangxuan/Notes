@@ -225,5 +225,3 @@ docker-compose stop
 ✔ Container mysql02    Stopped 
 ✔ Container redis02    Stopped
 ```
-
-
