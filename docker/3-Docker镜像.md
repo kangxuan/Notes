@@ -63,9 +63,8 @@ docker run -it 5d0da3dc9764 /bin/bash
 bash: vim: command not found
 
 # 安装vim
-# yum update 不要执行，会导致磁盘超限
-# [root@e2ddfa017373 /] yum update
-[root@e2ddfa017373 /] yum install vim
+# yum update
+yum install vim
 ```
 
 - 提交安装了vim的容器成为一个新的镜像
