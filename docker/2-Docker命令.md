@@ -408,3 +408,17 @@ docker -id -v ~/workspace:/www --name=mycentos2 centos:7
 
 # 这样在宿主机workspace下开发，就直接可以运行调试了。
 ```
+
+**查看容器日志**
+
+当容器异常时可查看容器日志协助排错
+
+```shell
+# docker logs 容器ID
+docker logs 7c8b72f51d19
+
+*** FATAL CONFIG FILE ERROR (Redis 7.0.0) ***
+Reading the configuration file, at line 504
+>>> 'dir /data/myredis'
+No such file or directory
+```
