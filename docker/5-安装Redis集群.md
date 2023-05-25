@@ -26,7 +26,7 @@
 
 - 哈希槽分区
   
-  - 算法：主要为了解决均匀分配问题，在数据和节点之间又加入了一层，把这层称为哈希槽（slot），用于管理数据和节点之间的关系，现在就相当于节点上放的是槽，槽里放的是数据。
+  - 算法：主要为了解决均匀分配问题，在数据和节点之间又加入了一层，把这层称为哈希槽（slot），用于管理数据和节点之间的关系。
     
     - 槽解决的是粒度问题，相当于把粒度变大了，这样便于数据移动。
     
@@ -328,7 +328,7 @@ c152935d5714   redis:6.0.8   "docker-entrypoint.s…"   13 hours ago    Up 13 ho
 6d58f9cffcb3   redis:6.0.8   "docker-entrypoint.s…"   13 hours ago    Up 13 hours               redis-node-4
 df82077db68f   redis:6.0.8   "docker-entrypoint.s…"   13 hours ago    Up 13 hours               redis-node-3
 85c5788b4d19   redis:6.0.8   "docker-entrypoint.s…"   13 hours ago    Up 13 hours               redis-node-2
-55feef5b54d2   redis:6.0.8   "docker-entrypoint.s…"   13 hours ago    Up 37 minutes             redis-node-1**将新的master加入到原集群**# 进入新的masterdocker exec -it redis-node-7 /bin/bash# 将新增的6387作为master节点加入集群redis-cli --cluster add-node
+55feef5b54d2   redis:6.0.8   "docker-entrypoint.s…"   13 hours ago    Up 37 minutes             redis-node-1
 ```
 
 **将新的master节点加入到集群**
