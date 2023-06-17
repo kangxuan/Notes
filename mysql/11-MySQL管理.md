@@ -58,6 +58,8 @@ mysql: [Warning] Using a password on the command line interface can be insecure.
 # -s, --short-form 显示简单格式，省略掉一些信息
 # --start-datatime=date1 --stop-datetime=date2 指定日期间隔内的所有日志
 # --start-position=pos1 --stop-position=pos2 指定位置间隔内的所有日志
+# -v 将行事件(数据变更)重构为SQL语句 
+# -vv 将行事件(数据变更)重构为SQL语句，并输出注释信息
 
 # 以简单格式查看binlog日志
 mysqlbinlog -s binlog.000009
@@ -92,7 +94,4 @@ mysqldump -uroot -p123456 -T /var/lib/mysql-files/ db01 score
 mysqlimport -uroot -p123456 test /tmp/city.txt
 
 # 还可以使用source，在mysql中执行
-
 ```
-
-

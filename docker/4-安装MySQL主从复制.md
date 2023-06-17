@@ -132,8 +132,11 @@ mysql> change master to master_host='192.168.31.170', master_user='slave', maste
 # master_log_pos：指定从数据库从哪个位置开始复制数据，通过查看主数据的状态，获取Position参数
 # master_connect_retry：连接失败重试的时间间隔，单位为秒。
 
+# 开启同步
+mysql> start slave;
+
 # 查看主从同步状态 Slave_IO_Running 和 Slave_SQL_Running 等于No属于未开启
-mysql> exitshow slave status \G;
+mysql> show slave status \G;
 
 *************************** 1. row ***************************
                Slave_IO_State:
@@ -197,7 +200,7 @@ Master_SSL_Verify_Server_Cert: No
 # 开启主从同步
 mysql> start slave;
 # 如果 Slave_IO_Running和Slave_SQL_Running等于Yes则已经开启
-mysql> exitshow slave status \G;
+mysql> show slave status \G;
 ```
 
 **测试主从同步**
