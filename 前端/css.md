@@ -419,4 +419,485 @@ div>p:nth-of-type(3) {
 }
 ```
 
+*否定伪类*
 
+否定伪类是用来选中元素但要排除一些条件
+
+- 语法
+  
+  - `:not(选择器)`排除满足括号中条件的元素
+
+```css
+/* 选中的是div的儿子p元素，但是排除类名为fail的元素 */
+div>p:not(.fail) {
+    color: red;
+}
+
+/* 选中div的儿子元素，但是排除属性是title且属性值以“你要加油啊”开头 */
+div>p:not([title^="你要加油啊"]) {
+    color: green;
+}
+
+/* 选中的是div的儿子p元素，但排除第一个儿子p元素 */
+div>p:not(:first-child) {
+    color: red;
+}
+```
+
+*UI伪类*
+
+- 语法
+  
+  - `:checked`被选中的复选框或单选按钮
+  
+  - `:enable`可用的表单元素（没有disabled属性）
+  
+  - `:disabled`不可用的表单元素（有disabled属性）
+
+```css
+input:checked {
+    width: 100px;
+    height: 100px;
+}
+input:disabled {
+    background-color: gray;
+}
+input:enabled {
+    background-color: green;
+    color: yellow;
+}
+```
+
+*目标伪类*
+
+- 语法
+  
+  - `:target`选中锚点指向的元素
+
+```css
+div {
+    color: yellow;
+    background-color: yellowgreen;
+}
+div:target {
+    background-color: brown;
+}
+```
+
+*语言伪类*
+
+- 语法
+  
+  - `:lang()`根据指定的语言选择元素（本质是看 lang 属性的值）
+
+```css
+div:lang(en) {
+    color: red;
+}
+:lang(zh-CN) {
+    color: green;
+}
+```
+
+**伪元素选择器**
+
+伪元素并不是元素，而是元素中的一些特殊位置
+
+- 语法
+  
+  - `::first-letter`选中元素中的第一个文字
+  
+  - `::first-line`选中元素中的第一行文字
+  
+  - `::selection`选中被鼠标选中的内容
+  
+  - `::placeholder`选中输入框的提示文字
+  
+  - `::before`在元素最开始的位置，创建一个子元素
+  
+  - `::after`在元素最后的位置，创建一个子元素
+
+```css
+/* 选中元素中的第一个文字 */
+div::first-letter {
+    color: red;
+    font-size: 30px;
+}
+/* 选中元素中的第一行 */
+div::first-line {
+    background-color: yellowgreen;
+}
+/* 选中元素中被选择的内容 */
+p::selection {
+    background-color: yellow;
+}
+/* 选中输入框中的提示文字 */
+input::placeholder {
+    color: aqua;
+}
+/* 选中的是p元素最开始的位置，随后创建一个子元素 */
+p::before {
+    content: "￥";
+}
+/* 选中的是p元素最后的位置，随后创建一个子元素 */
+p::after {
+    content: ".00";
+}
+```
+
+# 选择器优先级
+
+通过不同的选择器，选中相同的元素，并且为相同的样式名设置不同值时，会存在样式冲突，此时就需要优先级来决胜出采用谁的样式
+
+**简单规则**
+
+行内 > ID选择器 > 类选择器 > 元素选择器 > 通配选择器
+
+**具体规则**
+
+根据权重比较，每个选择器都可以计算出一组权重，格式为(a, b, c)，其中：
+
+- a表示ID选择器的个数
+
+- b表示类、伪类、属性选择器的个数
+
+- c表示元素、伪元素选择器的个数
+
+比较规则是从左往右比较，最大则胜出不用继续比较，如果最终一样则按照”后来居上“规则覆盖。但有两个特例，行内样式大于所有选择器，`!important`大于行内。
+
+![选择器优先级](./images/选择器优先级.png)
+
+# CSS三大特性
+
+**层叠性**
+
+如果发生了样式冲突，那就会根据一定的规则（选择器优先级），进行样式的层叠（覆盖）。
+
+**继承性**
+
+元素会自动拥有其父元素、或其祖先元素上所设置的某些样式，优先继承离得近的。
+
+- 常见的可继承属性
+  
+  - `text??`
+  
+  - `font??`
+  
+  - `line??`
+  
+  - `color`
+  
+  - ...
+
+**优先级**
+
+也就是出现了样式冲突如何选择的问题
+
+# CSS常用属性
+
+**像素是什么**
+
+显示器中的一个个小点，就是像素点，像素点越小越清晰。
+
+**能使用的长度单位**
+
+`cm`、`mm`、`px`等等
+
+```css
+.at1 {
+    width: 10cm;
+    height: 10cm;
+    background-color: green;
+}
+.at2 {
+    width: 10mm;
+    height: 10mm;
+    background-color: gray;
+}
+.at3 {
+    width: 10px;
+    height: 10px;
+    background-color: red;
+}
+```
+
+**颜色的集中表达方式**
+
+- 颜色名，通过颜色名表达，比如`red`、`yellow`、`green`。
+  
+  - 具体多少参考[官网颜色名表](https://developer.mozilla.org/en-US/docs/Web/CSS/named-color)
+
+```css
+div {
+    background-color: green;
+}
+```
+
+- rgb/rgba
+  
+  - 使用红、绿、蓝三原色组合，其中r对应红色、g对应绿、b对应蓝，a表示透明度。
+  
+  - 规律
+    
+    - 若三种颜色值相同，呈现的是灰色，值越大，灰色越浅
+    
+    - 对于 rbga 来说，前三位的 rgb 形式要保持一致，要么都是 0~255 的数字，要么都是百分比
+
+```css
+div {
+    background-color: rgb(255, 0, 0);
+}
+
+/* 常用的颜色 */
+/*  红 */
+rgb(255, 0, 0)
+/*  绿 */
+rgb(0, 255, 0);
+/*  蓝 */
+rgb(0, 0, 255);
+/* 黑 */
+rgb(0, 0, 0);
+/* 白 */
+rgb(255, 255, 255);
+/* 紫罗兰 */
+rgb(138, 43, 226)
+/* 灰色，数值一样表示灰色，值越大灰色越浅 */
+rgb(100, 100, 100)
+```
+
+- HEX/HEXA
+  
+  - 和rgb类似，通过红、绿、蓝的16进制表达
+
+```css
+div {
+    background-color: #00ff00;
+}
+
+/* 常用的颜色 */
+/* 红色 */
+#ff0000;
+/* 绿色 */ 
+#00ff00;
+/* 蓝色 */
+#0000ff;
+/* 黑色 */
+#000000; 
+/* 白色 */
+#ffffff; 
+/* 如果每种颜色的两位都是相同的，就可以简写*/
+#ff9988;/* 可简为：#f98 */
+/* 但要注意前三位简写了，那么透明度就也要简写 */
+#ff998866;/* 可简为：#f986 */
+```
+
+- HSL/HSLA
+  
+  - HSL 是通过：色相、饱和度、亮度，来表示一个颜色的，格式为： hsl(色相,饱和度,亮度)
+
+**CSS字体属性**
+
+- 字体大小
+  
+  - `font-size`
+  
+  - 注意
+    
+    - Chrome默认最小字体大小为12px，默认字体大小为16px，0px会自动消失。
+    
+    - 不同浏览器的默认字体大小不一样，故使用明确的字体大小。
+    
+    - 通常给body设置字体大小，方便继承。
+
+- 字体族
+  
+  - `font-family`
+  
+  - 注意
+    
+    - 使用字体的英文名字兼容性会更好，具体的英文名可以自行查询，或在电脑的设置里去寻找。
+    
+    - 如果字体名包含空格，必须使用引号包裹起来。
+    
+    - 可以设置多个字体，按照从左到右的顺序逐个查找，找到就用，没有找到就使用后面的，且通常在最后写上 serif （衬线字体）或 sans-serif （非衬线字体）。
+
+- 字体风格
+  
+  - `font-style`
+  
+  - 选项
+    
+    - `normal`默认值正常
+    
+    - `italic`斜体（默认使用字体的斜体，如果字体没有斜体，则将字体直接倾斜）
+    
+    - `oblique`斜体（直接将字体倾斜）
+
+- 字体粗细
+  
+  - `font-weight`
+  
+  - 选项
+    
+    - `normal`正常默认
+    
+    - `lighter`细
+    
+    - `bold`粗
+    
+    - `bolder`更粗（如果字体有设计会有，如果未设计则是bold的样式）
+    
+    - 数字，范围100-1000
+
+- 复合写法
+  
+  - `font`
+  
+  - 规则
+    
+    - 字体大小、字体族必须都写上且字体大小在倒数第二位，字体族在倒数第一位，并用空格隔开
+
+```css
+* {
+    font-size: 16px;
+}
+p {
+    font-size: 20px;
+    font-family: "Microsoft YaHei",sans-serif;
+    font-style: oblique;
+    font-weight: normal;
+}
+/* 复合写法 */
+p {
+    font: lighter normal 20px "Microsoft YaHei",sans-serif;
+}
+```
+
+**CSS文本属性**
+
+- 文本颜色
+  
+  - `color`
+
+- 文本间距
+  
+  - `letter-spacing`字母间距
+  
+  - `word-spacing`单词间距
+
+- 文本修饰
+  
+  - `text-decoration`
+  
+  - 选项
+    
+    - `none`默认无装饰
+    
+    - `underline`下划线
+    
+    - `overline`上划线
+    
+    - `line-through`删除线
+  
+  - 搭配使用
+    
+    - `dotted`虚线
+    
+    - `wavy`波浪线
+    
+    - 颜色
+
+- 文本缩进
+  
+  - `text-indent`
+  
+  - 单位
+    
+    - px按像素
+    
+    - em按
+
+- 文本水平对齐
+  
+  - `text-align`
+  
+  - 选项
+    
+    - `left`默认左对齐
+    
+    - `right`右对齐
+    
+    - `center`居中对齐
+
+- 行高
+  
+  - `line-height`
+  
+  - 选项
+    
+    - `normal`由浏览器根据文字大小决定
+    
+    - px，用户自行设置一个像素
+    
+    - 倍数，`font-size`的倍数，比如2，font-size为16px，那么行高则未32px
+    
+    - 百分比，`font-size`的百分比
+  
+  - 注意
+    
+    - `line-height`设置过小字体会压缩重叠，且最小值是0，不能小于0
+    
+    - `line-height`可以被继承，常用倍数方式比较方便
+    
+    - `line-height`和`height`的关系
+      
+      - 设置了`height`，那么高度就是`height`
+      
+      - 只设置了`line-height`，会根据`line-height`计算，高=行高×行数
+  
+  - 运用场景
+    
+    - 控制行与行之间的距离
+    
+    - `height`和`line-height`相等时，文本会垂直居中
+
+- 文本垂直对齐
+  
+  - 文本垂直对齐没有专门的属性名
+  
+  - 顶部
+    
+    - 默认顶部对齐
+  
+  - 居中
+    
+    - `height`等于`line-height`
+  
+  - 底部
+    
+    - `line-height` = (`height` × 2 ) - `font-size` - `x`，x根据具体字体做调整。
+
+- vertical-align
+  
+  - 用于指定同一行元素之间，或 表格单元格 内文字的 垂直对齐方式。
+  
+  - 选项
+    
+    - `baseline`使元素的基线与父元素的基线对齐（默认）
+    
+    - `top`使元素的顶部与其所在行的顶部对齐
+    
+    - `middle`使元素的中部与父元素的基线加上父元素字母 x 的一半对齐
+    
+    - `bottom`使元素的底部与其所在行的底部对齐
+
+```css
+/* 文本颜色，上线的例子有示例 */
+/* 文本间距 */
+.at2 {
+            letter-spacing: 20px;
+        }
+        .at3 {
+            word-spacing: 20px;
+        }
+```
