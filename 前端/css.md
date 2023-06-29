@@ -895,9 +895,346 @@ p {
 /* 文本颜色，上线的例子有示例 */
 /* 文本间距 */
 .at2 {
-            letter-spacing: 20px;
-        }
-        .at3 {
-            word-spacing: 20px;
-        }
+    letter-spacing: 20px;
+}
+.at3 {
+    word-spacing: 20px;
+}
+/* 文本修饰 */
+.at1 {
+    /* 上划的红色虚线 */
+    text-decoration: overline dotted red;
+}
+.at2 {
+    /* 下划的绿色波浪线 */
+    text-decoration: underline wavy green;
+}
+.at3 {
+    /* 删除线 */
+    text-decoration: line-through;
+}
+.at4 {
+    /* 没有各种线 */
+    text-decoration: none;
+}
+/* 文本缩进 */
+div {
+    font-size: 20px;
+    text-indent: 2em;
+}
+/* 文本水平对齐 */
+div {
+    font-size: 30px;
+    background-color: green;
+    /* 文本水平对齐 */
+    text-align: center;
+}
+/* 行高 */
+#d1 {
+    font-size: 30px;
+    background-color: skyblue;
+    /* 第一种写法：像素 */
+    line-height: 30px;
+    /* 第二种写法：值为normal */
+    line-height: normal;
+    /* 第三种写法：倍数，fontsize的倍数 */
+    line-height: 1.5;
+    /* 第四种写法：百分比 */
+    line-height: 200%;
+}
+/* 文本垂直对齐 */
+div {
+      font-size: 40px;
+      height: 400px;
+      background-color: skyblue;
+      /* 垂直居中 */
+      /* line-height: 400px; */
+      /* 底部 height*2 - fontsize - x */
+      line-height: 745px;
+}
+/* 同一行元素之间对齐 */
+span {
+    font-size: 40px;
+    background-color: orange;
+    vertical-align: middle;
+}
+img {
+    height: 30px;
+    vertical-align: top;
+}
+.san {
+    vertical-align: bottom;
+}
+```
+
+**CSS列表属性**
+
+只作用于`ul`、`ol`、`li`的属性。
+
+- 设置列表符号样式
+  
+  - `list-style-type`
+  
+  - 选项值
+    
+    - `none`不显示前面的标识（很常用！）
+    
+    - `square`实心方块
+    
+    - `disc`圆形
+    
+    - `decimal`数字
+    
+    - `lower-roman`小写罗马字
+    
+    - `upper-roman`大写罗马字
+    
+    - `lower-alpha`小写字母
+    
+    - `upper-alpha`大写罗马字
+
+- 设置列表符号的位置
+  
+  - `list-style-position`
+  
+  - 选项值
+    
+    - `inside`在`li`里面
+    
+    - `outside`在`li`外边
+
+- 自定义列表符号
+  
+  - `list-style-image`
+    
+    - `url(图片地址)`
+
+- 复合属性
+  
+  - `list-style`
+  
+  - 没有顺序要求
+
+```css
+ul {
+    /* list-style-type: none; */
+    /* list-style-position: inside; */
+    /* list-style-image: url(../images/video.gif); */
+    list-style: none inside url(../images/video.gif);
+}
+```
+
+**CSS表格属性**
+
+- 边框宽度
+  
+  - `border-width`
+  
+  - 非表格独有
+
+- 边框颜色
+  
+  - `border-color`
+  
+  - 非表格独有
+
+- 边框风格
+  
+  - `border-style`
+  
+  - 非表格独有
+  
+  - 选项值
+    
+    - `none`默认值
+    
+    - `solid`实线
+    
+    - `dashed`虚线
+    
+    - `dotted`点线
+    
+    - `double`双实线
+
+- 复合
+  
+  - `border`
+
+- 设置列宽度
+  
+  - `table-layout`
+  
+  - table标签独有
+  
+  - 选项值
+    
+    - `auto`自动适应
+    
+    - `fixed`固定列宽，平分
+
+- 单元格间距
+  
+  - `border-spacing`
+  
+  - table标签独有
+
+- 合并单元格边框
+  
+  - `border-collapse`
+  
+  - table标签独有
+  
+  - 选项值
+    
+    - `collapse`合并
+    
+    - `separate`不合并
+
+- 隐藏没有内容的单元格
+  
+  - `empty-cells`
+  
+  - table标签独有
+  
+  - 选项值
+    
+    - `show`显示（默认值）
+    
+    - `hide`隐藏
+
+- 设置表格标题位置
+  
+  - `caption-side`
+  
+  - 选项值
+    
+    - `top`上面（默认值）
+    
+    - `bottom`下面
+
+```css
+table {
+    /* 设置表宽为500px */
+    width: 500px;
+    /* 表格外边框为2px */
+    border-width: 2px;
+    /* 表格外边框颜色为green */
+    border-color: green;
+    /* 表格外边框为实线 */
+    border-style: solid;
+    /* 控制表格的列宽 */
+    table-layout: fixed;
+    /* 控制单元格间距 */
+    border-spacing: 0px;
+    /* 合并相邻的单元格的边框 */
+    border-collapse: collapse;
+    /* 隐藏没有内容的单元格 */
+    empty-cells: hide;
+    /* 设置表格标题的位置 */
+    caption-side: top;
+}
+td,th {
+    /* 设置每个单元格的边框为2px，天蓝色、实线 */
+    border: 2px skyblue solid;
+}
+/* 不止table其他标签也可以设置 */
+h2 {
+    border:3px red solid;
+}
+span {
+    border:3px purple dashed;
+}
+```
+
+**CSS背景属性**
+
+- 设置背景颜色
+  
+  - `background-color`
+  
+  - 默认值是`transparent`，透明
+
+- 设置背景图片
+  
+  - `background-image`
+  
+  - `url(图片的地址)`
+
+- 设置背景重复方式
+  
+  - `background-repeat`
+  
+  - 选项值
+    
+    - `repeat`重复，默认值
+    
+    - `repeat-x`水平重复
+    
+    - `repeat-y`垂直重复
+    
+    - `no-repeat`不重复
+
+- 设置背景图位置
+  
+  - `background-position`
+  
+  - 选项值
+    
+    - 关键字设置
+      
+      - 水平：`left`、`center`、`right`
+      
+      - 垂直：`top`、`center`、`bottom`
+      
+      - 如果只写一个值，另一个方向的值取`center`
+    
+    - 通过长度设置坐标位置（针对的是左上的点）
+      
+      - 两个值，分别是 x 坐标和 y 坐标
+      
+      - 只写一个值，会被当做 x 坐标， y 坐标取`center`
+
+- 复合属性
+  
+  - `background`
+
+```css
+div {
+      width: 300px;
+      height: 300px;
+      border: 2px green solid;
+      background-color: skyblue;
+      background-image: url(../images/悟空.jpg);
+      background-repeat: no-repeat;
+      /* background-position: center center; */
+      background-position: 100px 100px;
+      /* 复合属性 */
+      background: skyblue url(../images/悟空.jpg) no-repeat 100px 100px;
+}
+```
+
+**CSS鼠标属性**
+
+- 设置鼠标光标的样式
+  
+  - `cursor`
+  
+  - 选项值
+    
+    - `pointer`小手
+    
+    - `move`移动图标
+    
+    - `text`文字选择器
+    
+    - `crosshair`十字架
+    
+    - `wait`等待
+    
+    - `help`帮助
+    
+    - `url("./arrow.png"),pointer`自定义小图标
+
+```css
+
 ```
