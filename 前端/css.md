@@ -1236,5 +1236,803 @@ div {
     - `url("./arrow.png"),pointer`自定义小图标
 
 ```css
-
+div {
+    width: 300px;
+    height: 300px;
+    border-style: solid;
+    background-color: skyblue;
+    cursor: url("../images/arrow.png"),pointer;
+}
+button {
+    cursor: pointer;
+}
+input {
+    cursor: move;
+}
 ```
+
+# CSS盒子模型
+
+**长度单位**
+
+- `px`，像素
+
+- `em`，相对元素`font-size`的倍数
+
+- `rem`，相对于根字体大小的倍数，`html`就是根标签，如果没有设置就是浏览器默认的字体大小
+
+- `%`，相对于父元素的百分比
+
+- `cm`，厘米
+
+- `mm`，毫米
+
+**元素的显示模式**
+
+- 块元素
+  
+  - 特点
+    
+    - 在页面中独占一行，不会和任何元素共享一行，是从上 到下排列
+    
+    - 默认宽度，撑满整个父元素
+    
+    - 默认高度，由内容撑开
+    
+    - 可以设置宽高
+
+- 行内元素
+  
+  - 特点
+    
+    - 在页面中不独占一行，一行中不能容纳下所有的行内元素，会在下一行从左往右排列
+    
+    - 默认宽度，由内容撑开
+    
+    - 默认高度，由内容撑开
+    
+    - 不可以设置宽高
+
+- 行内块元素
+  
+  - 特点
+    
+    - 在页面中不独占一行，一行中不能容纳下所有的行内元素，会在下一行从左往右排列
+    
+    - 默认宽度，由内容撑开
+    
+    - 默认高度，由内容撑开
+    
+    - 可以设置宽高
+
+**显示模式分类**
+
+- 块元素
+  
+  - 主体结构标签： `<html>` 、`<body>`
+  
+  - 排版标签：` <h1>` ~ `<h6>` 、 `<hr>` 、 `<p>` 、 `<pre>` 、 `<div>`
+  
+  - 列表标签： `<ul>` 、 `<ol>` 、 `<li>` 、 `<dl>` 、 `<dt>` 、 `<dd>`
+  
+  - 表格相关标签：`<table>` 、 `<tbody>` 、 `<thead>` 、 `<tfoot>` 、 `<tr>` 、`<caption>`
+  
+  - `<form>`、`<option>`
+
+- 行内元素
+  
+  - 文本标签： `<br>` 、 `<em>` 、 `<strong>` 、 `<sup>` 、 `<sub>` 、 `<del>` 、 `<ins>`
+  
+  - `<a>`、`<label>`
+
+- 行内块元素
+  
+  - 图片：`<img>`
+  
+  - 单元格： `<td>`、 `<th>`
+  
+  - 表单控件： `<input>` 、 `<textarea>` 、 `<select>` 、 `<button>`
+  
+  - 框架标签： `<iframe>`
+
+**修改元素的显示模式**
+
+- `display`
+  
+  - 选项值
+    
+    - `none`，元素会被隐藏，消失
+    
+    - `block`，元素将作为块级元素显示
+    
+    - `inline`，元素将作为行内元素显示
+    
+    - `inline-block`，元素将作为行内块元素显示
+
+```css
+div {
+    width: 200px;
+    height: 200px;
+    font-size: 20px;
+    /* 将原本的块级元素变成行内块元素 */
+    display: inline-block;
+}
+#d1 {
+    background-color: skyblue;
+}
+#d2 {
+    background-color: orange;
+}
+#d3 {
+    background-color: green;
+}
+a {
+    width: 200px;
+    height: 200px;
+    font-size: 20px;
+    /* 将原本的行内元素变成块元素 */
+    display: block;
+}
+#s1 {
+    background-color: skyblue;
+}
+#s2 {
+    background-color: orange;
+}
+#s3 {
+    background-color: green;
+}
+```
+
+**盒子模型的定义**
+
+CSS会把所有的HTML元素看成一个盒子，所有样式都是基于盒子
+
+- `margin`外边距，盒子与外界的间距
+
+- `border`边框，盒子的边框
+
+- `padding`内边距，紧贴内容的补白区域
+
+- `content`内容，元素中的文本或后代元素都是它的内容
+
+![盒子模型](./images/盒子模型.png)
+
+*盒子大小 = content + 左右padding + 左右border*
+
+**盒子内容区**
+
+- 设置内容区域宽度
+  
+  - `width`
+
+- 设置内容区域的最大宽度
+  
+  - `max-width`
+
+- 设置内容区域的最小宽度
+  
+  - `min-width`
+
+- 设置内容区域的高度
+  
+  - `height`
+
+- 设置内容区域的最大高度
+  
+  - `max-height`
+
+- 设置内容区域的最小高度
+  
+  - `min-height`
+
+```css
+div {
+    width: 800px;
+    /* min-width: 600px; */
+    /* max-width: 1000px; */
+
+    height: 200px;
+    /* min-height: 50px; */
+    /* max-height: 400px; */
+    background-color: skyblue;
+}
+```
+
+**默认宽度**
+
+默认宽度是元素在没有设置width属性时，元素呈现出来的宽度
+
+总默认宽度 = 父的 content — 自身的左右 margin 。
+
+内容区的默认宽度 = 父的 content — 自身的左右 margin — 自身的左右 border — 自身的左右padding 。
+
+**盒子内边距**
+
+- 左内边距
+  
+  - `padding-left`
+
+- 上内边距
+  
+  - `padding-top`
+
+- 右内边距
+  
+  - `padding-right`
+
+- 下内边距
+  
+  - `padding-bottom`
+
+- 复合属性
+  
+  - `padding`
+
+- 注意点
+  
+  - padding的数值不能为负数
+  
+  - 行内元素设置左右内边距没问题，但设置上下内边距有问题会将上下元素遮挡
+  
+  - 块元素和行内块元素设置内边距没有问题
+
+```css
+/* 块元素设置padding */
+#d1 {
+    width: 300px;
+    height: 300px;
+    background-color: skyblue;
+    /* 左内边距 */
+    padding-left: 20px;
+    /* 上内边距 */
+    padding-top: 30px;
+    /* 右内边距 */
+    padding-right: 40px;
+    /* 下内边距 */
+    padding-bottom: 50px;
+    /* 复合属性一个值：所有 */
+    padding: 20px;
+    /* 复合属性两个值：上下 左右 */
+    padding: 20px 40px;
+    /* 复合属性三个值：上 左右 下 */
+    padding: 20px 30px 40px;
+    /* 复合属性四个值：上 右 下 左 */
+    padding: 20px 30px 40px 50px;
+}
+
+/* 行内元素设置padding */
+span {
+    background-color: yellowgreen;
+    font-size: 20px;
+    /* 左内间距生效 */
+    padding-left: 20px;
+    /* 右内间距生效 */
+    padding-right: 20px;
+    /* 上内间距生效，但会遮挡上面的元素，不完美 */
+    padding-top: 30px;
+    /* 下内间距生效，但会遮挡下面的元素，不完美 */
+    padding-bottom: 30px;
+}
+```
+
+**盒子边框**
+
+- 边框线风格
+  
+  - `border-style`
+  
+  - 选项值
+    
+    - `none`默认值，无
+    
+    - `solid`实线
+    
+    - `dashed`虚线
+    
+    - `dotted`点线
+    
+    - `double`双实线
+    
+    - ....
+
+- 边框线宽度
+  
+  - `border-width`
+
+- 边框线颜色
+  
+  - `border-color`
+
+- 复合属性
+  
+  - `border`
+
+- 组合一共有20个
+
+```css
+div {
+      width: 300px;
+      height: 300px;
+      background-color: aqua;
+
+      border-left-width: 20px;
+      border-top-width: 30px;
+      border-right-width: 40px;
+      border-bottom-width: 50px;
+
+      border-left-color: red;
+      border-top-color: green;
+      border-right-color: yellow;
+      border-bottom-color: blue;
+
+      border-left-style: solid;
+      border-top-style: dashed;
+      border-right-style: double;
+      border-bottom-style: dotted;
+
+      /* border-color: red; */
+      /* border-width: 80px; */
+      /* border-style: dashed; */
+
+      border-left: 50px solid purple;
+      border-right: 60px dashed orange;
+      border-top: 70px double green;
+      border-bottom: 80px dotted gray;
+
+      /* border: 10px solid red; */
+}
+```
+
+**盒子外边距**
+
+- `margin`
+
+```css
+div {
+      width: 300px;
+      height: 300px;
+      background-color: skyblue;
+
+      /* 左外边距 */
+      margin-left: 30px;
+      /* 上外边距 */
+      margin-top: 40px;
+      /* 右外边距 */
+      margin-right: 50px;
+      /* 下外边距 */
+      margin-bottom: 40px;
+
+      /* 所有 */
+      margin: 50px;
+      /* 上下 左右 */
+      margin: 10px 20px;
+      /* 上 左右 下 */
+      margin: 10px 20px 30px;
+      /* 上 右 下 左 */
+      margin: 10px 20px 30px 40px;
+}
+```
+
+- 外边距的注意事项
+  
+  - 子元素的margin是参考父元素的content计算的。
+  
+  - 上margin/左margin会让自己动，下margin/右margin会让后面的兄弟元素动。
+  
+  - 块元素、行内块元素设置margin上下左右都没问题，但行内元素设置左右margin没问题，但上下margin会失效。
+  
+  - margin值可以设置auto，对一个块级元素设置左右margin为auto会让其居中，但行内元素和行内块元素都不行。
+  
+  - margin值可以为负值，如果是负值时会被隐藏。
+
+- margin的几个问题
+  
+  - margin坍塌问题
+    
+    - 描述：第一个元素的上margin会作用于父元素上，最后一个元素的下margin会作用于父元素上。
+    
+    - 如何解决
+      
+      - 给父元素设置 css 样式 overflow:hidden
+      
+      - 给父元素设置一个不为0的边框
+      
+      - 给父元素设置不为0的padding
+  
+  ```html
+  <!DOCTYPE html>
+  <html lang="zh-CN">
+  <head>
+      <meta charset="UTF-8">
+      <title>margin坍塌问题</title>
+      <style>
+          .outer {
+              width: 500px;
+              /* height: 500px; */
+              background-color: skyblue;
+              overflow: hidden;
+          }
+          .inner1 {
+              width: 100px;
+              height: 100px;
+              background-color: chocolate;
+              margin-top: 50px;
+          }
+          .inner2 {
+              width: 100px;
+              height: 100px;
+              background-color: green;
+              margin-bottom: 50px;
+          }
+      </style>
+  </head>
+  <body>
+      <div class="outer">
+          <div class="inner1">inner1</div>
+          <div class="inner2">inner2</div>
+      </div>
+      <div>我是一段测试的文字</div>
+  </body>
+  </html>
+  ```
+  
+  - margin合并问题
+    
+    - 描述：上面兄弟元素的下外边距和下面兄弟元素的上外边距会合并，取一个最大的值，而不是相加。
+    
+    - 如何解决
+      
+      - 不用解决，如果要设置你要的距离，那么只需要设置最大的值为你的距离。
+  
+  ```html
+  <!DOCTYPE html>
+  <html lang="zh-CN">
+  <head>
+      <meta charset="UTF-8">
+      <title>margin合并问题</title>
+      <style>
+          #d1 {
+              width: 100px;
+              height: 100px;
+              background-color: blue;
+              /* margin-bottom: 100px; */
+              /* 要设置间距为200px，那么只需要将其中一个的外边距设置为200px */
+              margin-bottom: 200px;
+          }
+          #d2 {
+              width: 100px;
+              height: 100px;
+              background-color: black;
+              margin-top: 100px;
+          }
+      </style>
+  </head>
+  <body>
+      <div id="d1"></div>
+      <div id="d2"></div>
+  </body>
+  </html>
+  ```
+
+**内容溢出**
+
+- 溢出内容的处理方式
+  
+  - `overflow`
+  
+  - 选项值
+    
+    - `visible`显示，默认值
+    
+    - `hidden`隐藏
+    
+    - `scroll`显示滚动条，如果内容是否溢出
+    
+    - `auto`自动显示滚动条，溢出了就会显示滚动条
+
+- 水平方向溢出内容的处理方式
+  
+  - `overflow-x`
+
+- 垂直方向溢出内容的处理方式
+  
+  - `overflow-y`
+
+```css
+div {
+      width: 300px;
+      height: 300px;
+      background-color: skyblue;
+      /* 溢出隐藏 */
+      overflow: hidden;
+      /* 自动溢出滚动条 */
+      /* overflow: auto; */
+      /* 直接滚动条 */
+      /* overflow: scroll; */
+}
+```
+
+**元素隐藏方式**
+
+- 方式一
+  
+  - `visibility`属性
+    
+    - `show`显示
+    
+    - `hidden`隐藏，通过这样设置隐藏，元素看不见但还占有原来的位置
+
+- 方式二
+  
+  - `display`属性
+    
+    - `none`隐藏，通过这样设置隐藏，不但看不见，也不占用任何位置，没有大小宽高。
+
+```css
+.box {
+    width: 100px;
+    height: 100px;
+    background-color: skyblue;
+}
+
+.box2 {
+    /* 隐藏了还会占位 */
+    visibility: hidden;
+}
+.box1 {
+    /* 隐藏了但不会占位 */
+    display: none;
+}
+```
+
+**样式继承**
+
+有些样式会继承，元素如果本身设置了某个样式，就使用本身设置的样式；但如果本身没有设置某个样式，会从父元素开始一级一级继承（优先继承离得近的祖先元素）。
+
+- 会被继承的样式
+  
+  - 字体属性
+  
+  - 文本属性（除了vertical-align）
+  
+  - 颜色
+  
+  - ...不会影响布局的样式
+
+- 不会被继承的样式
+  
+  - 边框
+  
+  - 背景
+  
+  - 内边距
+  
+  - 外边距
+  
+  - 宽高
+  
+  - 溢出方式
+  
+  - ...会影响布局的样式，和盒子模型相关的属性
+
+**默认样式**
+
+元素一般都些默认的样式，比如说`<a>`标签的默认样式是下划线、字体颜色、鼠标小手，这些默认样式是浏览器给标签添加的CSS样式，所以默认样式优先级大于继承的样式。
+
+**布局小技巧**
+
+- 让子元素水平居中
+  
+  - 子元素是块元素
+    
+    - `margin: 0 auto;`
+  
+  - 子元素是行内或行内块元素
+    
+    - `text-align: center;`
+
+- 让子元素垂直居中
+  
+  - 子元素是块元素
+    
+    - 子元素的margin-top = 父元素的height ÷ 2 - 子元素的height ÷ 2
+  
+  - 子元素是行内或行内块元素
+    
+    - 子元素的line-height = 父元素的height，且每个元素的vertical-align: middle
+    
+    - 如果想绝对的垂直居中，设置父元素的font-size:0，子元素的font-size单独设置
+
+- 行内元素、行内块元素都可以被当做文本处理
+  
+  - `text-align`、`line-height`、`text-indent`等这些属性都生效
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>布局技巧1</title>
+    <style>
+        /* 子元素是块元素的居中 */
+        .outer {
+            width: 400px;
+            height: 400px;
+            background-color: gray;
+            overflow: hidden;
+        }
+        .inner {
+            width: 200px;
+            height: 100px;
+            background-color: orange;
+            /* 让子块元素在父元素中水平居中 */
+            margin: 0 auto;
+            /* 子块元素垂直居中 上外边距 = (父元素的height - 子元素的height) / 2 */
+            margin-top: 150px;
+            /* 子元素中的文字水平居中 */
+            text-align: center;
+            /* 子元素中的文字垂直居中 */
+            line-height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <div class="inner">inner</div>
+    </div>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>布局技巧2</title>
+    <style>
+        /* 子元素是行内元素或行内块元素的居中 */
+        .outer {
+            width: 400px;
+            height: 400px;
+            background-color: gray;
+            /* 针对行内元素、行内块元素可以使用文本相关属性让其对齐 */
+            text-align: center;
+            line-height: 400px;
+        }
+
+        .inner {
+            background-color: orange;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <span class="inner">布局技巧2？</span>
+    </div>
+</body>
+</html>
+```
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>布局技巧3</title>
+    <style>
+        /* 多个子元素是行内或行内块的居中 */
+        .outer {
+            width: 400px;
+            height: 400px;
+            background-color: gray;
+            /* 通过文本居中的方式让行内和行内块居中 */
+            text-align: center;
+            line-height: 400px;
+            /* 将父元素的font-size设置为0是为了让span和图片之间空隙变成0 */
+            font-size: 0;
+        }
+        .outer span {
+            background-color: orange;
+            font-size: 20px;
+            /* 绝对居中要使用该属性 */
+            vertical-align: middle;
+        }
+        .outer img {
+            /* 绝对居中要使用该属性 */
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <span>出来玩啊？x</span>
+        <img src="../images/悟空.jpg" alt="">
+    </div>
+</body>
+</html>
+```
+
+**元素之间的空白问题**
+
+行内元素、行内块元素，彼此之间的换行会被浏览器解析为一个空白字符。
+
+- 解决方案
+  
+  - 去掉换行，不推荐。
+  
+  - 设置父元素的`font-size:0`，子元素的字体大小单独控制，推荐。
+
+**行内块的幽灵空白问题**
+
+因为行内块也是基线对齐，所以图片不会和行最底部对齐，而是和基线对齐（x的最下）。
+
+解决方案
+
+- 设置行内块元素的`vertical-align`不为默认的`baseline`，设置为 `middel` 、 `bottom` 、`top` 均可。
+
+- 设置父元素的`font-size:0`，对于其他子元素`font-size`重新设置。
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>行内块幽灵空白问题</title>
+    <style>
+        div {
+            width: 600px;
+            background-color: skyblue;
+            /* 方法一：设置父元素的font-size=0 */
+            /* font-size: 0; */
+        }
+        img {
+            /* 方法二：设置行内块的对齐方式不是基线对齐 */
+            vertical-align: bottom;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <img src="../images/悟空.jpg" alt="悟空"></div>
+</body>
+</html>
+```
+
+# 浮动
+
+**浮动简介**
+
+最初浮动设计出来是为了解决文字环绕问题，现在浮动是主流布局的方式之一。
+
+**浮动后的特点**
+
+- 脱离了文档流，飘起来。
+
+- 不管浮动前是什么元素，浮动后，默认宽与高都是被内容撑开（尽可能小），可以设置宽高。
+
+- 不会独占一行，和其他元素公用一行，因为是飘起来了。
+
+- 不会存在margin合并和margin坍塌，能够完美设置四个方向的margin和padding。
+
+- 不会像行内块一样被当做文本处理（没有行内块空白问题）。
+
+**浮动之后的影响**
+
+- 对兄弟元素的影响
+  
+  - 后面的兄弟元素，会占据浮动元素之前的位置，在浮动元素的下面；对前面的兄弟无影响。
+
+- 对父元素的影响
+  
+  - 不能撑起父元素的高度，导致父元素高度塌陷；但父元素的宽度依然束缚浮动的元素。
+
+解决方案
+
+- 给父元素指定高度
+
+- 
+
+
