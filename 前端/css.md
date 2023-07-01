@@ -2029,10 +2029,343 @@ div {
   
   - 不能撑起父元素的高度，导致父元素高度塌陷；但父元素的宽度依然束缚浮动的元素。
 
-解决方案
+解决方案：
 
 - 给父元素指定高度
 
-- 
+- 给父元素也设置浮动，都飘起来
 
+- 给父元素添加`overflow:hidden`
 
+- 在所有浮动元素的最后面，添加一个块元素，并给块元素添加一个`clear:both`，用来清楚浮动带来的影响
+
+- 给浮动的父元素设置伪元素，设置伪元素，通过伪元素清除浮动带来的影响，推荐。
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>浮动后的影响</title>
+    <style>
+        .outer {
+            width: 400px;
+            background-color: skyblue;
+            border: 1px solid black;
+            /* 第一种：给父元素给一个固定的高，消除父元素塌陷，但无法解决兄弟元素问题 */
+            /* height: 120px; */
+            /* 第二种：让父元素也浮动，消除父元素塌陷，但解决不了兄弟元素问题 */
+            /* float: left; */
+            /* 第三种：给父元素设置overflow:hidden，能消除父元素塌陷，但无法解决兄弟元素问题，还导致兄弟元素的内容被隐藏 */
+            /* overflow: hidden; */
+        }
+        .box {
+            width: 100px;
+            height: 100px;
+            background-color: rebeccapurple;
+            margin: 10px;
+        }
+        .box1,.box2,.box3 {
+            float: left;
+        }
+        /* 第四种：给最后一个元素清空浮动影响，但必须要求最后一个是块元素，但有一个弊端是必须要有一个块元素 */
+        /* .box4 {
+            clear: both;
+        } */
+        /* 第五种：给父元素添加伪元素，且伪元素内容为空，且设置为块，且清除浮动影响 */
+        .outer::after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+        /* 第五种方法所有的子元素都要浮动 */
+        .box4 {
+            float: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <div class="box box1">1</div>
+        <div class="box box2">2</div>
+        <div class="box box3">3</div>
+        <div class="box box4">4</div>
+    </div>
+</body>
+</html>
+```
+
+原则：
+
+- 在布局中要么所有元素全都浮动、要么全都不浮动。
+
+# 定位
+
+定位分为相对定位、绝对定位、固定定位、粘性定位。
+
+**相对定位**
+
+- 如何设置
+  
+  - `position:relative`
+  
+  - 使用`top`、`bottom`、`left`、`right`来定位
+
+- 参考点
+  
+  - 相对定位参考元素原来的位置
+
+- 特点
+  
+  - 不会脱离文档流，元素位置的变化只是视觉上的变化，不会对其他元素产生影响
+  
+  - 定位元素的层级会比普通元素高
+    
+    - 定位元素会遮盖普通元素
+    
+    - 都发生定位的两个元素，后写的元素会盖在先写的元素之上
+  
+  - `top`不能和`bottom`一起设置，`left`和`right`不能一起设置
+  
+  - 相对定位的元素能继续浮动，但不推荐
+  
+  - 相对定位的元素能设置margin调整位置，但不推荐
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>相对定位</title>
+    <style>
+        .outer {
+            width: 400px;
+            border: 1px solid black;
+            padding: 20px;
+            background-color: skyblue;
+        }
+        .box {
+            width: 100px;
+            height: 100px;
+            font-size: 20px;
+        }
+        .box1 {
+            background-color: #888;
+        }
+        .box2 {
+            background-color: green;
+            position: relative;
+            left: 50px;
+            top: 50px;
+        }
+        .box3 {
+            background-color: orange;
+        }
+
+</style>
+</head>
+<body>
+    <div class="outer">
+        <div class="box box1">1</div>
+        <div class="box box2">2</div>
+        <div class="box box3">3</div>
+    </div>
+</body>
+</html>
+```
+
+**绝对定位**
+
+- 如何设置
+  
+  - `position:absolute`
+  
+  - 使用`top`、`bottom`、`left`、`right`来定位
+
+- 参考点
+  
+  - 绝对定位参考包含块
+  
+  - 包含块
+    
+    - 对于没有脱离文档流的元素，它的包含块就是父元素
+    
+    - 对于脱离文档流的元素，它的包含块是离它最近的第一个拥有定位属性的祖先元素（如果所有祖先都没有定位属性，那么html元素就是包含块）。
+  
+  - 特点
+    
+    - 脱离了文档流，会对后面的兄弟元素、父元素有影响
+    
+    - `top`不能和`bottom`一起设置，`left`和`right`不能一起设置
+    
+    - 绝对定位、浮动不能同时设置，如果同时设置，浮动失效，以定位为主
+    
+    - 绝对定位的元素，也能通过 margin 调整位置，但不推荐这样做。
+    
+    - 无论是什么元素（行内、行内块、块级）设置为绝对定位之后，都变成了定位元素（定位元素默认被内容撑开，可以设置宽高）
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>绝对定位</title>
+    <style>
+        body {
+            height: 2000px;
+        }
+        .outer {
+            width: 400px;
+            border: 1px solid black;
+            padding: 20px;
+            background-color: skyblue;
+            /* 和绝对定位配置使box2参考变成.outer */
+            position: relative;
+        }
+        .box {
+            width: 100px;
+            height: 100px;
+            font-size: 20px;
+        }
+        .box1 {
+            background-color: #888;
+        }
+        .box2 {
+            background-color: green;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .box3 {
+            background-color: orange;
+        }
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <div class="box box1">1</div>
+        <div class="box box2">2</div>
+        <div class="box box3">3</div>
+    </div>
+</body>
+</html>
+```
+
+**固定定位**
+
+- 如何设置
+  
+  - `position:fixed`
+  
+  - 使用`top`、`bottom`、`left`、`right`来定位
+
+- 参考点
+  
+  - 固定定位参考视口
+  
+  - 视口
+    
+    - 就是浏览器的窗口
+
+- 特点
+  
+  - 脱离文档流，会对后面的兄弟元素、父元素有影响
+  
+  - `top`不能和`bottom`一起设置，`left`和`right`不能一起设置
+  
+  - 固定定位和浮动不能同时设置，如果同时设置，浮动失效，以固定定位为主
+  
+  - 固定定位的元素，也能通过 margin 调整位置，但不推荐这样做。
+  
+  - 无论是什么元素（行内、行内块、块级）设置为固定定位之后，都变成了定位元素（定位元素默认被内容撑开，可以设置宽高）
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>固定定位</title>
+    <style>
+        body {
+            height: 2000px;
+        }
+        .outer {
+            width: 400px;
+            border: 1px solid black;
+            padding: 20px;
+            background-color: skyblue;    
+        }
+        .box {
+            width: 100px;
+            height: 100px;
+            font-size: 20px;
+        }
+        .box1 {
+            background-color: #888;
+        }
+        .box2 {
+            background-color: green;
+            position:fixed;
+            left: 0;
+            top: 0;
+        }
+        .box3 {
+            background-color: orange;
+        }
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <div class="box box1">1</div>
+        <div class="box box2">2</div>
+        <div class="box box3">3</div>
+    </div>
+</body>
+</html>
+```
+
+**粘性定位**
+
+- 如何设置
+  
+  - `position:sticky`
+  
+  - 使用`top`、`bottom`、`left`、`right`来定位，`top`常用
+
+- 参考点
+  
+  - 粘性定位参考离他最近的一个拥有”滚动机制“的祖先元素，即便这个祖先不是最近真实可滚动
+  
+  - 最常用的值是top值
+  
+  - 粘性定位和浮动可以同时设置，但不推荐这样做
+  
+  - 粘性定位的元素，也能通过margin调整位置，但不推荐这样做
+
+```html
+
+```
+
+**定位层级**
+
+- 定位元素的显示层级比普通层级高，无论什么定位，显示层级是一样的
+
+- 如果位置发生层叠，默认情况：后面的元素会显示在前面元素之上（后写的元素会在上面）
+
+- 通过`z-index`调整元素的显示层级，且只有定位的元素设置才会生效
+
+- 如果`z-index`值大的元素没有覆盖值小的元素，要检查值小的包含块的层级
+
+**特殊的定位场景**
+
+- 让定位元素充满整个包含块
+  
+  - 宽度充满设置`left:0`和`right:0`
+  
+  - 高度充满设置`top:0`和`bottom:0`
+
+- 让定位元素在包含块中居中
+  
+  - 方法一：`letf:0`、`right:0`、`top:0`、`bottom:0`、`margin:auto`
+  
+  - 方法二：`left:50%`、`top:50%`、`margin-left:负的宽度的一半`、`margin-top:负的高度的一半`，不推荐。
