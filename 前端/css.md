@@ -2343,7 +2343,76 @@ div {
   - 粘性定位的元素，也能通过margin调整位置，但不推荐这样做
 
 ```html
-
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>粘性定位</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        body {
+            height: 2000px;
+        }
+        .header {
+            height: 100px;
+            background-color: orange;
+            font-size: 20px;
+            text-align: center;
+            line-height: 100px;
+        }
+        .item {
+            background-color: gray;
+        }
+        .first {
+            height: 50px;
+            font-size: 20px;
+            line-height: 50px;
+            background-color: skyblue;
+            position:sticky;
+            top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">头部</div>
+    <div class="item">
+        <div class="first">A</div>
+        <h2>A1</h2>
+        <h2>A2</h2>
+        <h2>A3</h2>
+        <h2>A4</h2>
+        <h2>A5</h2>
+        <h2>A6</h2>
+        <h2>A7</h2>
+        <h2>A8</h2>
+    </div>
+    <div class="item">
+        <div class="first">B</div>
+        <h2>B1</h2>
+        <h2>B2</h2>
+        <h2>B3</h2>
+        <h2>B4</h2>
+        <h2>B5</h2>
+        <h2>B6</h2>
+        <h2>B7</h2>
+        <h2>B8</h2>
+    </div>
+    <div class="item">
+        <div class="first">C</div>
+        <h2>C1</h2>
+        <h2>C2</h2>
+        <h2>C3</h2>
+        <h2>C4</h2>
+        <h2>C5</h2>
+        <h2>C6</h2>
+        <h2>C7</h2>
+        <h2>C8</h2>
+    </div>
+</body>
+</html>
 ```
 
 **定位层级**
@@ -2356,7 +2425,72 @@ div {
 
 - 如果`z-index`值大的元素没有覆盖值小的元素，要检查值小的包含块的层级
 
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>层级定位</title>
+    <style>
+        .outer {
+            width: 500px;
+            background-color: skyblue;
+            border: 1px solid black;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+        .box {
+            width: 100px;
+            height: 100px;
+        }
+        .box1 {
+            background-color: gray;
+        }
+        .box2 {
+            background-color: green;
+            position: relative;
+            left: 50px;
+            top: -50px;
+        }
+        .box3 {
+            background-color: yellow;
+            position: absolute;
+            left: 120px;
+            top: 120px;
+            z-index: 20;
+        }
+        .box4 {
+            background-color: red;
+            position:fixed;
+            left: 178px;
+            top: 178px;
+            z-index: 300;
+        }
+        .box5 {
+            background-color: blue;
+            position: fixed;
+            left: 228px;
+            top: 228px;
+            z-index: 20;
+        }
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <div class="box box1">1</div>
+        <div class="box box2">2</div>
+        <div class="box box3">3</div>
+        <div class="box box4">4</div>
+    </div>
+    <div class="box box5">5</div>
+</body>
+</html>
+```
+
 **特殊的定位场景**
+
+注意：定位可以越过父元素的padding。
 
 - 让定位元素充满整个包含块
   
@@ -2364,8 +2498,75 @@ div {
   
   - 高度充满设置`top:0`和`bottom:0`
 
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>定位的特殊应用</title>
+    <style>
+        /* 让定位元素充满整个父元素 */
+        .outer {
+            height: 400px;
+            background-color: grey;
+            position: relative;
+        }
+        .inner {
+            background-color: orange;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <div class="inner">1</div>
+    </div>
+</body>
+</html>
+```
+
 - 让定位元素在包含块中居中
   
   - 方法一：`letf:0`、`right:0`、`top:0`、`bottom:0`、`margin:auto`
   
   - 方法二：`left:50%`、`top:50%`、`margin-left:负的宽度的一半`、`margin-top:负的高度的一半`，不推荐。
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>定位的特殊应用2</title>
+    <style>
+        /* 让定位元素在父元素内居中 */
+        .outer {
+            height: 400px;
+            background-color: grey;
+            position: relative;
+        }
+        .inner {
+            width: 300px;
+            height: 100px;
+            background-color: orange;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <div class="inner">1</div>
+    </div>
+</body>
+</html>
+```
+
+
