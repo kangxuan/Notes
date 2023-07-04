@@ -573,3 +573,153 @@ HTML实体可以用来表示某个符号，字符实体由三部分组成，分�
 [更多元信息配置]([&lt;meta&gt;：元数据元素 - HTML（超文本标记语言） | MDN](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/meta))
 
 
+
+# HTML5的优势
+
+1. 针对`javascript`，新增了很多课操作的接口。
+
+2. 新增了一些语义化标签、全局属性。
+
+3. 新增了多媒体标签，可以很好的替代`flash`。
+
+4. 更加侧重语义化，对于`SEO`更友好。
+
+5. 可移植性好，可以大量应用在移动设备上。
+
+# HTML5兼容性
+
+IE 浏览器必须是 9 及以上版本才支持 HTML5 ，且 IE9 仅支持部分 HTML5 新特性。
+
+# HTML5新增标签
+
+## 1. 新增的布局标签
+
+| 标签名     | 语义                                     | 单/双标签 |
+| ------- | -------------------------------------- | ----- |
+| header  | 整个页面，或部分区域的头部                          | 双     |
+| footer  | 整个页面，或部分区域的底部                          | 双     |
+| nav     | 导航                                     | 双     |
+| article | 文章、帖子、杂志、新闻、博客、评论等，通常表示独立的文章           | 双     |
+| section | 页面中的某段文字，或文章中的某段文字                     | 双     |
+| aside   | 侧边栏                                    | 双     |
+| main    | 文档的主要内容 ( WHATWG 没有语义， IE 不支持)，几乎不用。   | 双     |
+| hgroup  | 包裹连续的标题，如文章主标题、副标题的组合 （ W3C 将其删除），几乎不用 | 双     |
+
+```html
+<!-- 头部 -->
+<header class="page-header">
+    <h1>XXX</h1>
+</header>
+<hr>
+<!-- 主导航 -->
+<nav>
+    <a href="#">首页</a>
+    <a href="#">订单</a>
+    <a href="#">购物车</a>
+    <a href="#">我的</a>
+</nav>
+<!-- 主要内容 -->
+<div class="main-content">
+    <!-- 侧边导航栏 -->
+    <aside style="float: right;">
+        <nav>
+            <ul>
+                <li><a href="#">秒杀专区</a></li>
+                <li><a href="#">会员专区</a></li>
+                <li><a href="#">领取优惠券</a></li>
+                <li><a href="#">品牌专区</a></li>
+            </ul>
+        </nav>
+    </aside>
+    <!-- 文章 -->
+    <article>
+        <h2>《如何一夜暴富》</h2>
+        <section>
+            <h3>第一种方式：通过做梦</h3>
+            <p>你要这么做梦：xxxxxxxxxxxxxxxxxxxxxxx</p>
+        </section>
+        <section>
+            <h3>第一种方式：通过做梦</h3>
+            <p>你要这么做梦：xxxxxxxxxxxxxxxxxxxxxxx</p>
+        </section>
+        <section>
+            <h3>第一种方式：通过做梦</h3>
+            <p>你要这么做梦：xxxxxxxxxxxxxxxxxxxxxxx</p>
+        </section>
+    </article>
+</div>
+<hr>
+<!-- 底部 -->
+<footer>
+    <nav>
+        <a href="#">友情链接1</a>
+        <a href="#">友情链接2</a>
+        <a href="#">友情链接3</a>
+        <a href="#">友情链接4</a>
+    </nav>
+</footer>
+```
+
+## 2. 新增的状态标签
+
+| 标签名      | 语义                       | 单/双标签 |
+| -------- | ------------------------ | ----- |
+| meter    | 定义已知范围内的标量测量，例如：电量、磁盘使用量 | 双     |
+| progress | 显示某个任务完成的进度的指示器，例如：进度条   | 双     |
+
+**常用属性**
+
+- meter
+  
+  - high：规定高值
+  
+  - low：规定低值
+  
+  - max：规定最大值
+  
+  - min：规定最小值
+  
+  - optimum：规定最优值
+  
+  - value：规定当前值
+
+- progress
+  
+  - max：规定目标值
+  
+  - value：规定当前值
+
+```html
+<span>手机电量：</span>
+<meter max="100" min="0" value="90" low="10" high="20" optimum="90"></meter>
+<br>
+<span>当前进度：</span>
+<progress max="100" value="20"></progress>
+```
+
+## 3. 新增的列表标签
+
+| 标签名      | 语义                         | 单/双标签 |
+| -------- | -------------------------- | ----- |
+| datalist | 用于搜索框的关键字提示                | 双     |
+| details  | 用于展示问题和答案，或对专有名词进行解释       | 双     |
+| summary  | 写在 details 的里面，用于指定问题或专有名词 | 双     |
+|          |                            |       |
+|          |                            |       |
+
+```html
+<!-- 搜索相关词可以提示 -->
+    <input type="text" list="mydatalist">
+    <datalist id="mydatalist">
+        <option value="周冬雨">周冬雨</option> 
+        <option value="周杰伦">周杰伦</option>
+        <option value="温兆伦">温兆伦</option>
+        <option value="马冬梅">马冬梅</option>
+    </datalist>
+
+    <!-- 问题和答案 -->
+    <details>
+        <summary>画一个数轴，依次表示以下数：2, 5, -1，1.5，3/2</summary>
+        <p>数轴三要素：原点、正方向、单位长度。</p>
+    </details>
+```
