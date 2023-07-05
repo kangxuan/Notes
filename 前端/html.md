@@ -572,8 +572,6 @@ HTML实体可以用来表示某个符号，字符实体由三部分组成，分�
 
 [更多元信息配置]([&lt;meta&gt;：元数据元素 - HTML（超文本标记语言） | MDN](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/meta))
 
-
-
 # HTML5的优势
 
 1. 针对`javascript`，新增了很多课操作的接口。
@@ -709,17 +707,184 @@ IE 浏览器必须是 9 及以上版本才支持 HTML5 ，且 IE9 仅支持部�
 
 ```html
 <!-- 搜索相关词可以提示 -->
-    <input type="text" list="mydatalist">
-    <datalist id="mydatalist">
-        <option value="周冬雨">周冬雨</option> 
-        <option value="周杰伦">周杰伦</option>
-        <option value="温兆伦">温兆伦</option>
-        <option value="马冬梅">马冬梅</option>
-    </datalist>
+<input type="text" list="mydatalist">
+<datalist id="mydatalist">
+    <option value="周冬雨">周冬雨</option> 
+    <option value="周杰伦">周杰伦</option>
+    <option value="温兆伦">温兆伦</option>
+    <option value="马冬梅">马冬梅</option>
+</datalist>
 
-    <!-- 问题和答案 -->
-    <details>
-        <summary>画一个数轴，依次表示以下数：2, 5, -1，1.5，3/2</summary>
-        <p>数轴三要素：原点、正方向、单位长度。</p>
-    </details>
+<!-- 问题和答案 -->
+<details>
+    <summary>画一个数轴，依次表示以下数：2, 5, -1，1.5，3/2</summary>
+    <p>数轴三要素：原点、正方向、单位长度。</p>
+</details>
 ```
+
+## 4. 新增的文本标签
+
+| 标签名  | 语义                | 单/双标签 |
+| ---- | ----------------- | ----- |
+| ruby | 包裹需要注音的文字         | 双     |
+| rt   | 写注音，rt标签写在ruby的里面 | 双     |
+| mark | 标记                | 双     |
+
+```html
+<ruby>
+    <span>魑魅魍魉</span>
+    <rt>chī mèi wǎng liǎng</rt>
+</ruby>
+<hr>
+<div>
+    <ruby>
+        <span>魑</span>
+        <rt>chī</rt>
+    </ruby>
+    <ruby>
+        <span>魅</span>
+        <rt>mèi</rt>
+    </ruby>
+</div>
+<hr>
+<p>Lorem ipsum <mark>dolor</mark> sit amet consectetur adipisicing elit. Laboriosam, nemo?</p>
+```
+
+## 5. 新增多媒体标签
+
+| 标签名   | 语义   | 单/双标签 |
+| ----- | ---- | ----- |
+| video | 定义视频 | 双     |
+| audio | 定义音频 | 双     |
+
+**常用属性**
+
+- video
+  
+  - src：视频地址
+  
+  - width：宽
+  
+  - height：高
+  
+  - controls：向用户显示控件
+  
+  - muted：视频静音
+  
+  - autoplay：自动播放，
+    
+    - 一般要自动播放需要视频静音muted
+    
+    - 还有一种情况如果Chrome的媒体参与高的话可以不静音的时候自动播放
+      
+      - chrome://media-engagement/
+  
+  - loop：循环播放
+  
+  - poster：视频封面
+  
+  - preload：视频预加载，如果使用 autoplay ，则忽略该属性
+    
+    - none：不预加载
+    
+    - metadata：仅预先获取视频的元数据
+    
+    - auto：可以下载整个视频文件
+
+```html
+<video src="./小电影.mp4" width="500px" controls autoplay muted loop poster="./封面.png"></video>
+```
+
+- audio
+  
+  - src：地址
+  
+  - controls：向用户显示音频控件
+  
+  - autoplay：音频自动播放
+  
+  - muted：音频静音
+  
+  - loop：循环播放
+  
+  - preload：视频预加载，如果使用 autoplay ，则忽略该属性
+    
+    - none：不预加载
+    
+    - metadata：仅预先获取视频的元数据
+    
+    - auto：可以下载整个视频文件
+
+```html
+<audio src="./小曲.mp3" controls autoplay muted loop preload="auto"></audio>
+```
+
+# HTML5新增属性
+
+## 1. 新增表单属性
+
+| 属性名        | 功能                           |
+| ---------- | ---------------------------- |
+| novalidate | 给form标签设置了该属性，表单提交的时候不再进行验证。 |
+
+## 2. 新增表单控件属性
+
+| 属性名          | 功能            | 使用范围                                   |
+| ------------ | ------------- | -------------------------------------- |
+| placeholder  | 提示文字          | 适用于文字输入类的表单控件                          |
+| required     | 该输入项必填        | 适用于除按钮外其他表单控件                          |
+| autofocus    | 自动获取焦点        | 适用于所有表单控件                              |
+| autocomplete | 自动完成，历史输入过的数据 | 适用于文字输入类的表单控件，密码输入框、多行文本框不适用           |
+| pattern      | 写正则表达式        | 适用于文本输入类表单控件，必须和required配合使用，多行文本框不适用。 |
+
+```html
+<form action="">
+    <span>账号：</span>
+    <input 
+        type="text" 
+        name="account" 
+        placeholder="请输入账号" 
+        required 
+        autofocus 
+        autocomplete="on" 
+        pattern="\w{6}"
+    >
+    <br>
+    <span>密码：</span>
+    <input type="password" name="pwd" placeholder="请输入密码" required pattern="\w{6}">
+    <br>
+    <span>性别：</span>
+        <input type="radio" value="male" name="gender" required>男
+        <input type="radio" value="female" name="gender">女
+    <br>
+    <span>爱好：</span>
+        <input type="checkbox" value="smoke" name="hobby">抽烟
+        <input type="checkbox" value="drink" name="hobby" required>喝酒
+        <input type="checkbox" value="perm" name="hobby">烫头
+    <br>
+    <span>其他：</span>
+    <textarea name="other" placeholder="请输入密码" required></textarea>
+    <br>
+    <button>提交</button>
+</form>
+```
+
+## 3. input-type新增属性值
+
+| 属性值            | 功能                                     |
+| -------------- | -------------------------------------- |
+| email          | 邮箱类型的输入框，表单提交时会验证格式，输入为空则不验证格式         |
+| url            | url类型的输入框，表单提交时会验证格式，输入为空则不验证格式        |
+| number         | 数字类型的输入框，表单提交时会验证格式，输入为空则不验证格式         |
+| search         | 搜索类型的输入框，表单提交时不会验证格式                   |
+| tel            | 电话类型的输入框，表单提交时不会验证格式，在移动端使用时，会唤起数
+字键盘。 |
+| range          | 范围选择框，默认值为 50 ，表单提交时不会验证格式             |
+| color          | 颜色选择框，默认值为黑色，表单提交时不会验证格式               |
+| date           | 日期选择框，默认值为空，表单提交时不会验证格式                |
+| month          | 月份选择框，默认值为空，表单提交时不会验证格式                |
+| week           | 周选择框，默认值为空，表单提交时不会验证格式                 |
+| time           | 时间选择框，默认值为空，表单提交时不会验证格式                |
+| datetime-local | 日期+时间选择框，默认值为空，表单提交时不会验证格式             |
+
+
