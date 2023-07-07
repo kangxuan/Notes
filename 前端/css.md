@@ -2578,3 +2578,387 @@ div {
 - 版心的宽度一般设置为960-1200px之间
 
 - 版心可以一个，也可以多个
+
+---- 
+
+# CSS3新增的东西
+
+## 1. 新增的长度单位
+
+- rem：根元素字体大小的倍数，只与根元素字体大小有关
+
+- vw：视口宽度的百分之多少，比如`10vw`就是10%。
+
+- vh：视口高度的百分之多少
+
+- vmax：视口高宽中最大的值的百分之多少
+
+- vmin：视口高度中最小的值的百分之多少
+
+## 2. 新增的颜色设置方式
+
+- rgba
+
+- hsl
+
+- hsla
+
+## 3. 新增的选择器
+
+动态伪类、目标伪类、语言伪类、 UI 伪类、结构伪类、否定伪类、伪元素。
+
+## 4. 新增盒模型属性
+
+- box-sizing
+  
+  - 作用：用来控制盒子大小的范围
+  
+  - 属性值选项
+    
+    - content-box：width和height设置的盒子内容区的大小（默认）
+    
+    - border-box：width和height设置的是盒子总大小（内容区+padding+border）
+
+- resize
+  
+  - 作用：允许调整盒子大小
+  
+  - 属性值选项
+    
+    - none：不允许调整（默认）
+    
+    - both：用户可以调节元素的宽度和高度
+    
+    - horizontal：用户可以调节元素的宽度
+    
+    - vertical：用户可以调节元素的高度
+
+```css
+.box1 {
+    width: 100px;
+    height: 100px;
+    background-color: blue;
+    resize: both;
+    overflow: hidden; /* 需要配合overflow */
+}
+```
+
+- box-shadow
+  
+  - 作用：控制盒子阴影
+  
+  - 属性值选项
+    
+    - h-shadow：水平阴影的位置，必填可为负值。
+    
+    - v-shadow：垂直阴影的位置，必填可为负值。
+    
+    - blur：模糊距离，可选
+    
+    - spread：阴影的外延值，可选
+    
+    - color：阴影颜色，可选
+    
+    - inset：内部阴影，可选
+  
+  - 语法
+  
+  ```css
+  box-shadow: h-shadow v-shadow blur spread color inset;
+  ```
+
+```css
+.box1 {
+      width: 200px;
+      height: 200px;
+      background-color: cadetblue;
+      /* 两个值：含义：水平位置 垂直位置 */
+      /* box-shadow: 10px 10px; */
+
+      /* 三个值：含义：水平位置 垂直位置 阴影颜色 */
+      /* box-shadow: 10px 10px rebeccapurple; */
+
+      /* 三个值：含义：水平位置 垂直位置 模糊程度 */
+      /* box-shadow: 10px 10px 20px; */
+
+      /* 四个值：含义：水平位置 垂直位置 模糊程度 阴影颜色 */
+      /* box-shadow: 10px 10px 20px rebeccapurple; */
+
+      /* 五个值：含义：水平位置 垂直位置 模糊程度 外延值 阴影颜色 */
+      /* box-shadow: 10px 10px 20px 10px rebeccapurple; */
+
+      /* 六个值：含义：水平位置 垂直位置 模糊程度 外延值 阴影颜色 内阴影 */
+      box-shadow: 10px 10px 20px 10px rebeccapurple inset;
+}
+```
+
+- opacity
+  
+  - 控制盒子的不透明度，从0-1越来越不透明。
+
+## 5. 新增背景属性
+
+- background-origin
+  
+  - 作用：设置背景图的原点
+  
+  - 属性值选项
+    
+    - padding-box：从padding区域开始显示背景图像，默认。
+    
+    - border-box：从border区域开始显示背景图像
+    
+    - content-box：从content区域开始显示背景图像
+
+```css
+.box1 {
+      width: 400px;
+      height: 400px;
+      padding: 20px;
+      border: 20px dotted black;
+      background-color: #eee;
+
+      background-image: url("../images/bg01.jpg");
+      background-repeat: no-repeat;
+      /* 从内容区开始 */
+      /* background-origin: content-box; */
+      /* 从边框开始 */
+      /* background-origin: border-box; */
+      /* 从padding开始 */
+      background-origin: padding-box;
+}
+```
+
+- background-clip
+  
+  - 作用：设置背景图的向外裁剪的区域
+  
+  - 属性值选项
+    
+    - border-box：从border区域开始向外的裁剪背景，默认
+    
+    - padding-box：从padding区域开始向外的裁剪背景
+    
+    - content-box：从content区域开始向外的裁剪背景
+    
+    - text：背景只呈现在文字上
+
+```css
+.box1 {
+      width: 400px;
+      height: 400px;
+      padding: 20px;
+      border: 20px dotted black;
+      background-color: skyblue;
+      font-size: 40px;
+      font-weight: bold;
+      background-image: url("../images/bg02.jpg");
+      background-repeat: no-repeat;
+      /* 从border区域外裁剪 */
+      /* background-clip: border-box; */
+      /* 从padding区域外裁剪背景 */
+      /* background-clip: padding-box; */
+      /* 从content区域外裁剪背景 */
+      background-clip: content-box;
+}
+```
+
+- background-size
+  
+  - 作用：设置图片背景的大小
+  
+  - 属性值选项
+    
+    - 用长度指定背景大小
+    
+    - 用百分比指定背景图片大小
+    
+    - auto：背景图片的真实大小，默认
+    
+    - contain：将背景图片等比缩放，使背景图片的宽或高，与容器的宽或高相等，再将完整背景图片包含在容器内，但要注意：可能会造成容器里部分区域没有背景图片
+    
+    - cover：将背景图片等比缩放，直到完全覆盖容器，图片会尽可能全的显示在元素上，但要注意：背景图片有可能显示不完整。—— 相对比较好的选择
+
+```css
+div {
+      width: 400px;
+      height: 400px;
+      padding: 50px;
+      border: 50px dashed rgba(255, 0, 0, 0.7);
+
+      background-image: url('../images/bg03.jpg');
+      background-repeat: no-repeat;
+      /* 根据具体长度设置具体背景大小 */
+      /* background-size: 400px 400px; */
+      /* 根据百分比设置背景大小，这个百分比是盒子的总宽和高的百分比 */
+      /* background-size: 100% 100%; */
+      /* 按照图片真实大小，默认 */
+      /* background-size: auto; */
+      /* 将背景图片等比缩放，使背景图片的宽或高，与容器的宽或高相等，再将完整背景图片包含在容器内 */
+      /* background-size: contain; */
+      /* 将背景图片等比缩放，直到完全覆盖容器，图片会尽可能全的显示在元素上，但要注意：背景图片有可能显示不完整 */
+      background-size: cover;
+}
+```
+
+**实现多背景图**
+
+CSS3允许设置多个背景图，语法如下：
+
+```css
+/* 添加多个背景图 */
+background: url(../images/bg-lt.png) no-repeat left top,
+            url(../images/bg-rt.png) no-repeat right top,
+            url(../images/bg-lb.png) no-repeat left bottom,
+            url(../images/bg-rb.png) no-repeat right bottom;
+```
+
+## 6. 新增边框属性
+
+- border-radius
+  
+  - 作用：设置盒子的圆角
+  
+  - 同时设置4个圆角
+  
+  ```css
+  border-radius:10px;
+  ```
+  
+  - 分开设置4个圆角
+    
+    - border-top-left-radius：设置左上角圆角，一个值是正圆半径，两个值是椭圆的x和y半径。
+    
+    - border-top-right-radius：设置右上角圆角
+    
+    - border-bottom-left-radius：设置左下角圆角
+    
+    - border-bottom-right-radius：设置右下角圆角
+  
+  - 分开设置每个角的圆角，综合写法
+  
+  ```css
+  border-raidus: 左上角x 右上角x 右下角x 左下角x / 左上y 右上y 右下y 左下y
+  ```
+
+```css
+.box1 {
+      width: 400px;
+      height: 400px;
+      background-color: skyblue;
+
+      /* 常用 */
+      border-radius: 10px;
+      /* 设置成圆形 */
+      /* border-radius: 50%; */
+      /* border-radius: 200px; */
+
+      /* 分别设置四个角为不同的圆角 */
+      /* border-top-left-radius: 100px;
+      border-top-right-radius: 50px;
+      border-bottom-right-radius: 20px;
+      border-bottom-left-radius: 10px; */
+
+      /* 分别设置四个角为不同的椭圆角 */
+      /* border-top-left-radius: 100px 50px;
+      border-top-right-radius: 50px 20px;
+      border-bottom-right-radius: 20px 10px;
+      border-bottom-left-radius: 10px 5px; */
+
+      /* 综合设置 */
+      /* border-radius:100px 50px 20px 10px / 50px 20px 10px 5px; */
+}
+```
+
+- outline
+  
+  - 作用：设置边框外轮廓，理解成盒子外面的光，不占位
+  
+  - 只记综合属性
+  
+  ```css
+  outline:20px solid orange;
+  ```
+
+## 7. 新增的文本属性
+
+- text-shadow
+  
+  - 作用：给文本增加阴影
+  
+  - 语法
+  
+  ```css
+  /* h-shadow:水平阴影的位置；v-shadow:垂直阴影的位置; blur: 模糊距离；color：阴影颜色 */
+  text-shadow: h-shadow v-shadow blur color;
+  
+  body {
+      background-color: black;
+  }
+  h1 {
+      font-size: 80px;
+      color: white;
+      /* text-shadow: 3px 3px; */
+      /* text-shadow: 3px 3px red; */
+      /* text-shadow: 3px 3px 10px red; */
+      /* text-shadow: 0px 0px 15px black; */
+      text-shadow: 0px 0px 40px red;
+      font-family: '翩翩体-简';
+  }
+  ```
+
+- white-space
+  
+  - 作用：设置文本换行方式
+  
+  - 属性值选项
+    
+    - normal：文本超出边界自动换行，文本中的换行被浏览器识别为一个空格。（默认值）
+    
+    - pre：原样输出，与 pre 标签的效果相同
+    
+    - pre-wrap：在 pre 效果的基础上，超出元素边界自动换行
+    
+    - pre-line：在 pre 效果的基础上，超出元素边界自动换行，且只识别文本中的换行，空格会忽略
+    
+    - nowrap：强制不换行
+
+- text-overflow
+  
+  - 作用：设置文本溢出时的呈现方式
+  
+  - 属性值选项
+    
+    - clip：当内联内容溢出时，将溢出部分裁切掉。 （默认值）
+    
+    - ellipsis：当内联内容溢出块容器时，将溢出部分替换为 ... 。
+  
+  - 注意：
+    
+    - 设置elipsis时，需要配合`overflow:hidden`或其他非visible使用
+
+```css
+ul {
+    width: 400px;
+    height: 400px;
+    border: 1px solid black;
+    font-size: 20px;
+    list-style: none;
+    padding-left: 0;
+    padding: 10px;
+}
+li {
+    margin-bottom: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+```
+
+- text-decoration
+  
+  - 作用：文字修饰，CSS3升级了该属性将该属性变成了复合属性
+  
+  ```css
+  text-decoration: text-decoration-line || text-decoration-style || text-decoration- color
+  ```

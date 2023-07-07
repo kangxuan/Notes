@@ -887,4 +887,24 @@ IE 浏览器必须是 9 及以上版本才支持 HTML5 ，且 IE9 仅支持部�
 | time           | 时间选择框，默认值为空，表单提交时不会验证格式                |
 | datetime-local | 日期+时间选择框，默认值为空，表单提交时不会验证格式             |
 
+# HTML5处理兼容性问题
+
+- 添加元信息，让浏览器处于最优渲染模式
+
+```html
+<!--设置IE总是使用最新的文档模式进行渲染-->
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+<!--优先使用 webkit ( Chromium ) 内核进行渲染, 针对360等壳浏览器-->
+<meta name="renderer" content="webkit">
+```
+
+- 使用 html5shiv 让低版本浏览器认识 H5 的语义化标签
+
+```html
+<!--[if lt ie 9]>
+<script src="../sources/js/html5shiv.js"></script>
+<![endif]-->
+```
+
 
