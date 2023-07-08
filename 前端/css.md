@@ -2962,3 +2962,495 @@ li {
   ```css
   text-decoration: text-decoration-line || text-decoration-style || text-decoration- color
   ```
+
+## 8. 新增渐变
+
+**线性渐变**
+
+- 默认情况，从上到下渐变
+
+- 使用关键词设置渐变色的方向
+
+- 使用角度设置渐变色的方向
+
+- 调整渐变色起始的位置
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>线性渐变</title>
+    <style>
+        div {
+            width: 300px;
+            height: 200px;
+            border: 1px solid black;
+            float: left;
+            margin-left: 50px;
+            font-size: 20px;
+        }
+        .box1 {
+            /* 默认情况从上到下 */
+            background-image: linear-gradient(red, yellow, green);
+        }
+        .box2 {
+            /* 从下到上 */
+            /* background-image: linear-gradient(to top, red, yellow, green); */
+            /* 从左下到右上 */
+            background-image: linear-gradient(to top right, red, yellow, green);
+        }
+        .box3 {
+            /* 使用角度设置渐变 */
+            background-image: linear-gradient(30deg, red, yellow, green);
+        }
+        .box4 {
+            /* 调整渐变色起始的位置 */
+            background-image: linear-gradient(red 50px, yellow 100px, green 150px);
+        }
+    </style>
+</head>
+<body>
+    <div class="box1">默认情况从上到下</div>
+    <div class="box2">使用关键词设置线性渐变的方向</div>
+    <div class="box3">使用角度设置线性渐变的方向</div>
+    <div class="box4">调整开始渐变的位置</div>
+</body>
+</html>
+```
+
+**径向渐变**
+
+- 默认情况，从圆心四散（圆可能是正圆，也可能是椭圆，根据具体的形状）
+
+- 使用关键词调整渐变圆的圆心位置
+
+- 使用像素值调整渐变圆的圆心位置
+
+- 调整渐变形状为正圆
+
+- 调整形状的半径
+
+- 调整颜色开始渐变的位置
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>径向渐变</title>
+</head>
+<style>
+    div {
+        width: 300px;
+        height: 200px;
+        border: 1px solid black;
+        float: left;
+        margin-left: 50px;
+        font-size: 20px;
+    }
+    .box1 {
+        background-image: radial-gradient(red, yellow, green);
+    }
+    .box2 {
+        /* 设置圆心位置在右上角 */
+        background-image: radial-gradient(at right top, red, yellow, green);
+    }
+    .box3 {
+        /* 设置圆心位置在x轴100px，y轴50px的 */
+        background-image: radial-gradient(at 100px 50px, red, yellow, green);
+    }
+    .box4 {
+        /* 设置渐变形状为正圆 */
+        background-image: radial-gradient(circle, red, yellow, green);
+    }
+    .box5 {
+        /* 调整渐变形状为一个半径100px的圆 */
+        /* background-image: radial-gradient(100px, red, yellow, green); */
+        /* 调整渐变形状为一个x半径为100px，y半径为50px的椭圆 */
+        background-image: radial-gradient(100px 50px, red, yellow, green);
+    }
+    .box6 {
+        /* 调整渐变颜色开始的位置 */
+        background-image: radial-gradient(red 50px, yellow 100px, green 150px);
+    }
+</style>
+<body>
+    <div class="box1">默认情况，从圆心四散</div>
+    <div class="box2">根据关键词设置圆心的位置</div>
+    <div class="box3">使用像素值调整渐变圆的圆心位置</div>
+    <div class="box4">调整渐变形状为正圆</div>
+    <div class="box5">调整渐变形状的半径</div>
+    <div class="box6">调整渐变颜色开始的位置</div>
+</body>
+</html>
+```
+
+**重复渐变**
+
+无论线性渐变，还是径向渐变，在没有发生渐变的位置，继续进行渐变，就为重复渐变。
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>重复渐变</title>
+    <style>
+        div {
+            width: 300px;
+            height: 200px;
+            border: 1px solid black;
+            float: left;
+            margin-left: 50px;
+            font-size: 20px;
+        }
+        .box1 {
+            background-image: repeating-linear-gradient(red 50px, yellow 100px, green 150px);
+        }
+        .box2 {
+            background-image: repeating-radial-gradient(red 50px,yellow 100px,green 150px);
+        }
+    </style>
+</head>
+<body>
+    <div class="box1">线性渐变的重复渐变</div>
+    <div class="box2">径向渐变渐变的重复渐变</div>
+</body>
+</html>
+```
+
+## 9. 新增web字体
+
+**使用在线的web字体**
+
+通过引入在线的字体，用户就不需要手动安装字体，而是访问时下载提供的字体，就可以浏览网站了。
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>web字体</title>
+    <style>
+        /* 简单使用 */
+        /* 先定义字体，这个字体是放到服务器中 */
+        @font-face {
+            font-family: "情书字体";
+            src: url('./font1/方正手迹.ttf');
+        }
+        /* 使用自定义的字体 */
+        .t1 {
+            font-family: "情书字体";
+        }
+        /* 高兼容写法 */
+        @font-face {
+            font-family: "情书字体2";
+            font-display: swap;
+            src: url('./font2/webfont.eot'); /* IE9 */
+            src: url('./font2/webfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+                url('./font2/webfont.woff2') format('woff2'),
+                url('./font2/webfont.woff') format('woff'), /* chrome、firefox */
+                url('./font2/webfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+                url('./font2/webfont.svg#webfont') format('svg'); /* iOS 4.1- */
+        }
+        .t2 {
+            font-family: "情书字体2";
+        }
+    </style>
+</head>
+<body>
+    <h1 class="t1">春风得意马蹄疾，不信人间有别离</h1>
+    <h1 class="t2">春风得意马蹄疾，不信人间有别离</h1>
+</body>
+</html>
+```
+
+缺点：
+
+1. 字体文件太大，会导致每个用户都会下载，对网络条件不好的用户不够友好
+
+2. 字体文件太大，会导致服务器压力增大。
+
+**定制字体**
+
+因为字体文件太大，针对单独几个字进行定制，一般使用[阿里Web定制工具]([iconfont-webfont平台](https://www.iconfont.cn/webfont#!/webfont/index))或其他平台工具。
+
+**字体图标**
+
+将图标制作成文字，这样就不会有图标不清晰的问题
+
+优势：
+
+1. 相比图片更加清晰
+
+2. 灵活性高，更方便改变大小、颜色、风格等
+
+3. 兼容性好， IE 也能支持
+
+常用的平台：[阿里iconfont](https://www.iconfont.cn/)
+
+## 10. 新增2D变换
+
+### 10.1 2D位移
+
+2D位移可以改变元素的位置，在X轴和Y轴上移动。
+
+- transform
+  
+  - 属性值选项
+    
+    - translateX：设置在X轴的偏移量，如果指定百分比，这是自身宽度的百分比
+    
+    - translateY：设置在Y轴的偏移量，如果指定百分比，这是自身高度的百分比
+    
+    - translate：一个值代表水平方向，两个值代表：水平和垂直方向
+
+注意点：
+
+1. 位移与相对定位很相似，都不脱离文档流，不会影响到其它元素
+
+2. 与相对定位的区别：相对定位的百分比值，参考的是其父元素；定位的百分比值，参考的是其自身
+
+3. 浏览器针对位移有优化，与定位相比，浏览器处理位移的效率更高
+
+4. transform 可以链式编写
+
+5. 位移对行内元素无效
+
+6. 位移配合定位，可实现元素水平垂直居中
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>2D位移</title>
+    <style>
+        .outer {
+            width: 200px;
+            height: 200px;
+            border: 2px solid black;
+            margin: 0 auto;
+            margin-top: 100px;
+            position: relative;
+        }
+        .inner {
+            width: 200px;
+            height: 200px;
+            background-color: deepskyblue;
+            /* 水平位移 */
+            /* transform: translateX(10px); */
+            /* 垂直位移 */
+            /* transform: translateY(50px); */
+            /* 水平+垂直位移 */
+            transform: translate(50%, 50%);
+        }
+        /* 结合绝对定位完成元素垂直居中 */
+        .inner2 {
+            width: 60px;
+            height: 60px;
+            background-color: deepskyblue;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <div class="inner">你好</div>
+    </div>
+
+    <div class="outer">
+        <div class="inner2">你好</div>
+    </div>
+</body>
+</html>
+```
+
+### 10.2 2D缩放
+
+2D缩放可以放大缩小元素
+
+- transform
+  
+  - 属性值选项
+    
+    - scaleX：设置水平方向的缩放比例，值为一个数字，1表示不缩放，大于1放大，小于1缩小
+    
+    - scaleY：设置垂直方向的缩放比例，值为一个数字，1表示不缩放，大于1放大，小于1缩小。
+    
+    - scale：同时设置水平方向、垂直方向的缩放比例，一个值代表同时设置水平和垂直缩放；两个值分别代表：水平缩放、垂直缩放
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>2D缩放</title>
+    <style>
+        .outer {
+            width: 200px;
+            height: 200px;
+            border: 2px solid black;
+            margin: 0 auto;
+            margin-top: 100px;
+            position: relative;
+        }
+        .inner {
+            width: 200px;
+            height: 200px;
+            background-color: deepskyblue;
+            /* 水平方向放大2倍 */
+            transform: scaleX(2);
+            /* 垂直方向上缩小1倍 */
+            transform: scaleY(0.5);
+        }
+        /* 将字体缩得很小 */
+        span {
+            display: inline-block;
+            font-size: 20px;
+            transform: scale(0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <div class="inner">你好</div>
+    </div>
+    <span>好</span>
+</body>
+</html>
+```
+
+### 10.3 2D旋转
+
+2D旋转可以让元素在顺时针很逆时针上旋转
+
+- transform
+  
+  - 属性值选项
+    
+    - rotate：设置旋转角度，需指定一个角度值( deg )，正值顺时针，负值逆时针
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>2D旋转</title>
+    <style>
+        .outer {
+            width: 200px;
+            height: 200px;
+            border: 2px solid black;
+            margin: 0 auto;
+            margin-top: 100px;
+        }
+        .inner {
+            width: 200px;
+            height: 200px;
+            background-color: deepskyblue;
+            transform: rotate(30deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <div class="inner">你好</div>
+    </div>
+</body>
+</html>
+```
+
+### 10.4 多重变换
+
+也就是2D位移、2D缩放、2D旋转一起使用。
+
+注意：
+
+1. 建议旋转写在最后，因为旋转之后会改变坐标系。
+
+### 10.5 变换原点
+
+- transform-origin
+  
+  - 属性值选项
+    
+    - `transform-origin: 50% 50%`：变换原点在元素的中心位置，百分比是相对于自身。
+    
+    - `transform-origin: left top`：变换原点在元素的左上角
+    
+    - `transform-origin: 50px 50px`：变换原点距离元素左上角 50px 50px 的位置
+    
+    - `transform-origin: 0`：只写一个值的时候，第二个值默认为 50%。
+
+注意：
+
+1. 元素变换时，默认的原点是元素的中心，使用 transform-origin 可以设置变换的原点
+
+2. 修改变换原点对位移没有影响， 对旋转和缩放会产生影响
+
+3. 如果提供两个值，第一个用于横坐标，第二个用于纵坐标
+
+4. 如果只提供一个，若是像素值，表示横坐标，纵坐标取 50% ；若是关键词，则另一个坐标取 50%
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>05_多重变换</title>
+    <style>
+        .outer {
+            width: 200px;
+            height: 200px;
+            border: 2px solid black;
+            margin: 0 auto;
+            margin-top: 100px;
+        }
+        .inner {
+            width: 200px;
+            height: 200px;
+            background-color: deepskyblue;
+            /* 通过关键词调整变换原点 */
+            /* transform-origin: right bottom; */
+
+            /* 通过具体像素值调整变换原点 */
+            /* transform-origin: 50px 50px; */
+
+            /* 通过百分比调整变换原点 */
+            /* transform-origin: 25% 25%; */
+
+            /* 只给一个值 */
+            /* transform-origin:top; */
+
+            /* transform-origin: right top; */
+
+            /* 变换原点位置的改变对 旋转 有影响 */
+            /* transform: rotate(0deg); */
+
+            /* 变换原点位置的改变对 缩放 有影响 */
+            /* transform: scale(1.3); */
+
+            /* 变换原点位置的改变对 位移 没有影响 */
+            /* transform: translate(100px,100px) */
+        }
+        .test {
+            width: 50px;
+            height: 100px;
+            background-color: orange;
+        }
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <div class="inner">
+            <div class="test">你好啊</div>
+        </div>
+    </div>
+</body>
+</html>
+```
