@@ -3454,3 +3454,586 @@ li {
 </body>
 </html>
 ```
+
+## 11. 新增3D变换
+
+### 11.1 开启3D空间
+
+元素进行3d变换，必须先给父元素开启3d空间
+
+- transform-style
+  
+  - 作用：开启3d空间
+  
+  - 属性值选项
+    
+    - flat：让子元素位于此元素的二位平面（2d）内，默认
+    
+    - reserve-3d：让子元素位于此元素的三维空间内（3d）
+
+### 11.2 设置景深
+
+如果元素要进行3d变换，必须先给父元素设置景深值
+
+**什么是景深**
+
+指定观察者与 z=0 平面的距离，能让发生 3D 变换的元素，产生透视效果，看来更加立
+
+体
+
+- perspective
+  
+  - 作用：设置景深
+  
+  - 属性值选项
+    
+    - none：不指定透视，默认
+    
+    - 长度：指定观察者距离 z=0 平面的距离，不允许负值
+
+### 11.3 透视点位置
+
+所谓透视点位置，就是观察者位置；默认的透视点在元素的中心
+
+- perspective-origin
+  
+  - 作用：设置观察者位置
+  
+  - 两个值：`perspective-origin: 400px 300px;`相对坐标轴往右偏移400px， 往下偏移300px（相当于人蹲下300像素，然后向右移动400像素看元素）
+  
+  - 用得较少
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>3D变换和景深</title>
+    <style>
+        .outer {
+            width: 200px;
+            height: 200px;
+            border: 2px solid black;
+            margin: 0 auto;
+            margin-top: 100px;
+            /* 父元素必须开启3d */
+            transform-style: preserve-3d;
+            /* 开启景深，也就是要离该元素多远才能看到3d效果 */
+            perspective: 500px;
+            /* 设置透视点的位置 */
+            perspective-origin: 102px 102px;
+        }
+        .inner {
+            width: 200px;
+            height: 200px;
+            background-color: deepskyblue;
+            /* 在X轴上旋转30度 */
+            transform: rotateX(30deg);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <div class="inner">内容区</div>
+    </div>
+</body>
+</html>
+```
+
+### 11.4 3D位移
+
+3D位移比2D位移多了一个Z轴上的位移，因为元素没有厚度，所以Z轴上的位移变现为走近走远的感觉
+
+- transform
+  
+  - 3D位移相关选项
+    
+    - translateZ：设置 z 轴位移，需指定长度值，正值向屏幕外，负值向屏幕里，且不能写百分比
+    
+    - translate3d：第1个参数对应 x 轴，第2个参数对应 y 轴，第3个参数对应 z 轴，且均不能省略
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>3D位移</title>
+    <style>
+        .outer {
+            width: 200px;
+            height: 200px;
+            border: 2px solid black;
+            margin: 0 auto;
+            margin-top: 100px;
+            /* 父元素必须开启3d */
+            transform-style: preserve-3d;
+            /* 开启景深，也就是要离该元素多远才能看到3d效果 */
+            perspective: 500px;
+        }
+        .inner {
+            width: 200px;
+            height: 200px;
+            background-color: deepskyblue;
+            /* Z轴上位移，就是元素向我们走近的感觉，Z轴不能设置百分比，因为元素没有厚度 */
+            /* transform: translateZ(150px); */
+            /* X轴，Y轴，Z轴三个方向上移动，Z轴不能设置百分比 */
+            transform: translate3d(50%, 50%, 10px);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <div class="inner">内容区</div>
+    </div>
+</body>
+</html>
+```
+
+### 11.5 3D旋转
+
+3D旋转是让元素可以在X轴、Y轴上旋转
+
+- transform
+  
+  - 3D旋转的选项值
+    
+    - rotateX：设置 x 轴旋转角度，需指定一个角度值( deg )，面对 x 轴正方向：正值顺时针，负值逆时针。
+    
+    - rotateY：设置 y 轴旋转角度，需指定一个角度值( deg )，面对 y 轴正方向：正值顺时针，负值逆时针。
+    
+    - rotate3d：前 3 个参数分别表示坐标轴： x , y , z ，第 4 个参数表示旋转的角度，参数不允许省略
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>3D位移</title>
+    <style>
+        .outer {
+            width: 200px;
+            height: 200px;
+            border: 2px solid black;
+            margin: 0 auto;
+            margin-top: 100px;
+            /* 父元素必须开启3d */
+            transform-style: preserve-3d;
+            /* 开启景深，也就是要离该元素多远才能看到3d效果 */
+            perspective: 500px;
+        }
+        .inner {
+            width: 200px;
+            height: 200px;
+            background-color: deepskyblue;
+            /* 在X轴上顺时针旋转30度 */
+            /* transform: rotateX(30deg); */
+            /* 在Y轴上顺时针旋转40度 */
+            /* transform: rotateY(40deg); */
+            /* 在XYZ轴坐标上分别顺时针旋转30度，0表示不在，1表示在 */
+            transform: rotate3d(1,1,1,30deg);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <div class="inner">内容区</div>
+    </div>
+</body>
+</html>
+```
+
+### 11.6 3D缩放
+
+在2D基础上，增加了Z轴上的缩放，Z轴缩放需要加一个旋转才看得出来
+
+- transform
+  
+  - 有关3D缩放的选项值
+    
+    - scaleZ：在Z轴方向的缩放比例，值为一个数字，1表示不缩放，大于1放大，小于1缩小
+    
+    - scale3d：第1个参数对应 x 轴，第2个参数对应y轴，第3个参数对应z轴，参数不允许省略
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>3D缩放</title>
+    <style>
+        .outer {
+            width: 200px;
+            height: 200px;
+            border: 2px solid black;
+            margin: 0 auto;
+            margin-top: 100px;
+            /* 父元素必须开启3d */
+            transform-style: preserve-3d;
+            /* 开启景深，也就是要离该元素多远才能看到3d效果 */
+            perspective: 500px;
+        }
+        .inner {
+            width: 200px;
+            height: 200px;
+            background-color: deepskyblue;
+            /* 单纯在Z轴上缩放是看不出来的，要加一个旋转才能看得出来 */
+            /* transform: scaleZ(4) rotateY(30deg); */
+            transform: scale3d(1.5, 1.5, 1) rotate(45deg);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <div class="inner">内容区</div>
+    </div>
+</body>
+</html>
+```
+
+### 11.7 多重变换
+
+```css
+transform: translateZ(100px) scaleZ(3) rotateY(40deg);
+```
+
+注意：建议把旋转卸载最后
+
+### 11.8 背部可见性
+
+设置在背向元素时是否可见
+
+- backface-visibility
+  
+  - 属性值选项
+    
+    - visible：可见，默认
+    
+    - hidden：背部可不见
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>背部可见性</title>
+    <style>
+        .outer {
+            width: 200px;
+            height: 200px;
+            border: 2px solid black;
+            margin: 0 auto;
+            margin-top: 100px;
+            /* 父元素必须开启3d */
+            transform-style: preserve-3d;
+            /* 开启景深，也就是要离该元素多远才能看到3d效果 */
+            perspective: 500px;
+        }
+        .inner {
+            width: 200px;
+            height: 200px;
+            background-color: deepskyblue;
+            /* 绕Y轴旋转到背面是不会被看见 */
+            transform: rotateY(0deg);
+            backface-visibility: hidden;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <div class="inner">内容区</div>
+    </div>
+</body>
+</html>
+```
+
+## 新增过渡
+
+过渡将元素从一个样式过渡到另一个样式
+
+- transition-property
+  
+  - 作用：用于控制哪些属性可以过渡，一般有值或可以转换成值的都可以过渡
+  
+  - 属性值选项
+    
+    - `transition-property: width, height, color`允许单个或多个属性
+    
+    - `transition-property: all`：允许所有属性可以过渡的属性
+
+- transition-duration
+  
+  - 作用：用于控制过渡的时间，秒
+  
+  - 属性值选项
+    
+    - `transition-duration: 1s`：控制过渡时间为1s
+
+- transition-delay
+  
+  - 作用：控制过渡开始的延迟时间，秒
+
+- transition-timing-function
+  
+  - 作用：用于控制过渡的类型
+  
+  - 属性值选项
+    
+    - ease：平滑过渡，默认
+    
+    - linear：线性过渡
+    
+    - ease-in：慢到快
+    
+    - ease-out：快到慢
+    
+    - ease-in-out：慢到快再到慢
+    
+    - steps( integer,?)：接受两个参数的步进函数。第一个参数必须为正整数，指定函数的步数。第二个参数取值可以是 start 或 end ，指定每一步的值发生变化的时间点。第二个参数默认值为 end
+    
+    - step-start：等同于 steps(1, start)，不考虑过渡的时间，直接就是终点
+    
+    - step-end：等同于 steps(1, end)，考虑过渡时间，但无过渡效果，过渡时间到了以后，瞬间到达终点
+    
+    - cubic-bezie ( number, number, number, number)：特定的贝塞尔曲线类型
+
+- 复合属性
+  
+  - 如果设置了一个时间，表示 duration ；如果设置了两个时间，第一是 duration ，第二个是delay ；其他值没有顺序要求。
+  
+  - `transition:1s 1s linear all;`
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>高级使用</title>
+    <style>
+        .outer {
+            width: 900px;
+            height: 900px;
+            border: 1px solid black;
+        }
+        .outer:hover .box {
+            width: 900px;
+        }
+        .box {
+            width: 100px;
+            height: 100px;
+            transition-property: all;
+            transition-duration: 1s;
+        }
+        .box1 {
+            background-color: skyblue;
+            transition-timing-function: ease;
+        }
+        .box2 {
+            background-color: orange;
+            transition-timing-function: linear;
+        }
+        .box3 {
+            background-color: gray;
+            transition-timing-function: ease-in;
+        }
+        .box4 {
+            background-color: tomato;
+            transition-timing-function: ease-out;
+        }
+        .box5 {
+            background-color: green;
+            transition-timing-function: ease-in-out;
+        }
+        .box6 {
+            background-color: purple;
+            transition-timing-function: step-start;
+        }
+        .box7 {
+            background-color: deeppink;
+            transition-timing-function: step-end;
+        }
+        .box8 {
+            background-color: chocolate;
+            transition-timing-function: steps(10, start);
+        }
+        .box9 {
+            background-color: darkseagreen;
+            transition-timing-function: cubic-bezier(1,-0.01,.23,1.55);
+        }
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <div class="box box1">ease（平滑的慢->快->慢）</div>
+        <div class="box box2">linear（均速）</div>
+        <div class="box box3">ease-in（快->慢）</div>
+        <div class="box box4">ease-out（慢->快）</div>
+        <div class="box box5">ease-in-out（慢->快->慢）</div>
+        <div class="box box6">step-start（不考虑过渡时间直接到终点）</div>
+        <div class="box box7">step-end（考虑过渡时间，等过渡时间结束后，直接到终点）</div>
+        <div class="box box8">steps（分布过渡）</div>
+        <div class="box box9">cubic-bezie（贝塞尔曲线）</div>
+    </div>
+</body>
+</html>
+```
+
+## 新增动画
+
+**什么是帧**
+
+一段动画，就是一段时间内连续播放 n 个画面。每一张画面，我们管它叫做“帧”。一定时间内连续快速播放若干个帧，就成了人眼中所看到的动画。同样时间内，播放的帧数越多，画面看起来越流畅。
+
+**什么是关键帧**
+
+关键帧指的是，在构成一段动画的若干帧中，起到决定性作用的 2-3 帧。
+
+- animation-name
+  
+  - 作用：给元素指定具体的动画
+
+- animation-duration
+  
+  - 作用：设置动画所需时间
+
+- animation-delay
+  
+  - 作用：设置动画延迟
+
+- animation-timing-function
+  
+  - 作用：设置动画的类型
+  
+  - 属性值选项：和过渡一样
+
+- animation-iteration-count
+  
+  - 作用：指定动画播放的次数
+  
+  - 属性值选项
+    
+    - number：具体次数
+    
+    - infinite：无限循环
+
+- animation-direction
+  
+  - 作用：指定动画方向
+  
+  - 属性值选项
+    
+    - normal：正常方向，默认
+    
+    - reverse：反方向
+    
+    - alternate：先正常方向，然后再反方向
+    
+    - alternate-reverse：动画先反运行再正方向运行，并持续交替运行
+
+- animation-fill-mode
+  
+  - 作用：设置动画之外的状态
+  
+  - 属性值选项
+    
+    - forwards：设置对象状态为动画结束时的状态
+    
+    - backwards：设置对象状态为动画开始时的状态
+
+- animation-play-state
+  
+  - 作用：设置动画的播放状态
+  
+  - 属性值选项
+    
+    - running：运动
+    
+    - paused：暂停
+
+- 复合属性
+  
+  - 只设置一个时间表示 duration ，设置两个时间分别是： duration 和 delay ，其他属性没有数量和顺序要求
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>03_复合属性</title>
+    <style>
+        .outer {
+            width: 1000px;
+            height: 100px;
+            border: 1px solid black;
+        }
+        @keyframes xiangyoudong {
+            from {
+                
+            }
+            to {
+                transform: translate(900px) rotate(360deg);
+                background-color: purple;
+                border-radius: 50%;
+            }
+        }
+        @keyframes xiangyoudong2 {
+            0% {
+                
+            }
+            100% {
+                transform: translate(900px) rotate(360deg);
+                background-color: purple;
+                border-radius: 50%;
+            }
+        }
+        .inner {
+            width: 100px;
+            height: 100px;
+            background-color: deepskyblue;
+            /* 应用动画到元素 */
+            /* animation-name: xiangyoudong; */
+            /* 动画持续的时间 */
+            /* animation-duration: 3s; */
+            /* 动画延迟时间 */
+            /* animation-delay: 0.2s; */
+
+            /* ********其他属性--start*********** */
+            /* 设置动画的方式 */
+            /* animation-timing-function: linear; */
+
+            /* 动画播放的次数 */
+            /* animation-iteration-count: infinite; */
+
+            /* 动画的方向 */
+            /* animation-direction: alternate; */
+
+            /* 动画以外的状态（不发生动画的时候在哪里） */
+            /* animation-fill-mode: forwards; */
+
+            /* 复合属性 */
+            animation: xiangyoudong2 3s linear 0.2s infinite alternate forwards;
+        }
+        .outer:hover .inner {
+            /* 动画的播放状态 */
+            animation-play-state: paused;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <div class="inner"></div>
+    </div>
+</body>
+</html>
+```
+
+## 过渡和动画的区别
+
+- 过渡：过渡需要触发条件
+
+- 动画：不需要触发条件，比过渡有更多的表达，可以设置多个帧
