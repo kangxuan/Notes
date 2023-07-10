@@ -4037,3 +4037,31 @@ transform: translateZ(100px) scaleZ(3) rotateY(40deg);
 - 过渡：过渡需要触发条件
 
 - 动画：不需要触发条件，比过渡有更多的表达，可以设置多个帧
+
+## 多列布局
+
+用来专门做类似报纸样式的布局
+
+- column-count：指定列数
+
+- column-width：指定列宽
+
+- columns：同时指定count和width的复合属性
+
+- column-gap：设置列边距
+
+- column-rule-style：设置列与列之间边框的风格，和border-style类似
+
+- column-rule-width：设置列与列之间边框的宽度
+
+- column-rule-color：设置列与列之间边框的颜色
+
+- coumn-rule：设置列边框，复合属性
+
+- column-span：是否跨列
+  
+  - 属性值选项
+    
+    - none：不跨列，默认
+    
+    - all：跨所有列
