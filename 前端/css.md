@@ -4243,3 +4243,192 @@ transform: translateZ(100px) scaleZ(3) rotateY(40deg);
 - align-self
   
   - 作用：单独调整某个伸缩项目的对齐方式
+
+## 新增响应式布局
+
+### 1. 媒体查询-媒体类型
+
+| 值      | 含义                        |
+| ------ | ------------------------- |
+| all    | 检测所有设备                    |
+| screen | 检测电子屏幕，包括：电脑屏幕、平板屏幕、手机屏幕等 |
+| print  | 检测打印机                     |
+
+```css
+@media print {
+    h1 {
+        background: transparent;
+    }
+}
+/* 只有在屏幕上才应用的样式 */
+@media screen {
+    h1 {
+        font-family: "翩翩体-简";
+    }
+}
+/* 一直都应用的样式 */
+@media all {
+    h1 {
+        color: red;
+    }
+}
+```
+
+### 2. 媒体查询-媒体特性
+
+| 值                | 含义                                                           |
+| ---------------- | ------------------------------------------------------------ |
+| width            | 检测视口宽度                                                       |
+| max-width        | 检测视口最大宽度                                                     |
+| min-width        | 检测视口最小宽度                                                     |
+| height           | 检测视口高度                                                       |
+| max-height       | 检测视口最大高度                                                     |
+| min-height       | 检测视口最小高度                                                     |
+| device-width     | 检测设备屏幕的宽度                                                    |
+| max-device-width | 检测设备屏幕的最大宽度                                                  |
+| min-device-width | 检测设备屏幕的最小宽度                                                  |
+| orientation      | 检测视口的旋转方向，portrait：视口处于纵向，即高度大于等于宽度；landscape：视口处于横向，即宽度大于高度 |
+
+```css
+/* 检测到视口的宽度为800px时，应用如下样式 */
+@media (width:800px) {
+    h1 {
+        background-color: green;
+    }
+}
+
+/* 检测到视口的宽度小于等于700px时，应用如下样式 */
+@media (max-width:700px) {
+    h1 {
+        background-color: orange;
+    }
+}
+
+/* 检测到视口的宽度大于等于900px时，应用如下样式 */
+@media (min-width:900px) {
+    h1 {
+        background-color: deepskyblue;
+    }
+}
+
+/* 检测到视口的高度等于800px时，应用如下样式 */
+/* @media (height:800px){
+    h1 {
+        background-color: yellow;
+    }
+} */
+
+/* 检测到屏幕的宽度等于1536px时，应用如下样式 */
+/* @media (device-width:1536px) {
+    h1 {
+        color: white;
+    }
+} */
+```
+
+### 3. 运算符
+
+| 值      | 含义  |
+| ------ | --- |
+| and    | 且   |
+| , 或 or | 或   |
+| not    | 非   |
+| only   | 只是  |
+
+```css
+/* 且运算符 */
+/* @media (min-width:700px) and (max-width:800px) {
+    h1 {
+        background-color: orange;
+    }
+} */
+/* @media screen and (min-width:700px) and (max-width:800px) {
+    h1 {
+        background-color: orange;
+    }
+} */
+
+/* 或运算符 */
+/* @media screen and (max-width:700px) or (min-width:800px) {
+    h1 {
+        background-color: orange;
+    }
+} */
+
+/* 否定运算符 */
+/* @media not screen {
+    h1 {
+        background-color: orange;
+    }
+} */
+
+/* 肯定运算符 */
+@media only screen and (width:800px) {
+    h1 {
+        background-color: orange;
+    }
+}
+```
+
+### 4. 常用阈值
+
+**方式一**
+
+```html
+<link rel="stylesheet" media="screen and (min-width:1200px)" href="./css/huge.css">
+```
+
+**方式二**
+
+```css
+@media screen and (max-width:768px) {
+    /*CSS-Code;*/ 
+}
+@media screen and (min-width:768px) and (max-width:1200px) {
+    /*CSS-Code;*/ 
+}
+```
+
+## BFC
+
+**什么是BFC**
+
+块格式化上下文（Block Formatting Context，BFC） 是 Web 页面的可视 CSS 渲染的一部分，是块盒子的布局过程发生的区域，也是浮动元素与其他元素交互的区域。
+
+**更通俗的解释**
+
+- BFC 是 Block Formatting Context （块级格式上下文），可以理解成元素的一个“特异功能”。
+
+- 该 “特异功能”，在默认的情况下处于关闭状态；当元素满足了某些条件后，该“特异功能”被激活。
+
+- 所谓激活“特异功能”，专业点说就是：该元素创建了 BFC （又称：开启了 BFC ）
+
+**开启BFC能解决什么问题**
+
+- 元素开启 BFC 后，其子元素不会再产生 margin 塌陷问题
+
+- 元素开启 BFC 后，自己不会被其他浮动元素所覆盖
+
+- 元素开启 BFC 后，就算其子元素浮动，元素自身高度也不会塌陷
+
+**如何开启BFC**
+
+- 根元素
+
+- 浮动元素
+
+- 绝对定位、固定定位的元素
+
+- 行内块元素
+
+- 表格单元格： table 、 thead 、 tbody 、 tfoot 、 th 、 td 、 tr 、 caption
+
+- overflow 的值不为 visible 的块元素
+
+- 伸缩项目
+
+- 多列容器
+
+- column-span 为 all 的元素（即使该元素没有包裹在多列容器中）
+
+- display 的值，设置为 flow-root
