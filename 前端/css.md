@@ -3972,7 +3972,7 @@ transform: translateZ(100px) scaleZ(3) rotateY(40deg);
         }
         @keyframes xiangyoudong {
             from {
-                
+
             }
             to {
                 transform: translate(900px) rotate(360deg);
@@ -3982,7 +3982,7 @@ transform: translateZ(100px) scaleZ(3) rotateY(40deg);
         }
         @keyframes xiangyoudong2 {
             0% {
-                
+
             }
             100% {
                 transform: translate(900px) rotate(360deg);
@@ -4021,7 +4021,7 @@ transform: translateZ(100px) scaleZ(3) rotateY(40deg);
             /* 动画的播放状态 */
             animation-play-state: paused;
         }
-        
+
     </style>
 </head>
 <body>
