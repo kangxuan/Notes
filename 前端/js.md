@@ -119,6 +119,69 @@ div.classList.toggle("border")
 </body>
 ```
 
+# Dom事件
+
+### 1. 事件监听
+
+**什么是事件监听**
+
+就是让程序监听是否有事件发生，一旦有事件发生则调用一个函数响应。比如鼠标经过显示下拉菜单，鼠标经过轮播图的点显示不同的图。
+
+**事件监听三要素**
+
+- 事件源
+
+- 事件类型
+
+- 事件调用的函数
+
+```javascript
+// 事件源.addEventListener('事件类型', 事件调用的函数)
+// 选择元素
+const btn = document.querySelector("button")
+btn.addEventListener('click', function() {
+    alert("您点击了这个按钮")
+})
+```
+
+**点击事件**
+
+```javascript
+<body>
+    <div class="banner">
+        广告位
+        <button>X</button>
+    </div>
+    <script>
+        const btn = document.querySelector(".banner button")
+        btn.addEventListener('click', function() {
+            const banner = document.querySelector(".banner")
+            banner.classList.add("hidden")
+        })
+    </script>
+</body>
+```
+
+### 2. 事件类型
+
+**鼠标事件**
+
+- click：鼠标点击
+
+- mouseenter：鼠标经过
+
+- mouseleave：鼠标离开
+
+**焦点事件**
+
+- focus：获取焦点
+
+- blur：失去焦点
+
+**键盘事件**
+
+**文本事件**
+
 # 内置函数
 
 ### 1. 间歇函数-定时器
@@ -137,5 +200,30 @@ clearInterval(n)
 **用户注册协议案例**
 
 ```html
-
+<body>
+    <textarea name="" id="" cols="30" rows="10">
+        用户注册协议
+        欢迎注册成为京东用户！在您注册过程中，您需要完成我们的注册流程并通过点击同意的形式在线签署以下协议，请您务必仔细阅读、充分理解协议中的条款内容后再点击同意（尤其是以粗体或下划线标识的条款，因为这些条款可能会明确您应履行的义务或对您的权利有所限制）。
+        【请您注意】如果您不同意以下协议全部或任何条款约定，请您停止注册。您停止注册后将仅可以浏览我们的商品信息但无法享受我们的产品或服务。如您按照注册流程提示填写信息，阅读并点击同意上述协议且完成全部注册流程后，即表示您已充分阅读、理解并接受协议的全部内容，并表明您同意我们可以依据协议内容来处理您的个人信息，并同意我们将您的订单信息共享给为完成此订单所必须的第三方合作方（详情查看
+    </textarea>
+    <br>
+    <button disabled>我已经阅读用户协议(5)</button>
+    <script>
+        // 获取button元素
+        const button = document.querySelector("button")
+        // 定时器
+        let i = 5
+        let n = setInterval(function() {
+            i--
+            button.innerHTML = `我已经阅读用户协议(${i})`
+            if (i === 0) {
+                // 关闭定时器
+                clearInterval(n)
+                // 设置
+                button.disabled = false
+                button.innerHTML = "同意"
+            }
+        }, 1000)
+    </script>
+</body>
 ```
