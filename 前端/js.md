@@ -178,9 +178,47 @@ btn.addEventListener('click', function() {
 
 - blur：失去焦点
 
+```js
+const search = document.querySelector(".search")
+const resultList = document.querySelector(".result-list")
+search.addEventListener('focus', function() {
+    resultList.classList.remove("hidden")
+})
+search.addEventListener('blur', function() {
+    resultList.classList.add("hidden")
+})
+```
+
 **键盘事件**
 
+- keydown：键盘按下
+
+- keyup：键盘抬起
+
 **文本事件**
+
+- input：用户输入事件
+
+```html
+<body>
+    <div class="comment">
+        <textarea name="" id="" placeholder="请您友善发言"></textarea>
+        <span>0</span>
+        <button>发布</button>
+    </div>
+    <script>
+        const input = document.querySelector(".comment textarea")
+        const span = document.querySelector(".comment span")
+        input.addEventListener('input', function(){
+            span.innerHTML = input.value.length
+        })
+    </script>
+</body>
+```
+
+### 3. 事件对象
+
+
 
 # 内置函数
 
