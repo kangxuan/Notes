@@ -189,11 +189,33 @@ search.addEventListener('blur', function() {
 })
 ```
 
+css也有对应的伪类选择器
+
+```css
+input {
+    width: 200px;
+    transition: all .3s;
+}
+/* 伪类选择器可以替换focus事件 */
+input:focus {
+    width: 300px;
+}
+```
+
 **键盘事件**
 
 - keydown：键盘按下
 
 - keyup：键盘抬起
+
+```js
+input.addEventListener('keydown', function () {
+  console.log('键盘按下了')
+})
+input.addEventListener('keyup', function () {
+  console.log('键盘谈起了')
+})
+```
 
 **文本事件**
 
@@ -202,13 +224,13 @@ search.addEventListener('blur', function() {
 ```html
 <body>
     <div class="comment">
-        <textarea name="" id="" placeholder="请您友善发言"></textarea>
-        <span>0</span>
+        <input type="text" placeholder="请您友善发言">
         <button>发布</button>
     </div>
+    <div class="stat"><span>0</span>/50字</div>
     <script>
-        const input = document.querySelector(".comment textarea")
-        const span = document.querySelector(".comment span")
+        const input = document.querySelector(".comment input")
+        const span = document.querySelector(".stat span")
         input.addEventListener('input', function(){
             span.innerHTML = input.value.length
         })
@@ -218,7 +240,21 @@ search.addEventListener('blur', function() {
 
 ### 3. 事件对象
 
+事件对象是存事件的相关信息的对象，比如说鼠标点击事件，事件对象存了鼠标点击的位置等等。
 
+**如何获取事件对象**
+
+在事件绑定的回调函数的第一个参数就是事件对象
+
+```js
+// 对象.addEventListener('input', function(e) {...})
+```
+
+**示例**
+
+```js
+// 按下回车键提交
+```
 
 # 内置函数
 
