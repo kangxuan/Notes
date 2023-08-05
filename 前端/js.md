@@ -162,6 +162,24 @@ btn.addEventListener('click', function() {
 </body>
 ```
 
+**解绑事件**
+
+```js
+// L0事件解绑
+btn.onclick = function() {
+    alert("点击效果")
+    // 执行一次后阻止事件
+    btn.onclick = null
+}
+
+// L2事件解绑，匿名函数无法被解绑，需要定义函数
+const fn = function(){
+    alert("点击效果")
+    btn.removeEventListener('click', fn)
+}
+btn.addEventListener('click', fn)
+```
+
 ### 2. 事件类型
 
 **鼠标事件**
@@ -254,6 +272,120 @@ input.addEventListener('keyup', function () {
 
 ```js
 // 按下回车键提交
+tx.addEventListener('keyup', function(e) {
+    if (e.key === 'Enter') {
+        list.classList.remove('hidden')
+        text.innerHTML = tx.value
+        tx.value = ''
+    }
+})
+```
+
+### 4. 环境对象
+
+每个函数里面都有this 环境对象  普通函数里面this指向的是window
+
+```js
+function fn() {
+    console.log(this)
+}
+window.fn()
+
+const btn = document.querySelector("button")
+btn.addEventListener('click', function(){
+    this.style.color = 'red'
+})
+```
+
+### 5. 回调函数
+
+把函数当做另外一个函数的参数传递，这个函数就叫回调函数
+
+```js
+// 按下回车提交
+tx.addEventListener('keyup', function(e) {
+    if (e.key === 'Enter') {
+        // 判断是否输入内容
+        let val = tx.value
+        if (val.trim()) {
+            list.classList.remove('hidden')
+            text.innerHTML = val
+        }
+        tx.value = ''
+        total.innerHTML = '0/200字'
+    }
+})
+```
+
+### 6. 事件流
+
+事件流是事件完成执行过程的流动过程（路径），事件流包括事件捕获和事件冒泡两个过程，其中事件捕获是从外到里，事件冒泡是从里到外，是事件捕获的逆过程。
+
+**事件捕获（少用）**
+
+```html
+<body>
+    <div class="father">
+        <div class="son"></div>
+    </div>
+    <script>
+        const fa = document.querySelector(".father")
+        const son = document.querySelector(".son")
+        document.addEventListener('click', function(){
+            alert("我是爷爷")
+        }, true)
+        fa.addEventListener('click', function(){
+            alert("我是father")
+        }, true)
+        son.addEventListener('click', function(){
+            alert("我是son")
+        }, true)
+    </script>
+</body>
+<!-- 通过加上true参数就是事件冒泡 -->
+<!-- 依次弹框：我是爷爷、我是father、我是son -->
+```
+
+注意：
+
+- 若是用 L0 事件（`btn.onclick`等）监听，则只有冒泡阶段，没有捕获。
+
+**事件冒泡（常见）**
+
+当一个元素事件被触发时，同样的事件会在元素的所有祖先元素一次被触发（祖先元素得有这个同名事件），被称为事件冒泡，冒泡是默认存在的。
+
+```html
+<body>
+    <div class="father">
+        <div class="son"></div>
+    </div>
+    <script>
+        const fa = document.querySelector(".father")
+        const son = document.querySelector(".son")
+        document.addEventListener('click', function(){
+            alert("我是爷爷")
+        })
+        fa.addEventListener('click', function(){
+            alert("我是father")
+        })
+        son.addEventListener('click', function(){
+            alert("我是son")
+        })
+    </script>
+</body>
+<!-- 依次弹框：我是son、我是father、我是爷爷 -->
+```
+
+**阻止冒泡**
+
+开发中，有不要事件冒泡，可以进行阻止冒泡。
+
+```js
+son.addEventListener('click', function(e){
+    alert("我是son")
+    // 阻止事件流动，不光可以阻止冒泡，也可以用来阻止捕获
+    e.stopPropagation()
+})
 ```
 
 # 内置函数
