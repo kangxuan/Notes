@@ -127,6 +127,28 @@ div.classList.toggle("border")
 
 就是让程序监听是否有事件发生，一旦有事件发生则调用一个函数响应。比如鼠标经过显示下拉菜单，鼠标经过轮播图的点显示不同的图。
 
+**事件级别**
+
+- L0级别，老版本的on事件
+
+```js
+btn.onclick = function() {
+    alert("点击效果")
+}
+```
+
+- L2级别，新版的querySelector等
+
+```js
+btn.addEventListener('click', fn)
+```
+
+**事件级别的区别**
+
+- L0同一对象的注册事件后面的会覆盖前面的，L2不会。
+
+- 
+
 **事件监听三要素**
 
 - 事件源
@@ -255,6 +277,86 @@ input.addEventListener('keyup', function () {
     </script>
 </body>
 ```
+
+**页面加载事件**
+
+页面加载事件主要是为了让页面加载完之后再调用，有些老代码讲js写到页面上方。
+
+- load：等待所有元素加载完成后执行
+
+- DOMContentLoaded：等待Dom节点加载完后执行
+
+```html
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // window是外层的，等待所有资源加载完成
+        window.addEventListener('load', function(){
+            const btn = document.querySelector('button')
+            btn.addEventListener('click', function(){
+                alert("clicked")
+            })
+        })
+        // 也可以等待具体的某个资源加载完成
+        //const img = document.querySelector('img')
+        //img.addEventListener('load', function(){
+        //
+        //})
+    </script>
+</head>
+<body>
+    <button>点击</button>
+</body>
+```
+
+```html
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>等待页面节点加载完成</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            const btn = document.querySelector('button')
+            btn.addEventListener('click', function(){
+                alert("clicked")
+            })
+        })
+    </script>
+</head>
+<body>
+    <button>点击</button>
+</body>
+```
+
+**元素滚动事件**
+
+- scroll：元素或window滚动
+
+```js
+// 整个窗口滚动
+// window.addEventListener('scroll', function(){
+//     console.log("我滚了");
+// })
+// 某个元素滚动
+// const div = document.querySelector('div')
+// div.addEventListener('scroll', function(){
+//     console.log('div 滚了')
+// })
+// scrollTop和scrollLeft是元素的滚动卷的距离
+// 某个元素的scrollTop
+// const div = document.querySelector('div')
+// div.addEventListener('scroll', function(){
+//     console.log(div.scrollTop);
+// })
+// 整个窗口的scrollTop
+window.addEventListener('scroll', function(){
+    console.log(document.documentElement.scrollTop)
+})
+```
+
+**页面尺寸事件**
 
 ### 3. 事件对象
 
@@ -386,6 +488,53 @@ son.addEventListener('click', function(e){
     // 阻止事件流动，不光可以阻止冒泡，也可以用来阻止捕获
     e.stopPropagation()
 })
+```
+
+**阻止默认行为**
+
+开发中，一些标签的默认行为需要阻止，比如说input的submit默认提交需要阻止
+
+```html
+<body>
+    <a href="https://www.baidu.com">百度</a>
+    <script>
+        const a = document.querySelector("a")
+        a.addEventListener('click', function(e) {
+            // 阻止默认的跳转行为
+            e.preventDefault()
+        })
+    </script>
+</body>
+```
+
+### 7. 事件委托
+
+事件委托是一种开发技巧，利用了事件流的一些特性。
+
+**解决了什么问题**
+
+给父元素下所有子元素注册事件，可采用事件冒泡原理给父元素注册事件，统一给子元素注册事件，减少注册事件次数。
+
+```html
+<body>
+    <ul>
+        <li>第1个小丽</li>
+        <li>第2个小丽</li>
+        <li>第3个小丽</li>
+        <li>第4个小丽</li>
+        <li>第5个小丽</li>
+        <p>PP</p>
+    </ul>
+    <script>
+        const ul = document.querySelector('ul')
+        ul.addEventListener('click', function(e){
+            // console.dir(e.target)
+            if (e.target.tagName === 'LI') {
+                e.target.style.color = 'red'
+            }
+        })
+    </script>
+</body>
 ```
 
 # 内置函数
