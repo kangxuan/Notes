@@ -358,6 +358,14 @@ window.addEventListener('scroll', function(){
 
 **页面尺寸事件**
 
+- resize：当屏幕尺寸发生变化的时候
+
+```js
+window.addEventListener('resize', function(){
+    console.log("屏幕尺寸发生了变化");
+})
+```
+
 ### 3. 事件对象
 
 事件对象是存事件的相关信息的对象，比如说鼠标点击事件，事件对象存了鼠标点击的位置等等。
@@ -535,6 +543,27 @@ son.addEventListener('click', function(e){
         })
     </script>
 </body>
+```
+
+### 8. 元素尺寸
+
+- clientWidth：获取元素宽（width+padding）
+
+- clientHeight：获取元素高（height+padding）
+
+- offsetWidth：获取元素自身宽（width+padding+border）
+
+- offsetHeight：获取元素自身高（height+padding+border）
+
+- offsetTop：获取元素到定位父元素的垂直距离（从border开始算，不包括border）
+
+- offsetLeft：获取元素到定位父元素的水平距离（从border开始算，不包括border）
+
+```js
+const div = document.querySelector("div")
+console.log(div.clientHeight)
+console.log(div.offsetHeight)
+console.log(div.offsetTop)
 ```
 
 # 内置函数

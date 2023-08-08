@@ -48,3 +48,29 @@
     </script>
 </body>
 ```
+
+### 2. 电梯案例
+
+```js
+// 电梯随着滚动显隐
+const elevator = document.querySelector('.xtx-elevator')
+window.addEventListener('scroll', function(){
+  const n = document.documentElement.scrollTop
+  // 当卷300则显示，否则不显示
+  elevator.style.opacity = n >= 300 ? 1 : 0
+})
+// 回到顶部
+const toTop = document.querySelector('#backTop')
+toTop.addEventListener('click', function(){
+  // 设置scrollTop直接回到顶部
+  document.documentElement.scrollTop = 0
+  // 另一种写法采用scrollTo方法
+  // window.scrollTo(0, 0)
+})
+```
+
+### 3. 固定头部案例
+
+```html
+
+```
