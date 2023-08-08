@@ -559,6 +559,10 @@ son.addEventListener('click', function(e){
 
 - offsetLeft：获取元素到定位父元素的水平距离（从border开始算，不包括border）
 
+- scrollTop：被卷去的头部
+
+- scrollLeft：被卷去的左部
+
 ```js
 const div = document.querySelector("div")
 console.log(div.clientHeight)
@@ -610,4 +614,42 @@ clearInterval(n)
         }, 1000)
     </script>
 </body>
+```
+
+### 2. 时间对象
+
+**获取时间对象**
+
+```js
+// 当前时间
+const date = new Date()
+// 指定时间
+const date1 = new Date('2022-5-1 08:30:00')
+```
+
+**时间对象方法**
+
+```js
+const date = new Date()
+// 获取年份
+const year = date.getFullYear()
+// 获取月份，需要加1
+const month = date.getMonth() + 1
+// 获取天
+const day = date.getDate()
+// 获取星期几
+const week = date.getDay()
+// 获取时
+const hour = date.getHours()
+// 获取分
+const minu = date.getMiuntes()
+// 获取秒
+const seco = date.getSeconds()
+// 获取时间戳
+let ts = date.getTime() // 第一种方法
+let ts = +new Date() // 第二种方法
+let ts = Date.now() // 第三种方法
+let ts = +new Date('2023-08-08 11:12:13') // 获取具体时间的时间戳
+// 获取当前时间格式 2023/08/08 11:12:13
+const str = date.toLocaleString()
 ```
