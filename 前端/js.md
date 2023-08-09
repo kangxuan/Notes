@@ -366,6 +366,16 @@ window.addEventListener('resize', function(){
 })
 ```
 
+**M端事件**
+
+- touchstart：手指触摸到DOM时触发
+
+- touchmove：手指在DOM上滑动时触发
+
+- touchend：手指在DOM上离开时触发
+
+``` js
+
 ### 3. 事件对象
 
 事件对象是存事件的相关信息的对象，比如说鼠标点击事件，事件对象存了鼠标点击的位置等等。
@@ -568,6 +578,58 @@ const div = document.querySelector("div")
 console.log(div.clientHeight)
 console.log(div.offsetHeight)
 console.log(div.offsetTop)
+```
+
+# 节点操作
+
+### 1. 节点-查
+
+- 查父级：parentNode
+
+- 查子集：children
+
+- 查兄弟：nextElementSibling、previousElementSibling
+
+```js
+// 查父级
+const bady = document.querySelector('.baby')
+console.log(bady.parentNode)
+console.log(bady.parentNode.parentNode)
+// 查子集，是一个伪数组
+console.log(baby.children)
+// 查兄弟
+const li3 = document.querySelector('li:nth-child(2)')
+console.log(li3.nextElementSibling);
+console.log(li3.previousElementSibling)
+```
+
+### 2. 节点-增
+
+- 创建新节点：document.createElement(标签名称)
+
+- 追加节点
+  
+  - 追加到最后：parent.appendChild(child)
+  
+  - 追加到前面：parent.insert(child, refChild)，如果refChild不存在则默认使用appendChild的方式追加
+  
+  - 追加已存在的节点则是移动节点
+
+```js
+// 追加新创建的节点
+const ul = document.querySelector('ul')
+const newLi = document.createElement('li')
+newLi.innerHTML = '哦豁'
+ul.insertBefore(newLi, ul.children[0])
+```
+
+### 3. 节点-删
+
+- 删除子节点：parent.removeChild(child)
+
+```js
+const ul = document.querySelector('ul')
+ul.removeChild(ul.children[0])
 ```
 
 # 内置函数
