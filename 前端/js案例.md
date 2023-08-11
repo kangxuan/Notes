@@ -271,7 +271,7 @@ toTop.addEventListener('click', function(){
                     </tr>
                 </thead>
                 <tbody>
-                    
+
                 </tbody>
             </table>
         </div>
@@ -334,6 +334,40 @@ toTop.addEventListener('click', function(){
             }
         }
 
+    </script>
+</body>
+</html>
+```
+
+### 6. 支付成功跳转
+
+```js
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>支付成功自动跳转</title>
+    <style>
+        span {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <a href="https://www.baidu.com">支付成功<span>5</span>秒后之后自动跳转到首页</a>
+    <script>
+        let i = 5
+        const a = document.querySelector('a')
+        setInterval(function(){
+            i--
+            if (i <= 0) {
+                // 跳转
+                location.href = a.href
+                return 
+            }
+            a.innerHTML = `支付成功<span>${i}</span>秒后之后自动跳转到首页`
+        }, 1000)
     </script>
 </body>
 </html>

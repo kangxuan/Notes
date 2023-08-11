@@ -374,7 +374,9 @@ window.addEventListener('resize', function(){
 
 - touchend：手指在DOM上离开时触发
 
-``` js
+```js
+
+```
 
 ### 3. 事件对象
 
@@ -632,6 +634,132 @@ const ul = document.querySelector('ul')
 ul.removeChild(ul.children[0])
 ```
 
+# BOM操作
+
+### 1. window对象
+
+- window对象是全局对象，也可以说是JavaScript中的顶级对象
+
+- 通过var定义的全局作用域中的变量、函数都会变成window对象的属性和方法
+
+- window对象下的属性和方法调用时都可以省略window
+
+```js
+console.log(document === window.document);
+// 全局定义的函数会变成window的方法
+function fn() {
+    console.log(123)
+}
+window.fn()
+// var定义的全局变量会变成window的变量
+var num = 10
+console.log(window.num)
+```
+
+### 2. location对象
+
+location对象主要负责网页的地址栏
+
+- location.href：跳转网页
+
+- location.reload()：刷新页面
+
+- location.search()：搜索?后面的内容
+
+- location.hash：搜索#后面的内容
+
+### 3. navigator对象
+
+navigator对象主要是负责获取浏览器的信息
+
+- navigator.userAgent：获取浏览器的userAgent
+
+### 4. history对象
+
+history对象用来管理历史对象
+
+- history.forward()：向前
+
+- history.back()：向后
+
+- history.go()：向前或向后几步
+
+```html
+<body>
+    <button>后退</button>
+    <button>前进</button>
+    <script>
+        const back = document.querySelector('button:first-child')
+        const forward = back.nextElementSibling
+        back.addEventListener('click', function(){
+            // history.back()
+            history.go(-1)
+        })
+        forward.addEventListener('click', function(){
+            // history.forward()
+            history.go(1)
+        })
+
+    </script>
+</body>
+```
+
+# 本地存储
+
+### 1. localStorage
+
+**作用**
+
+可以将数据永久存储在本地(用户的电脑), 除非手动删除，否则关闭页面也会存在
+
+**特性**
+
+- 可以多窗口（页面）共享（同一浏览器可以共享）
+
+- 以键值对的形式存储使用
+
+- 只能存储字符串
+
+**用法**
+
+- localStorage.setItem('键', ’值‘)：设置
+
+- localStorage.getItem('键')：获取
+
+- localStorage.removeItem('键')：移除
+
+```js
+// 存
+localStorage.setItem('uname', '山辣')
+// 取
+const uname = localStorage.getItem('uname')
+console.log(uname)
+// 删
+localStorage.removeItem('uname')
+
+// json
+const obj = {
+    uname: '山辣',
+    age: 19
+}
+localStorage.setItem('info', JSON.stringify(obj))
+
+const info = localStorage.getItem('info')
+console.log(JSON.parse(info))
+```
+
+### 2. sessionStorage
+
+**特性**
+
+- 生命周期为关闭浏览器窗口
+
+- 在同一个窗口(页面)下数据可以共享
+
+- 以键值对的形式存储使用
+
+- 用法和localStorage类似
+
 # 内置函数
 
 ### 1. 间歇函数-定时器
@@ -714,4 +842,33 @@ let ts = Date.now() // 第三种方法
 let ts = +new Date('2023-08-08 11:12:13') // 获取具体时间的时间戳
 // 获取当前时间格式 2023/08/08 11:12:13
 const str = date.toLocaleString()
+```
+
+### 3. 延时函数-延时器
+
+- 延时器需要等待，所以后面的代码会先执行
+
+- 没调用延时器都会产生一个新的延时器
+
+```js
+// 设置延时器
+// let timerId = setTimeout(回调函数, 延迟时间)
+
+// 清除延时
+// clearTimeout(timerId)
+// 自动关闭广告位
+setTimeout(function(){
+    const banner = document.querySelector('.banner')
+    banner.style.display = 'none'
+}, 5000)
+```
+
+```js
+console.log(1)
+console.log(2)
+setTimeout(function(){
+    console.log(3)
+}, 0)
+console.log(4)
+// 输出 1 2 4 3
 ```
