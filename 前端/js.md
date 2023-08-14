@@ -260,6 +260,7 @@ input.addEventListener('keyup', function () {
 **文本事件**
 
 - input：用户输入事件
+- change：内容发生变化
 
 ```html
 <body>
@@ -273,6 +274,19 @@ input.addEventListener('keyup', function () {
         const span = document.querySelector(".stat span")
         input.addEventListener('input', function(){
             span.innerHTML = input.value.length
+        })
+    </script>
+</body>
+```
+
+```html
+<body>
+    <!-- <input type="text"> -->
+    <input type="checkbox">
+    <script>
+        const input = document.querySelector('input')
+        input.addEventListener('change', function(){
+            console.log('111')
         })
     </script>
 </body>
@@ -759,6 +773,147 @@ console.log(JSON.parse(info))
 - 以键值对的形式存储使用
 
 - 用法和localStorage类似
+
+# 正则表达式
+
+### 1. 正则表达式的语法
+
+- 书写在//之间的字符叫做正则表达式
+
+- 正则表达式是一个对象类型数据
+
+- test方法用于判断是否符合规则的字符串，返回true或false
+
+- exec方法用于检索负责规则的字符串，返回数组或null
+
+```js
+const str = '我学习前端主要是我要做全栈工程师'
+// 定义正则表达式
+const reg = /前端/
+// test返回true or false
+console.log(reg.test(str))
+// exec返回数组 or null，数组中包含了匹配的结果信息
+console.log(reg.exec(str))
+```
+
+### 2. 元字符
+
+**量词**
+
+| 量词    | 说明       |
+| ----- | -------- |
+| *     | 重复0次或多次  |
+| +     | 重复1次或多次  |
+| ?     | 重复0次或1次  |
+| {n}   | 重复n次     |
+| {n,}  | 重复n次或更多次 |
+| {n,m} | 重复n次到m次  |
+
+```js
+// 量词
+// * 表示 0次或多次
+// /^哈*$/ 表示精确匹配“哈”，可以出现多次或0次
+console.log(/^哈*$/.test('哈哈哈')) // true
+console.log(/^哈*$/.test('')) // true
+console.log(/^哈*$/.test('二哈哈')) // false，因为出现了“二”，不满足
+
+console.log('---------------------------')
+// + 表示 1次或多次
+console.log(/^哈+$/.test('哈哈哈')) // true
+console.log(/^哈+$/.test('')) // false
+console.log(/^哈+$/.test('二哈哈')) // false，因为出现了“二”，不满足
+
+console.log('---------------------------')
+// ? 表示 0次或1次
+console.log(/^哈?$/.test('哈')) // true 出现了1次
+console.log(/^哈?$/.test('哈哈')) // false 出现了2次
+console.log(/^哈?$/.test('')) // true // 出现0次
+console.log(/^哈?$/.test('二哈哈')) // 不是全部是哈
+
+console.log('---------------------------')
+// {n} 表示出现n次
+console.log(/^哈{4}$/.test('哈')) // false
+console.log(/^哈{4}$/.test('哈哈哈哈')) // true
+
+console.log('---------------------------')
+// {n,} 表示n次或>n次
+console.log(/^哈{4,}$/.test('哈哈哈')) // false
+console.log(/^哈{4,}$/.test('哈哈哈哈')) // true
+console.log(/^哈{4,}$/.test('哈哈哈哈哈')) // true
+
+console.log('---------------------------')
+// {n,m} 表示>=n&&<=m次
+console.log(/^哈{4,5}$/.test('哈哈哈')) // false
+console.log(/^哈{4,5}$/.test('哈哈哈哈')) // true
+console.log(/^哈{4,5}$/.test('哈哈哈哈哈')) // true
+```
+
+**字符**
+
+| 字符      | 说明                      |
+| ------- | ----------------------- |
+| []      | 匹配字符集合，只要包含[]内任意一个字符则成功 |
+| [..-..] | []和-结合表示范围匹配            |
+| [^...]  | []和^结合表示取反匹配            |
+| .       | 匹配除换行符之外的任意单个字符         |
+
+```js
+// 字符类
+// [abc] 只选一个
+console.log(/^[abc]$/.test('a')) // true
+console.log(/^[abc]$/.test('ab'))  // false，因为只取一个，且是精准匹配
+console.log(/^[abc]{2}$/.test('ab'))  // true，匹配2个
+
+console.log('---------------------------')
+// [a-z] 只选1个
+console.log(/^[A-Z]$/.test('p'))  // false
+console.log(/^[A-Z]$/.test('P'))  // true
+console.log(/^[0-9]$/.test('22')) // false
+console.log(/^[0-9]{2}$/.test('22'))  // true
+```
+
+**边界符**
+
+| 边界符 | 说明                                |
+| --- | --------------------------------- |
+| ^   | 匹配行首的文本（以谁开头）                     |
+| $   | 匹配行尾的文本（以谁结尾）                     |
+| \d  | [0-9]                             |
+| \D  | [^0-9]                            |
+| \w  | [a-zA-Z0-9_]                      |
+| \W  | [^a-zA-Z0-9_]                     |
+| \s  | 匹配空格（包括换行符、制表符、空格符等），[\t\r\n\v\f] |
+| \S  | 匹配非空格，[^\t\r\n\v\f]               |
+
+*如果^和$一起使用表示精准匹配*
+
+```js
+// 边界符
+console.log(/^哈/.test('哈')) // true
+console.log(/^哈/.test('二哈')) // false
+console.log(/哈$/.test('二哈')) // true
+console.log(/^哈$/.test('哈')) // true，如果^和$同时存在表示精准匹配
+console.log(/^哈$/.test('哈哈')) // false
+console.log(/^哈$/.test('二哈')) // false
+```
+
+**修饰符**
+
+| 修饰符 | 说明             |
+| --- | -------------- |
+| i   | 正则匹配时字母不区分大小写  |
+| g   | 匹配所有满足正则表达式的结果 |
+
+```js
+console.log(/^java$/.test('java')) // true
+console.log(/^java$/i.test('JAVA')) // true
+console.log(/^java$/i.test('Java')) // true
+
+const str = 'java是一门编程语言， 学完JAVA工资很高'
+// const re = str.replace(/java|JAVA/g, '前端')
+const re = str.replace(/java/ig, '前端')
+console.log(re)  // 前端是一门编程语言， 学完前端工资很高
+```
 
 # 内置函数
 

@@ -372,3 +372,36 @@ toTop.addEventListener('click', function(){
 </body>
 </html>
 ```
+
+### 7. 过滤敏感词
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>过滤敏感词</title>
+</head>
+<body>
+    <textarea name="" id="" cols="30" rows="10"></textarea>
+    <button>发布</button>
+    <span></span>
+    <script>
+        const tx = document.querySelector('textarea')
+        const btn = document.querySelector('button')
+        const span = document.querySelector('span')
+        btn.addEventListener('click', function(){
+            span.innerHTML = tx.value.replace(/激情|基情/g, '**')
+            tx.value = ''
+        })
+    </script>
+</body>
+</html>
+```
+
+### 8. 注册校验
+
+```js
+
+```
