@@ -208,9 +208,11 @@ btn.addEventListener('click', fn)
 
 - click：鼠标点击
 
-- mouseenter：鼠标经过
+- mouseenter：鼠标经过，无冒泡
 
 - mouseleave：鼠标离开
+
+- mouseover：鼠标经过，会有冒泡
 
 **焦点事件**
 
