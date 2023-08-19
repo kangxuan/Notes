@@ -1108,8 +1108,203 @@ func()
 变量提升是 JavaScript 中比较“奇怪”的现象，它允许在变量声明之前即被访问（仅存在于var声明变量）
 
 ```js
+// 先访问str
+console.log(str + ' world！')
+// 再声明str（var）
+// let str = 'hello' // 代码会报错
+var str = 'hello' // 代码不会报错，但输出是：undefined world！
+```
+
+# 函数
+
+### 1. 函数提升
+
+和变量提升类似，在函数声明之前使用的情况
+
+```js
+// 正确
+foo()
+function foo() {
+    console.log('函数在定义之前使用')
+}
+// 错误：Uncaught TypeError: foo1 is not a function
+foo1()
+var foo1 = function() {
+    console.log('函数在定义之前使用')
+}
+```
+
+### 2. 函数参数
+
+**动态参数**
+
+当不确定参数个数时，通过动态参数来实现。
+
+```js
+function sum() {
+    let s = 0
+    for (let i=0;i<arguments.length; i++) {
+        s += arguments[i]
+    }
+    return s
+}
+
+console.log(sum(1, 2, 3, 4, 5, 6))
+```
+
+**剩余参数**
+
+... 是语法符号，置于最末函数形参之前，用于获取多余的实参
+
+```js
+function config(baseURL, ...other) {
+    console.log(baseURL)
+    // other 是一个真数组
+    console.log(other)
+}
+config('http://baidu.com', 'get', 'json')
+```
+
+### 3. 展开运算符
+
+用来将数组进行展开
+
+```js
+const arr = [1, 2, 3, 4, 5, 6]
+console.log(Math.max(...arr))
+console.log(Math.min(...arr))
+```
+
+### 4. 箭头函数
+
+**箭头函数用来干啥的**
+
+引入箭头函数的目的是更简短的函数写法并且不绑定this，箭头函数的语法比函数表达式更简洁，用于那些本来需要匿名函数的地方，用来替代函数表达式。
+
+```js
+// 普通的匿名函数
+// const fn = function() {
+//     console.log(123)
+// }
+
+// 1. 改造成箭头函数
+// const fn = () => {
+//     console.log(123)
+// }
+// fn()
+
+// 2. 如果只有一个形参可以省略小括号
+// const fn = function(x) {
+//     console.log(x)
+// }
+// const fn = x => {
+//     console.log(x)
+// }
+// fn(2)
+
+// 3. 如果只有一行代码可以省略大括号
+// const fn = x => console.log(x)
+// fn(2)
+
+// 4. 只有一行代码且有return也可以省略return
+// const fn = x => x + x
+// console.log(fn(2))
+
+// 5. 箭头函数可以直接返回一个对象
+const fn = x => ({name: x})
+console.log(fn(2)) // 返回：{name: 2}
+```
+
+**箭头函数的参数**
+
+- 普通函数有arguments动态参数
+
+- 箭头函数没有arguments动态参数，但有剩余参数...args
+
+```js
+const getSum = (...args) => {
+    let sum = 0
+    for (let i=0; i<args.length; i++) {
+        sum += args[i]
+    }
+    return sum
+}
+
+console.log(getSum(1, 2, 3, 4, 5, 6))
+```
+
+**箭头函数的this**
+
+箭头函数本身没有this，是上一层作用域的this指向
+
+```js
+// 普通的this指向：谁调用this就指向谁
+console.log(this) // window
+
+function fn() {
+    console.log(this) // window
+}
+window.fn()
+
+const obj = {
+    name: 'andy',
+    sayHi: function() {
+        console.log(this) // obj
+    }
+}
+obj.sayHi()
+
+// 箭头函数的this指向：上一层作用域的this执行
+const fn1 = () => {
+    console.log(this) // window，fn1上一层的就是script=》window
+}
+fn1()
+
+const obj1 = {
+    name: 'timi',
+    sayHi: () => {
+        console.log(this) // window，sayHi的上一层是script=》window
+    }
+}
+obj1.sayHi()
+
+const obj2 = {
+    name: 'happy',
+    sayHi: function() {
+        console.log(this) // obj2，普通的
+        const count = () => {
+            console.log(this) // obj2，count上一层作用域是sayHi，而sayHi属于obj2
+        }
+    }
+}
+obj2.sayHi()
+```
+
+### 5. 数组解构
+
+数组解构是将数组的元素快速批量复制给一系列变量的简洁语法。
+
+```js
+// 基础语法
+const [max, min, avg] = [100, 60, 80]
+console.log(max)
+console.log(avg)
+
+// 交换
+let a = 1
+let b = 2; // 这里的分号必须写，因为[a, b]会被编译器认为和上一行内容连接
+[a, b] = [b, a]
+console.log(a)
+console.log(b)
+```
+
+**特殊情况**
+
+```js
 
 ```
+
+### 6. 对象解构
 
 # 内置函数
 
