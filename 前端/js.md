@@ -1301,10 +1301,224 @@ console.log(b)
 **特殊情况**
 
 ```js
-
+// 特殊情况
+// 1. 变量多，单元值少 undefined
+const [a, b, c, d] = [1, 2, 3]
+console.log('a=' + a + '，b=' + b + '，c=' + c + '，d=' + d) // 输出：a=1，b=2，c=3，d=undefined
+// 2. 变量少，单元值多
+const [e, f] = [1, 2, 3]
+console.log('e=' + e + '，f=' + f)
+// 3. 剩余参数 变量少，单元值多
+const [g, h, ...i] = [1, 2, 3, 4]
+console.log('g=' + g + '，h=' + h + '，' + 'i=' + i) // 输出：g=1，h=2，i=3,4
+// 4. 默认值
+const [j = 0, k = 0] = [1]
+console.log('j=' + j + '，k=' + k) // 输出：j=1，k=0
+// 5. 忽略单元值
+const [l, m, ,n] = [1, 2, 3, 4]
+console.log('l=' + l + '，m=' + m + '，n=' + n) // l=1，m=2，n=4
+// 6. 多维数组解构
+const [o, p, [q, r]] = [1, 2, [3, 4]]
+console.log('o=' + o + '，p=' + p + '，q=' + q + '，r=' + r) // o=1，p=2，q=3，r=4
 ```
 
 ### 6. 对象解构
+
+对象解构时即将对象属性和方法快速批量复制给一系列变量的简洁语法。
+
+```js
+// 对象解构
+// const obj = {
+//     name: 'hello world',
+//     age: 19
+// }
+// const {name, age} = obj
+// console.log(name) // hello world
+// console.log(age) // 19
+
+// 对象解析的变量名可以重新改名
+// const {uname: username, age} = {uname: 'hel', age: 19}
+// console.log(uname) // uname is not defined
+// console.log(username) // hel
+// console.log(age) // 19
+
+// 解构数组对象
+// const pig = [
+//     {
+//         uname: '佩奇',
+//         age: 6
+//     },
+//     {
+//         uname: '保罗',
+//         age: 3
+//     }
+// ]
+// const [{uname, age}] = pig
+// console.log(uname) // 佩奇
+// console.log(age) // 6
+
+// const pig = {
+// name: '佩奇',
+// family: {
+//     mother: '猪妈妈',
+//     father: '猪爸爸',
+//     sister: '乔治'
+// },
+// age: 6
+// }
+// // 多级对象解构
+// const { name, family: { mother, father, sister } } = pig
+// console.log(name)
+// console.log(mother)
+// console.log(father)
+// console.log(sister)
+
+const person = [
+    {
+        name: '佩奇',
+        family: {
+            mother: '猪妈妈',
+            father: '猪爸爸',
+            sister: '乔治'
+        },
+        age: 6
+    }
+]
+const [{ name, family: { mother, father, sister } }] = person
+console.log(name)
+console.log(mother)
+console.log(father)
+console.log(sister)
+```
+
+### 7. 遍历数组-forEach
+
+```js
+const arr = ['red', 'green', 'pink']
+const result = arr.forEach(function(item, index) {
+    console.log(item)
+    console.log(index)
+})
+```
+
+### 8. 筛选数组-filter
+
+```js
+// const arr = [10, 20, 30]
+// const newArr = arr.filter(function(item, index) {
+//     console.log(item)
+//     console.log(index)
+//     return item >= 20
+// })
+// console.log(newArr) // 会过滤掉小于20的数字
+
+const arr = [10, 20, 30]
+// 箭头函数替代
+const newArr = arr.filter(item => item >= 20)
+console.log(newArr);
+```
+
+# 对象
+
+**创建对象方法**
+
+- 通过字面量方式创建
+
+- 通过`new Object`创建
+
+- 通过构造函数创建
+
+```js
+// 1. 字面量创建对象
+// const obj = {
+//     name: 'hello'
+// }
+// console.log(obj)
+
+// 2. 通过Object创建对象
+// const obj = new Object()
+// obj.uname = 'hello'
+// console.log(obj);
+
+// const obj = new Object({uname:'hello'})
+// console.log(obj);
+
+// 3. 通过构造函数创建对象
+function Pig(uname, age) {
+    this.uname = uname
+    this.age = age
+}
+
+const p = new Pig('佩奇', 6)
+console.log(p);
+
+function Goods(name, price, count) {
+    this.name = name
+    this.price = price
+    this.count = count
+    this.desc = function () {
+        console.log(name + '欢迎您')
+    }
+}
+
+const mi = new Goods('小米', 1999, 20)
+console.log(mi)
+mi.desc()
+// 实例成员：实例对象的属性和方法即为实例成员
+mi.name = 'MI'
+console.log(mi)
+
+// 静态成员：构造函数的属性和方法被称为静态成员
+Goods.num = 10
+console.log(Goods.num)
+Goods.sayhi = function () { }
+```
+
+# 内置构造函数
+
+### 1. Object
+
+Object是创建普通对象的构造函数，但我们推荐使用字面量方式声明对象，而不是Object构造函数。
+
+**静态方法**
+
+- Object.keys：获取对象中所有属性（键）
+
+- Object.Values：获取对象中所有属性值
+
+- Object.assign：进行对象拷贝
+
+```js
+const o = {uname: 'pink', age: 10}
+// 获取key的集合
+console.log(Object.keys(o))
+// 获取value的集合
+console.log(Object.values(o))
+const oo = {}
+// 对象的拷贝
+Object.assign(oo, o)
+console.log(oo)
+Object.assign(o, { gender: '女' })
+console.log(o)
+```
+
+### 3. Array
+
+Array是用于创建数组的构造函数
+
+**方法**
+
+- forEach：遍历数组
+
+- filter：过滤数组
+
+- map：迭代数组，返回新数组
+
+- reduce：累计器，返回函数累计处理的结果，经常用于求和等。
+
+```js
+
+```
 
 # 内置函数
 
