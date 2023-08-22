@@ -1516,8 +1516,38 @@ Array是用于创建数组的构造函数
 
 - reduce：累计器，返回函数累计处理的结果，经常用于求和等。
 
-```js
+- join：数组元素拼接成字符串，并返回字符串。
 
+- find：查找元素，返回符合测试条件的第一个数组元素值
+
+- every：检查数组所有元素是否符合指定条件，如果所有元素都通过返回true
+
+- some：检测数组中的元素是否满足指定条件，如果任一元素满足返回true
+
+- concat：合并两个数组，返回生成的新数组
+
+- sort：对原数组单元值进行排序
+
+- splice：删除或替换原数组单元值
+
+- reverse：反转数组
+
+- findIndex：查找元素的索引值
+
+```js
+const arr = [1, 2, 3]
+// const re = arr.reduce(function(prev, item){
+//     return prev + item
+// }, 0)
+// console.log(re);
+
+// const re = arr.reduce(function(prev, item) {
+//     return prev + item
+// })
+// console.log(re);
+
+const re = arr.reduce((prev, item) => prev + item)
+console.log(re);
 ```
 
 # 内置函数
