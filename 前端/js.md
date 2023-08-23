@@ -1502,7 +1502,7 @@ Object.assign(o, { gender: '女' })
 console.log(o)
 ```
 
-### 3. Array
+### 2. Array
 
 Array是用于创建数组的构造函数
 
@@ -1548,6 +1548,179 @@ const arr = [1, 2, 3]
 
 const re = arr.reduce((prev, item) => prev + item)
 console.log(re);
+
+// find一维数组
+const arr = ['red', 'blue', 'green']
+const re = arr.find(function(item){
+    return item === 'blue'
+})
+console.log(re) // blue
+// find二维数组
+const arrs = [
+    {
+        name: '小米',
+        price: 1999
+    },
+    {
+        name: '华为',
+        price: 2999
+    }
+]
+const mi = arrs.find(item => item.name === '小米')
+console.log(mi) // {name: '小米', price: 1999}
+
+//findIndex一维数组
+const reIdx = arr.findIndex(function(item) {
+    return item === 'blue'
+})
+console.log(reIdx) // 1
+// findIndex二维数组
+const miIdx = arrs.findIndex(function(item) {
+    return item.name === '小米'
+})
+console.log(reIdx) // 1
+
+// every：否符合返回true
+const flag = arr.every(item => item >= 20)
+console.log(flag)
+```
+
+**伪数组转换成真数组**
+
+- Array.from：将伪数组转换成真数组
+
+```js
+const lis = document.querySelectorAll('ul li')
+// lis.pop() // 报错
+// 转换成真数组
+const liArr = Array.from(lis)
+liArr.pop()
+console.log(liArr)
+```
+
+### 3. String
+
+**常见实例方法**
+
+- length：获取字符串长度
+
+- split：字符串拆分成数组
+
+- substring：字符串截取
+
+- startsWith：检测是否以某字符开头
+
+- includes：判断一个字符串是否包含在另一个字符串中，包含返回true
+
+- toUpperCase：将字母转换成大写
+
+- toLowerCase：将字母转换成小写
+
+- indexOf：检查是否包含某字符
+
+- endsWith：检测是否以某字符结尾
+
+- replace：用于替换字符串，支持正则匹配
+
+- match：用于查找字符串，支持正则匹配
+
+```js
+const str = 'red,yellow,green'
+const arr = str.split(',')
+console.log(arr) // (3) ['red', 'yellow', 'green']
+
+const str1 = '今天要出门玩'
+console.log(str1.substring(5, 7)) // 玩
+
+const str2 = 'hello world'
+console.log(str2.startsWith('hell')) // true
+
+const gift = '50g的茶叶,清洗球'
+const html = gift.split(',').map(function(item) {
+    return `<span>【赠品】${item}</span><br>`
+}).join('')
+document.querySelector('div').innerHTML = html
+```
+
+### 4. Number
+
+**常用方法**
+
+- toFixed：设置保留小数位的长度
+
+```js
+const price = 12.345
+console.log(price.toFixed(2)) // 12.34
+```
+
+# 面向对象
+
+### 1. 原型
+
+将方法定义到构造函数内，实例化出来的对象会浪费内存（相同的方法被被多次生成导致内存浪费），原型对象可以实现方法共享，避免这样的内存浪费。
+
+**特点**
+
+- 构造函数通过原型分配的函数是所有对象共享的
+
+- 每一个构造函数都有一个prototype属性，指向另一个对象，也被称为原型对象
+
+- 这个对象可以挂载函数，对象实例化多次不会多次创建原型上的函数，节约内存
+
+- 可以把那些不变的方法指定一定到prototype对象上，通过这样所有对象的实例化就可以共享这些方法
+
+- 构造函数、原型对象中的this都指向实例化的对象
+
+```js
+// function Star(uname, age) {
+//     this.uname = uname
+//     this.age = age
+//     this.sing = function() {
+//         console.log('唱歌')
+//     }
+// }
+// const ldh = new Star('刘德华', 55)
+// const zxy = new Star('张学友', 58)
+// // 一样的方法会导致内存浪费问题
+// console.log(ldh.sing === zxy.sing) // false
+
+
+function Star(uname, age) {
+    this.uname = uname
+    this.age = age
+}
+// 通过原型
+Star.prototype.sing = function() {
+    console.log('唱歌')
+}
+const ldh = new Star('刘德华', 55)
+const zxy = new Star('张学友', 58)
+console.log(ldh.sing === zxy.sing) // true
+```
+
+### 2. 数组拓展方法
+
+```js
+const arr = [1, 2, 3]
+
+// 1. 最大值
+Array.prototype.max = function() {
+    return Math.max(...this)
+}
+
+// 2. 最小值
+Array.prototype.min = function() {
+    return Math.min(...this)
+}
+
+// 3. 求和方法
+Array.prototype.sum = function() {
+    return this.reduce((prev, item) => prev + item, 0)
+}
+
+console.log(arr.max())
+console.log(arr.min())
+console.log(arr.sum())
 ```
 
 # 内置函数
