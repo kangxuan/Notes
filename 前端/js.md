@@ -1655,7 +1655,7 @@ console.log(price.toFixed(2)) // 12.34
 
 # 面向对象
 
-### 1. 原型
+### 1. 原型对象
 
 将方法定义到构造函数内，实例化出来的对象会浪费内存（相同的方法被被多次生成导致内存浪费），原型对象可以实现方法共享，避免这样的内存浪费。
 
@@ -1722,6 +1722,96 @@ console.log(arr.max())
 console.log(arr.min())
 console.log(arr.sum())
 ```
+
+### 3. constructor属性
+
+constructor是prototype的属性，用来指向该原型对象的构造函数，原型对象用来指回构造函数（用来说明原型对象属于谁的）。
+
+**使用场景**
+
+如果有多个对象的方法，我们可以给原型对象采取对象形式赋值.但是这样就会覆盖构造函数原型对象原来的内容，这样修改后的原型对象 constructor 就不再指向当前构造函数了，此时，我们可以在修改后的原型对象中，添加一个 constructor 指向原来的构造函数。
+
+```js
+function Star() {
+
+}
+
+// Star.prototype.sing = function() {
+//     console.log('唱歌')
+// }
+// Star.prototype.dance = function() {
+//     console.log('跳舞')
+// }
+// console.log(Star.prototype.constructor) // Star()
+
+Star.prototype = {
+    constructor: Star, // 如果原型对象通过对象形式定义方法时，不添加constructor属性就没办法知道原型对象属于哪个构造函数了
+    sing: function() {
+        console.log('唱歌')
+    },
+    dance: function() {
+        console.log('跳舞')
+    }
+}
+console.log(Star.prototype.constructor) // Star()
+console.log(Star.prototype.constructor === Star) // true
+```
+
+### 4. 对象原型
+
+对象都会有一个属性___proto___，指向构造函数的prototype原型对象，之所以对象可以使用构造函数prototype原型对象的属性和方法，就是因为对象有__proto__原型的存在。
+
+```js
+function Star() {
+
+}
+const ldh = new Star()
+console.log(ldh.__proto__) // 指向构造函数的原型对象 {constructor: ƒ}
+console.log(ldh.__proto__ === Star.prototype) // true
+console.log(ldh.__proto__.constructor === Star) // 对象原型里面有constructor 指向 构造函数 Star
+```
+
+### 5. 继承
+
+```js
+// 构造函数 Person
+function Person() {
+    this.eyes = 2
+    this.head = 1
+}
+
+// 构造函数 Woman
+function Woman() {
+
+}
+
+// 构造函数 Man
+function Man() {
+
+}
+
+// 去继承父类
+Woman.prototype = new Person()
+// 并指回原来的构造函数Woman，不然其他继承的函数添加或修改了会影响
+Woman.prototype.constructor = Woman
+
+Man.prototype = new Person()
+Man.prototype.constructor = Man
+
+// 给Woman再添加一个方法
+Woman.prototype.baby = function() {
+    console.log('baby')
+}
+
+const red = new Woman()
+console.log(red)
+const ming = new Man()
+console.log(ming)
+```
+
+### 6. 原型链
+
+基于原型对象的继承使得不同构造函数的原型对象关联在一起，并且这种关联的关系是一种链状的结构，我们将原型对象的链状结构关系称为原型链
 
 # 内置函数
 
