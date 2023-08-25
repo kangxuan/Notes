@@ -1657,7 +1657,7 @@ console.log(price.toFixed(2)) // 12.34
 
 ### 1. 原型对象
 
-将方法定义到构造函数内，实例化出来的对象会浪费内存（相同的方法被被多次生成导致内存浪费），原型对象可以实现方法共享，避免这样的内存浪费。
+将方法定义到构造函数内，实例化出来的对象会浪费内存（相同的方法被被多次生成导致内存浪费），原型对象可以实现属性和方法的共享，避免这样的内存浪费。
 
 **特点**
 
@@ -1759,7 +1759,17 @@ console.log(Star.prototype.constructor === Star) // true
 
 ### 4. 对象原型
 
-对象都会有一个属性___proto___，指向构造函数的prototype原型对象，之所以对象可以使用构造函数prototype原型对象的属性和方法，就是因为对象有__proto__原型的存在。
+实例对象都会有一个属性_proto_，指向构造函数的prototype原型对象。之所以对象可以使用构造函数prototype原型对象的属性和方法，就是因为对象有__proto__原型的存在。
+
+**注意**
+
+- __proto__是JS非标准属性
+
+- [[prototype]]和__proto__意义相同
+
+- 用来表明当前实例对象指向哪个原型对象prototype
+
+- __proto__对象原型里有一个contructor属性，指向创建该实例对象的构造函数。
 
 ```js
 function Star() {
@@ -1767,9 +1777,13 @@ function Star() {
 }
 const ldh = new Star()
 console.log(ldh.__proto__) // 指向构造函数的原型对象 {constructor: ƒ}
-console.log(ldh.__proto__ === Star.prototype) // true
+console.log(ldh.__proto__ === Star.prototype) // true，指向了原型对象
 console.log(ldh.__proto__.constructor === Star) // 对象原型里面有constructor 指向 构造函数 Star
 ```
+
+**关系图**
+
+![关系图](./images/构造函数-原型-实例对象关系.jpg)
 
 ### 5. 继承
 
@@ -1790,9 +1804,9 @@ function Man() {
 
 }
 
-// 去继承父类
+// 去继承父类，new Person()新创建一个对象，结构一样，对象不一样，不然其他继承的函数添加或修改了会影响
 Woman.prototype = new Person()
-// 并指回原来的构造函数Woman，不然其他继承的函数添加或修改了会影响
+// 并指回原来的构造函数Woman
 Woman.prototype.constructor = Woman
 
 Man.prototype = new Person()
@@ -1811,7 +1825,23 @@ console.log(ming)
 
 ### 6. 原型链
 
-基于原型对象的继承使得不同构造函数的原型对象关联在一起，并且这种关联的关系是一种链状的结构，我们将原型对象的链状结构关系称为原型链
+基于原型对象的继承使得不同构造函数的原型对象关联在一起，并且这种关联的关系是一种链状的结构，我们将原型对象的链状结构关系称为原型链。
+
+![原型链](./images/原型链.jpg)
+
+**原型链-查找规则**
+
+1. 当访问一个对象的属性（包括方法）时，首先查找这个对象自身有没有该属性。
+
+2. 如果没有就查找它的原型（也就是 __proto__指向的 prototype 原型对象）
+
+3. 如果还没有就查找原型对象的原型（Object的原型对象）
+
+4. 依此类推一直找到 Object 为止（null）
+
+5. __proto__对象原型的意义就在于为对象成员查找机制提供一个方向，或者说一条路线
+
+6. 可以使用 instanceof 运算符用于检测构造函数的 prototype 属性是否出现在某个实例对象的原型链上
 
 # 内置函数
 
