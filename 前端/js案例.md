@@ -438,7 +438,7 @@ toTop.addEventListener('click', function(){
                     this.close()
                 })
             }
-            
+
         }
 
         // 关闭方法
@@ -457,4 +457,10 @@ toTop.addEventListener('click', function(){
         })
     </script>
 </body>
+```
+
+### 10. 手写防抖函数
+
+```js
+
 ```

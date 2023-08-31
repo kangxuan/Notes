@@ -1875,6 +1875,61 @@ console.log(ming)
 
 6. 可以使用 instanceof 运算符用于检测构造函数的 prototype 属性是否出现在某个实例对象的原型链上
 
+# 性能优化
+
+### 1. 防抖
+
+防抖是指触发事件后在n秒后只执行一次，如果在n秒内又触发事件，则会重新计算函数执行时间（也就是重新执行）。
+
+就像王者回城被打断，要重新点击回城。
+
+**手写防抖的思路**
+
+利用定时器实现，当触发事件时，判断有没有定时器，如果有则清楚，以最后一次事件为准开启定时器。
+
+```html
+<body>
+    <div class="box"></div>
+    <script>
+        const box = document.querySelector('.box')
+        let i = 0
+        function mouseMove() {
+            box.innerHTML = ++i
+        }
+        
+        // box.addEventListener('mousemove', mouseMove)
+        // 防抖的核心思路是利用定时器实现，当事件触发时先判断定时器是否存在，存在先清除定时器。然后开一个定时器处理业务
+        function debounce(fn, t) {
+            let timerId
+            // 返回一个函数用于被事件调用
+            return function() {
+                // 当定时器已经存在先清除定时器
+                if (timerId) clearTimeout(timerId)
+                // 开启一个定时处理业务
+                timerId = setTimeout(function() {
+                    fn()
+                }, t)
+            }
+        }
+        box.addEventListener('mousemove', debounce(mouseMove, 500))
+    </script>
+</body>
+```
+
+### 2. 节流
+
+节流是指连续触发事件时，在n秒内只执行一次。
+
+就像王者里面的技能冷却时间，一旦释放技能再次点击需要等待。
+
+**手写节流函数的思路**
+
+还是利用定时器实现，当触发事件时，先判断是否有定时器存在，如果存在则不用再次开启一个新的定时器（等之前的执行完），当定时器执行完后再关闭定时器用来保证下次触发时可以开启新的定时器。
+
+```html
+
+```
+
 # 内置函数
 
 ### 1. 间歇函数-定时器
