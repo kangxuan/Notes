@@ -437,6 +437,38 @@ btn.addEventListener('click', function(){
 })
 ```
 
+**修改this指向**
+
+- call(thisArg, arg1, arg2, ...)
+  
+  - thisArg：函数运行时指定的this值
+  
+  - arg1,arg2：传递的其他参数
+  
+  - 会调用函数，返回值就是函数的返回值
+
+- apply(thisArg, [argsArray])
+  
+  - thisArg：函数运行时指定的this值
+  
+  - argsArray：传递的值，必须包含在数组里面
+  
+  - 会调用函数，返回值就是函数的返回值
+  
+  - 和call唯一区别就是传值必须是数组
+
+- bind(thisArg, arg1, arg2, ...)
+  
+  - thisArg：函数运行时指定的this值
+  
+  - arg1，arg2：传递的其他参数
+  
+  - 返回由指定的this值和初始化参数改造过的函数拷贝（新函数），不调用函数
+
+```html
+
+```
+
 ### 5. 回调函数
 
 把函数当做另外一个函数的参数传递，这个函数就叫回调函数

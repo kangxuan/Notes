@@ -409,5 +409,52 @@ toTop.addEventListener('click', function(){
 ### 9. 弹框封装
 
 ```html
+<body>
+    <button id="delete">删除</button>
+    <button id="login">登录</button>
+    <script>
+        function Modal(title = '', message = '') {
+            this.title = title
+            this.message = message
 
+            // 1. 创建一个盒子
+            this.modalBox = document.createElement('div')
+            // 2. 添加类名
+            this.modalBox.className = 'modal'
+            // 3. 给盒子添加内容
+            this.modalBox.innerHTML = `
+            <div class="header">${title} <i>x</i></div>
+            <div class="body">${message}</div>
+            `
+            // console.log(this.modalBox)
+        }
+
+        // 打开方法
+        Modal.prototype.open = function() {
+            // 不存在才继续创建
+            if (!document.querySelector('.modal')) {
+                document.body.appendChild(this.modalBox)
+                this.modalBox.querySelector('i').addEventListener('click', () => {
+                    this.close()
+                })
+            }
+            
+        }
+
+        // 关闭方法
+        Modal.prototype.close = function() {
+            document.body.removeChild(this.modalBox)
+        }
+
+        document.querySelector('#delete').addEventListener('click', () => {
+            const m = new Modal('温馨提示', '您没有权限删除')
+            m.open()
+        })
+
+        document.querySelector('#login').addEventListener('click', () => {
+            const m = new Modal('友情提示', '您没有注册账号')
+            m.open()
+        })
+    </script>
+</body>
 ```
