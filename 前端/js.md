@@ -1927,6 +1927,38 @@ console.log(ming)
 还是利用定时器实现，当触发事件时，先判断是否有定时器存在，如果存在则不用再次开启一个新的定时器（等之前的执行完），当定时器执行完后再关闭定时器用来保证下次触发时可以开启新的定时器。
 
 ```html
+<body>
+    <div class="box"></div>
+    <script>
+        const box = document.querySelector('.box')
+        let i = 0
+        function mouseMove() {
+            box.innerHTML = ++i
+        }
+        
+        // box.addEventListener('mousemove', mouseMove)
+        // 节流的核心思路是利用定时器实现，当事件触发时先判断定时是否存在，如果存在则不开启新的，如果不存在则新开一个定时器
+        function throttle(fn, t) {
+            let timerId = null
+            return function() {
+                // 判断定时器是否存在，不存在时开启定时器
+                if (!timerId) {
+                    timerId = setTimeout(function(){
+                        fn()
+                        // 在定时器内部清除定时器不能通过clearTimeout，因为清除不了
+                        timerId = null
+                    }, t)
+                }
+            }
+        }
+        box.addEventListener('mousemove', throttle(mouseMove, 500))
+    </script>
+</body>
+```
+
+视频续播案例
+
+```html
 
 ```
 
