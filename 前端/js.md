@@ -257,7 +257,7 @@ input.addEventListener('keydown', function () {
   console.log('键盘按下了')
 })
 input.addEventListener('keyup', function () {
-  console.log('键盘谈起了')
+  console.log('键盘弹起了')
 })
 ```
 
@@ -395,6 +395,10 @@ window.addEventListener('resize', function(){
 ```js
 
 ```
+
+**更多事件**
+
+- transitionend：用于在CSS过渡（transition）完成后触发
 
 ### 3. 事件对象
 
@@ -1896,7 +1900,7 @@ console.log(ming)
         function mouseMove() {
             box.innerHTML = ++i
         }
-        
+
         // box.addEventListener('mousemove', mouseMove)
         // 防抖的核心思路是利用定时器实现，当事件触发时先判断定时器是否存在，存在先清除定时器。然后开一个定时器处理业务
         function debounce(fn, t) {
@@ -1935,7 +1939,7 @@ console.log(ming)
         function mouseMove() {
             box.innerHTML = ++i
         }
-        
+
         // box.addEventListener('mousemove', mouseMove)
         // 节流的核心思路是利用定时器实现，当事件触发时先判断定时是否存在，如果存在则不开启新的，如果不存在则新开一个定时器
         function throttle(fn, t) {

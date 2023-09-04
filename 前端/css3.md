@@ -82,6 +82,13 @@
 
 ```css
 box-shadow: h-shadow v-shadow blur spread color inset;
+
+/* 可以设置多个阴影效果 */
+box-shadow:
+                0 0 0 4px rgba(0,0,0,0.1),
+                inset 0 0 0 3px #EFEFEF,
+                inset 0 0 10px black,
+                0 0 10px rgba(0,0,0,0.2);
 ```
 
 ```css
@@ -792,7 +799,7 @@ li {
 
 ### 10.5 变换原点
 
-- transform-origin
+- transform-origin：更改一个元素变形的原点
   
   - 属性值选项
     

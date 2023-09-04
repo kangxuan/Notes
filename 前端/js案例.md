@@ -458,9 +458,3 @@ toTop.addEventListener('click', function(){
     </script>
 </body>
 ```
-
-### 10. 手写防抖函数
-
-```js
-
-```
