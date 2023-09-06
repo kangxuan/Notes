@@ -282,6 +282,8 @@ li~li{
 [title*="aa"] {
     color: aquamarine;
 }
+
+const spacingLabel = document.querySelector('label[for="spacing"]')
 ```
 
 **伪类选择器**
@@ -1263,6 +1265,16 @@ button {
 input {
     cursor: move;
 }
+```
+
+**常用属性**
+
+- filter：将模糊或颜色偏移等图形效果应用于元素。滤镜通常用于调整图像、背景和边框的渲染。
+  
+  - blur()：将高斯模糊应用于图像
+
+```css
+filter: blur(5px);
 ```
 
 # CSS盒子模型

@@ -263,7 +263,7 @@ input.addEventListener('keyup', function () {
 
 **文本事件**
 
-- input：用户输入事件
+- input：用户输入，滑块滑动，颜色选择事件等
 - change：内容发生变化
 
 ```html
