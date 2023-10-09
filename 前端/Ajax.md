@@ -214,7 +214,7 @@
 </html>
 ```
 
-# AXIOS-AJAX
+# AXIOS-AJAX(常用)
 
 ```html
 <body>
@@ -287,6 +287,33 @@
                 console.log(response.headers)
                 // 响应体
                 console.log(response.data)
+            })
+        })
+    </script>
+</body>
+```
+
+# Fetch-AJAX(少用)
+
+```html
+<body>
+    <button>AJAX请求</button>
+    <script>
+        const btn = document.querySelector('button')
+        btn.addEventListener('click', () => {
+            fetch('http://127.0.0.1:3000/fetch-server?vip=10', {
+                // 请求方法
+                method: 'POST',
+                // 头部信息
+                headers: {
+                    name: 'atshanla'
+                },
+                // body内容
+                body: 'username=admin&password=admin',
+            }).then(response => {
+                return response.json()
+            }).then(response => {
+                console.log(response)
             })
         })
     </script>
