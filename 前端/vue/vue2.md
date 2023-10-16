@@ -157,4 +157,91 @@ VM：ViewModel，视图模型，对应vue实例
 
 ![](/Users/kx/Library/Application%20Support/marktext/images/2023-10-16-15-31-13-image.png)
 
+# 数据代理
 
+Js中的数据代理：通过一个对象代理对另一个对象中的属性进行操作（读/写）。
+
+```js
+let obj = {
+    x: 100
+}
+let obj2 = {
+    y: 200
+}
+
+// 通过obj2代理obj
+Object.defineProperty(obj2, 'x', {
+    get() {
+        return obj.x
+    },
+    set(value) {
+        obj.x = value
+    }
+})
+```
+
+Vue中的数据代理：通过vm对象来代理data对象中属性的操作（读/写）
+
+实现原理：通过`Object.defineProperty()`把data对象中所有属性添加到vm上，为每一个添加到vm上的属性，都指定一个getter/setter，再getter/setter内部去操作（读/写）data中对应的属性。
+
+```html
+<body>
+    <div id="root">
+        <h2>姓名：{{name}}</h2>
+        <h2>班级：{{class1}}</h2>
+    </div>
+    <script>
+        const vm = new Vue({
+            el: '#root',
+            data: {
+                name: '周杰伦',
+                class1: '三年二班'
+            }
+        })
+    </script>
+</body>
+```
+
+# 事件处理
+
+### 1. 事件监听
+
+事件绑定使用`v-on:xxx`或`@xxx`，其中`xxx`是事件名，事件回调需要配置到`methods`，最终会到vm上。
+
+```html
+<body>
+    <div id="root">
+        <h2>欢迎来到{{name}}学习</h2>
+        <!-- <button v-on:click="showInfo">点我获取信息</button> -->
+        <button @click="showInfo">点我获取信息</button>
+        <button @click="showInfo2($event, 66)">点我获取信息2</button>
+    </div>
+    <script>
+        const vm = new Vue({
+            el: '#root',
+            data: {
+                name: '清华大学'
+            },
+            methods: {
+                showInfo(event) {
+                    console.log(event.target.innerHTML)
+                    alert('这是你要的信息')
+                },
+                showInfo2(event, number) {
+                    console.log(event.target.innerHTML)
+                    console.log(number)
+                    alert('这是你要的信息！！')
+                }
+            }
+        })
+    </script>
+</body>
+```
+
+### 2. 事件修饰符
+
+尽管能够在事件函数方法处理`event.preventDefault()`等，但vue为了保持函数内尽量只处理业务，使用了事件修饰符来处理类似的DOM 事件细节。
+
+```html
+
+```
