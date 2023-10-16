@@ -111,8 +111,50 @@ VUE分为两种模板语法，插值语法和指令语法。
 
 # 数据绑定
 
-数据绑定分为单向绑定和双向绑定
+数据绑定分为单向绑定和双向绑定。
+
+- 单向绑定(v-bind)：数据只能从data流向页面。
+
+- 双向绑定(v-model)：数据不仅能从data流向页面，还可以从页面流向data。
+  
+  - 双向绑定一般都应用在表单类元素上（如：input、select等）
+  
+  - v-model:value 可以简写为 v-model，因为v-model默认收集的就是value值。
 
 ```html
+<body>
+    <!-- 容器 -->
+    <div id="root">
+        <!-- 普通写法 -->
+        单向数据绑定：<input type="text" v-bind:value="name"><br>
+        双向数据绑定：<input type="text" v-model:value="name"><br>
 
+        <!-- 简写 -->
+        单向数据绑定：<input type="text" :value="name"><br>
+        双向数据绑定：<input type="text" v-model="name"><br>
+    </div>
+
+    <script>
+        Vue.config.productionTip = false
+
+        var vm = new Vue({
+            el: '#root',
+            data: {
+                name: 'shanla'
+            }
+        })
+    </script>
+</body>
 ```
+
+# MVVM模型
+
+M：Model，模型，对应data
+
+V：View，视图，对应模板
+
+VM：ViewModel，视图模型，对应vue实例
+
+![](/Users/kx/Library/Application%20Support/marktext/images/2023-10-16-15-31-13-image.png)
+
+
