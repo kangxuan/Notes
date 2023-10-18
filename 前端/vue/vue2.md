@@ -243,5 +243,203 @@ Vue中的数据代理：通过vm对象来代理data对象中属性的操作（�
 尽管能够在事件函数方法处理`event.preventDefault()`等，但vue为了保持函数内尽量只处理业务，使用了事件修饰符来处理类似的DOM 事件细节。
 
 ```html
+<body>
+    <div id="root">
+        <h2>欢迎来到{{name}}学习</h2>
+        <!-- 阻止默认事件（常用） -->
+        <a href="http://www.atguigu.com" @click.prevent="showInfo">点我提示信息</a>
 
+        <!-- 阻止事件冒泡（常用） -->
+        <div class="demo1" @click="showInfo">
+            <button @click.stop="showInfo">点我提示信息</button>
+            <!-- 修饰符可以连续写 -->
+            <!-- <a href="http://www.atguigu.com" @click.prevent.stop="showInfo">点我提示信息</a> -->
+        </div>
+
+        <!-- 事件只触发一次（常用） -->
+        <button @click.once="showInfo">点我提示信息</button>
+
+        <!-- 使用事件的捕获模式 -->
+        <div class="box1" @click.capture="showMsg(1)">
+            div1
+            <div class="box2" @click="showMsg(2)">
+                div2
+            </div>
+        </div>
+
+        <!-- 只有event.target是当前操作的元素时才触发事件； -->
+        <div class="demo1" @click.self="showInfo">
+            <button @click="showInfo">点我提示信息</button>
+        </div>
+
+        <!-- 事件的默认行为立即执行，无需等待事件回调执行完毕； -->
+        <ul @wheel.passive="demo" class="list">
+            <li>1</li>
+            <li>2</li>
+            <li>3</li>
+            <li>4</li>
+        </ul>
+
+    </div>
+    <script>
+        const vm = new Vue({
+            el: '#root',
+            data: {
+                name: '清华大学',
+            },
+            methods: {
+                showInfo() {
+                    alert('这是一个提示信息')
+                },
+                showMsg(msg) {
+                    console.log(msg)
+                },
+                demo(){
+					for (let i = 0; i < 100000; i++) {
+						console.log('#')
+					}
+					console.log('累坏了')
+				}
+            }
+        })
+    </script>
+</body>
 ```
+
+# 计算属性
+
+计算属性是为了解决模板语法处理复杂业务使得代码看起来很复杂的问题，更重要的是**计算属性是基于它们的响应式依赖进行缓存的**
+
+```html
+<body>
+    <div id="root">
+        姓：<input type="text" v-model="firstName"> <br/><br/>
+        名：<input type="text" v-model="lastName"> <br/><br/>
+        全名：<input type="text" v-model="fullName">
+    </div>
+    <script>
+        const vm = new Vue({
+            el: '#root',
+            data: {
+                firstName: '山',
+                lastName: '辣'
+            },
+            computed: {
+                // fullName:{
+				// 	//get有什么作用？当有人读取fullName时，get就会被调用，且返回值就作为fullName的值
+				// 	//get什么时候调用？1.初次读取fullName时。2.所依赖的数据发生变化时。
+				// 	get(){
+				// 		console.log('get被调用了')
+				// 		// console.log(this) //此处的this是vm
+				// 		return this.firstName + '-' + this.lastName
+				// 	},
+				// 	//set什么时候调用? 当fullName被修改时。
+				// 	set(value){
+				// 		console.log('set',value)
+				// 		const arr = value.split('-')
+				// 		this.firstName = arr[0]
+				// 		this.lastName = arr[1]
+				// 	}
+				// }
+                // 这样简写只有getter，没有setter
+                fullName(){
+                    console.log('获取时才被调用')
+                    return this.firstName + '-' + this.lastName
+                }
+            }
+        })
+    </script>
+</body>
+```
+
+# 监视属性
+
+vue提供的更通用的方式来观察和响应vue实例上的数据变动就是监视属性（侦听属性）。
+
+```html
+<body>
+    <div id="root">
+        姓：<input type="text" v-model="firstname"><br>
+        名：<input type="text" v-model="lastname"><br>
+        全名：<span>{{fullname}}</span>
+    </div>
+    <script>
+        const firstname = '山'
+        const lastname = '辣'
+        const vm = new Vue({
+            el: '#root',
+            data: {
+                firstname: firstname,
+                lastname: lastname,
+                fullname: firstname + '-' + lastname
+            },
+            watch: {
+                firstname(val) {
+                    this.fullname = val + '-' + this.lastname
+                },
+                lastname(val) {
+                    this.fullname = this.firstname + '-' + val
+                }
+            }
+        })
+    </script>
+</body>
+```
+
+# 绑定样式
+
+绑定样式分为绑定class类和style样式表
+
+```html
+<body>
+    <div id="root">
+        <!-- 字符串写法，适用于：样式的类名不确定，需要动态指定 -->
+        <div class="basic" :class="mood" @click="changeMood">{{name}}</div> <br/><br/>
+        <!-- 数组写法，适用于：要绑定的样式个数不确定、名字也不确定 -->
+        <div class="basic" :class="classArr">{{name}}</div> <br/><br/>
+        <!-- 对象写法，适用于：要绑定的样式个数确定、名字也确定，但要动态决定用不用 -->
+        <div class="basic" :class="classObj">{{name}}</div> <br/><br/>
+        <!-- 绑定style样式对象写法 -->
+        <div class="basic" :style="styleObj">{{name}}</div> <br/><br/>
+        <!-- 绑定style样式数组写法 -->
+			<div class="basic" :style="styleArr">{{name}}</div>
+    </div>
+    <script>
+        const vm = new Vue({
+            el: '#root',
+            data: {
+                name: '清华大学',
+                mood: 'normal',
+                classArr: ['qinghua1', 'qinghua2', 'qinghua3'],
+                classObj: {
+                    'qinghua1': true,
+                    'qinghua2': true,
+                    'qinghua3': false
+                },
+                styleObj: {
+                    fontSize: '40px',
+					color:'red',
+                },
+                styleArr: [
+                    {
+						fontSize: '40px',
+						color:'blue',
+					},
+					{
+						backgroundColor:'gray'
+					}
+                ]
+            },
+            methods: {
+                changeMood() {
+                    const arr = ['happy','sad','normal']
+					const index = Math.floor(Math.random()*3)
+					this.mood = arr[index]
+                }
+            }
+        })
+    </script>
+</body>
+```
+
+
