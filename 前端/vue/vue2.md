@@ -442,4 +442,97 @@ vue提供的更通用的方式来观察和响应vue实例上的数据变动就�
 </body>
 ```
 
+# 条件渲染
+
+```html
+<body>
+    <div id="root">
+        <h2>当前的n值是:{{n}}</h2>
+        <button @click="n++">点我n+1</button>
+
+        <!-- 使用v-show做条件渲染 -->
+        <h2 v-show="false">欢迎来到{{name}}</h2>
+        <h2 v-show="1 === 1">欢迎来到{{name}}</h2>
+
+        <!-- 使用v-if做条件渲染 -->
+        <h2 v-if="false">欢迎来到{{name}}</h2>
+        <h2 v-if="1 === 1">欢迎来到{{name}}</h2>
+
+        <!-- v-else和v-else-if -->
+        <div v-if="n === 1">Angular</div>
+        <div v-else-if="n === 2">React</div>
+        <div v-else-if="n === 3">Vue</div>
+        <div v-else>哈哈</div>
+
+        <!-- v-if与template的配合使用 -->
+        <template v-if="n === 1">
+            <h2>你好</h2>
+            <h2>北京</h2>
+        </template>
+    </div>
+    <script>
+        const vm = new Vue({
+            el: '#root',
+            data: {
+                name: '剑桥大学',
+                n: 0
+            }
+        })
+    </script>
+</body>
+```
+
+# 列表渲染
+
+```html
+<body>
+    <div id="root">
+        <h2>人员列表（遍历数组）</h2>
+        <!-- 遍历数组 -->
+        <ul>
+            <li v-for="(p,index) of persons" :key="index">
+                {{p.name}}-{{p.age}}
+            </li>
+        </ul>
+        <h2>汽车信息（遍历对象）</h2>
+        <!-- 遍历对象 -->
+        <ul>
+            <li v-for="(value, k) of car" :key="k">
+                {{k}}-{{value}}
+            </li>
+        </ul>
+        <h2>遍历字符串</h2>
+        <ul>
+            <li v-for="(char, index) of str" :key="index">
+                {{char}}-{{index}}
+            </li>
+        </ul>
+        <h2>遍历指定次数</h2>
+        <ul>
+            <li v-for="(number, index) of 5" :key="index">
+                {{index}}-{{number}}
+            </li>
+        </ul>
+    </div>
+    <script>
+        const vm = new Vue({
+            el: '#root',
+            data: {
+                persons: [
+                    {id:'001',name:'张三',age:18},
+                    {id:'002',name:'李四',age:19},
+                    {id:'003',name:'王五',age:20}
+                ],
+                car: {
+                    name: '丰田雷凌',
+                    price: '16万',
+                    color: '米白'
+                },
+                str:'hello'
+            }
+        })
+    </script>
+</body>
+```
+
 
