@@ -295,11 +295,11 @@ Vue中的数据代理：通过vm对象来代理data对象中属性的操作（�
                     console.log(msg)
                 },
                 demo(){
-					for (let i = 0; i < 100000; i++) {
-						console.log('#')
-					}
-					console.log('累坏了')
-				}
+                    for (let i = 0; i < 100000; i++) {
+                        console.log('#')
+                    }
+                    console.log('累坏了')
+                }
             }
         })
     </script>
@@ -326,21 +326,21 @@ Vue中的数据代理：通过vm对象来代理data对象中属性的操作（�
             },
             computed: {
                 // fullName:{
-				// 	//get有什么作用？当有人读取fullName时，get就会被调用，且返回值就作为fullName的值
-				// 	//get什么时候调用？1.初次读取fullName时。2.所依赖的数据发生变化时。
-				// 	get(){
-				// 		console.log('get被调用了')
-				// 		// console.log(this) //此处的this是vm
-				// 		return this.firstName + '-' + this.lastName
-				// 	},
-				// 	//set什么时候调用? 当fullName被修改时。
-				// 	set(value){
-				// 		console.log('set',value)
-				// 		const arr = value.split('-')
-				// 		this.firstName = arr[0]
-				// 		this.lastName = arr[1]
-				// 	}
-				// }
+                //     //get有什么作用？当有人读取fullName时，get就会被调用，且返回值就作为fullName的值
+                //     //get什么时候调用？1.初次读取fullName时。2.所依赖的数据发生变化时。
+                //     get(){
+                //         console.log('get被调用了')
+                //         // console.log(this) //此处的this是vm
+                //         return this.firstName + '-' + this.lastName
+                //     },
+                //     //set什么时候调用? 当fullName被修改时。
+                //     set(value){
+                //         console.log('set',value)
+                //         const arr = value.split('-')
+                //         this.firstName = arr[0]
+                //         this.lastName = arr[1]
+                //     }
+                // }
                 // 这样简写只有getter，没有setter
                 fullName(){
                     console.log('获取时才被调用')
@@ -354,7 +354,7 @@ Vue中的数据代理：通过vm对象来代理data对象中属性的操作（�
 
 # 监视属性
 
-vue提供的更通用的方式来观察和响应vue实例上的数据变动就是监视属性（侦听属性）。
+vue提供的更通用的方式来观察和响应vue实例上的数据变动就是监视属性（侦听属性），不仅可以监视普通属性，也可以监听计算属性。
 
 ```html
 <body>
@@ -402,7 +402,7 @@ vue提供的更通用的方式来观察和响应vue实例上的数据变动就�
         <!-- 绑定style样式对象写法 -->
         <div class="basic" :style="styleObj">{{name}}</div> <br/><br/>
         <!-- 绑定style样式数组写法 -->
-			<div class="basic" :style="styleArr">{{name}}</div>
+        <div class="basic" :style="styleArr">{{name}}</div>
     </div>
     <script>
         const vm = new Vue({
@@ -418,23 +418,23 @@ vue提供的更通用的方式来观察和响应vue实例上的数据变动就�
                 },
                 styleObj: {
                     fontSize: '40px',
-					color:'red',
+                    color:'red',
                 },
                 styleArr: [
                     {
-						fontSize: '40px',
-						color:'blue',
-					},
-					{
-						backgroundColor:'gray'
-					}
+                        fontSize: '40px',
+                        color:'blue',
+                    },
+                    {
+                        backgroundColor:'gray'
+                    }
                 ]
             },
             methods: {
                 changeMood() {
                     const arr = ['happy','sad','normal']
-					const index = Math.floor(Math.random()*3)
-					this.mood = arr[index]
+                    const index = Math.floor(Math.random()*3)
+                    this.mood = arr[index]
                 }
             }
         })
@@ -450,11 +450,11 @@ vue提供的更通用的方式来观察和响应vue实例上的数据变动就�
         <h2>当前的n值是:{{n}}</h2>
         <button @click="n++">点我n+1</button>
 
-        <!-- 使用v-show做条件渲染 -->
+        <!-- 使用v-show做条件渲染 ：display-->
         <h2 v-show="false">欢迎来到{{name}}</h2>
         <h2 v-show="1 === 1">欢迎来到{{name}}</h2>
 
-        <!-- 使用v-if做条件渲染 -->
+        <!-- 使用v-if做条件渲染 ： 节点直接没了-->
         <h2 v-if="false">欢迎来到{{name}}</h2>
         <h2 v-if="1 === 1">欢迎来到{{name}}</h2>
 
@@ -535,4 +535,79 @@ vue提供的更通用的方式来观察和响应vue实例上的数据变动就�
 </body>
 ```
 
+# 收集数据
 
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>收集表单数据</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+    <!-- 
+			收集表单数据：
+					若：<input type="text"/>，则v-model收集的是value值，用户输入的就是value值。
+					若：<input type="radio"/>，则v-model收集的是value值，且要给标签配置value值。
+					若：<input type="checkbox"/>
+							1.没有配置input的value属性，那么收集的就是checked（勾选 or 未勾选，是布尔值）
+							2.配置input的value属性:
+									(1)v-model的初始值是非数组，那么收集的就是checked（勾选 or 未勾选，是布尔值）
+									(2)v-model的初始值是数组，那么收集的的就是value组成的数组
+					备注：v-model的三个修饰符：
+									lazy：失去焦点再收集数据
+									number：输入字符串转为有效的数字
+									trim：输入首尾空格过滤
+		-->
+    <div id="root">
+        <form @submit.prevent="demo">
+            账号：<input type="text" name="account" v-model.trim="userInfo.account"><br>
+            密码：<input type="password" name="password" v-model="userInfo.password"><br>
+            年龄：<input type="number" name="age" v-model.number="userInfo.age"><br>
+            性别：
+            男<input type="radio" name="sex" value="male" v-model="userInfo.sex">
+            女<input type="radio" name="sex" value="frmale" v-model="userInfo.sex"><br>
+            爱好：
+            抽烟<input type="checkbox" name="hobby" v-model="userInfo.hobby" value="smoking">
+            喝酒<input type="checkbox" name="hobby" v-model="userInfo.hobby" value="drinking">
+            烫头<input type="checkbox" name="hobby" v-model="userInfo.hobby" value="hot_head"><br>
+            城市：
+            <select name="city" v-model="userInfo.city">
+                <option value="北京">北京</option>
+                <option value="上海">上海</option>
+                <option value="广州">广州</option>
+                <option value="深圳">深圳</option>
+            </select>
+            其他信息：
+            <textarea v-model.lazy="userInfo.other"></textarea><br>
+            <input type="checkbox" v-model="userInfo.agree">阅读并接受<a href="www.baidu.com">《用户协议》</a>
+            <button>提交</button>
+        </form>
+    </div>
+    <script>
+        const vm = new Vue({
+            el: '#root',
+            data: {
+                userInfo: {
+                    account: '',
+                    password: '',
+                    age: 18,
+                    sex: 'female',
+                    hobby: [],
+                    city: '北京',
+                    other:'',
+					agree:''
+                }
+            },
+            methods: {
+                demo() {
+                    console.log(JSON.stringify(this.userInfo))
+                }
+            },
+        })
+    </script>
+</body>
+</html>
+```
