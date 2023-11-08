@@ -279,7 +279,7 @@ vue分为两种模板语法，插值和指令。
 
 ### v-pre
 
-跳过元素或其子元素的编译
+跳过元素或其子元素的编译。
 
 ```html
 <body>
@@ -298,3 +298,5 @@ vue分为两种模板语法，插值和指令。
     </script>
 </body>
 ```
+
+![image](/Users/kx/workspace/Notes/前端/images/WechatIMG155.jpg)

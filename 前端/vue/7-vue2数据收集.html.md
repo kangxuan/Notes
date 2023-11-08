@@ -91,5 +91,3 @@ vue通过`v-model`对表单数据进行收集，但`v-model`针对不同的表�
 年龄：<input type="number" name="age" v-model.number="userInfo.age"><br>
 其他信息：<textarea v-model.lazy="userInfo.other"></textarea><br>
 ```
-
-
