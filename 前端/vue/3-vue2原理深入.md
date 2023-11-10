@@ -2,7 +2,7 @@
 
 MVVM模型类似MVC模型，但不尽相同。M代表Model模型，V代表View视图，VM代表ViewModel也就是VUE实例，通过VM连同DOM页面和数据之间的互通。
 
-![mvvm](/Users/kx/workspace/Notes/前端/images/mvvm.png)
+![mvvm](../images/mvvm.png)
 
 # 数据代理
 

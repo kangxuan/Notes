@@ -13,7 +13,7 @@
 
 引入开发版时，调试会进行提示，可以进行规避提醒。
 
-![image](/Users/kx/workspace/Notes/前端/images/WechatIMG149.jpg)
+![image](../images/WechatIMG149.jpg)
 
 ```js
 // 阻止vue在启动时生成生产提示
