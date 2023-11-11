@@ -232,16 +232,17 @@ vue分为两种模板语法，插值和指令。
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>v-cloak指令</title>
     <style>
+        /*属性选择器*/
         [v-cloak] {
             display: none;
         }
     </style>
-    <script src="../js/vue.js"></script>
 </head>
 <body>
     <div id="root">
         <h2 v-cloak>{{name}}</h2>
     </div>
+    <script src="../js/vue.js"></script>
     <script>
         console.log(1)
         new Vue({
@@ -254,6 +255,8 @@ vue分为两种模板语法，插值和指令。
 </body>
 </html>
 ```
+
+上面的代码配合css结合使用，一开始`v-cloak`会解析且css会生效，把h2标签隐藏，当加载到vue时，vue发现存在`v-cloak`删除，h2就会显示出来。
 
 ### v-once
 
@@ -279,7 +282,7 @@ vue分为两种模板语法，插值和指令。
 
 ### v-pre
 
-跳过元素或其子元素的编译。
+跳过元素或其子元素的编译，页面显示本身编写的内容，而不用经过vue编译
 
 ```html
 <body>
@@ -300,3 +303,58 @@ vue分为两种模板语法，插值和指令。
 ```
 
 ![image](/Users/kx/workspace/Notes/前端/images/WechatIMG155.jpg)
+
+# 自定义指令
+
+vue提供了可自定义指令的方法。通过`directives`来实现
+
+```html
+<body>
+    <div id="root">
+        <h2>当前的n值是：<span v-text="n"></span></h2>
+        <h2>放大10倍后的n值是：<span v-big-number="n"></span> </h2>
+        <h2>放大20倍后的n值是：<span v-big="n"></span> </h2>
+        <button @click="n++">点我n+1</button><br>
+        <input type="text" v-fbind:value="n">
+    </div>
+    <script>        // 全局自定义指令定义方法
+        // Vue.directive('big', function(element, binding) {
+        //     element.innerHTML = binding.value * 20
+        // })
+        const vm = new Vue({
+            el: '#root',
+            data: {
+                n: 1
+            },
+            directives: {
+                // big函数何时会被调用？
+                // 1.指令与元素成功绑定时（一上来）。2.指令所在的模板被重新解析时。
+
+                // 1. 函数式写法
+                'big-number'(element, binding) {
+                    console.log(this) // 这里的this是
+                    element.innerHTML = binding.value * 10
+                },
+                big(element, binding) {
+                    element.innerHTML = binding.value * 20
+                },
+                // 2. 对象式写法，更加全面，提供了很多时机调用的函数
+                fbind: {
+                    //指令与元素成功绑定时（一上来）
+                    bind(element, binding) {
+                        element.value = binding.value
+                    },
+                    //指令所在元素被插入页面时
+                    inserted(element,binding) {
+                        element.focus()
+                    },
+                    //指令所在的模板被重新解析时
+                    update(element, binding) {
+                        element.value = binding.value
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+```

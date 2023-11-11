@@ -2,13 +2,15 @@
 
 vue组件实例被创建时会都会经历一个生命周期。vue针对每个节点都有一个特定的表达，比如`mounted`等，可以在这些节点做一些特定的业务处理。
 
+![生命周期](../images/生命周期.png)
+
 ### beforeCreate
 
-在组件实例初始化完成之后立即调用
+在组件实例初始化完成之后立即调用，此时无法通过vm访问到data中的数据、methods中的方法。
 
 ### created
 
-在组件实例处理完所有和状态相关的选项后调用
+在组件实例处理完所有和状态相关的选项后调用，此时可以通过vm访问到data中的数据、methods中的方法。
 
 ### beforeMount
 
@@ -16,7 +18,7 @@ vue组件实例被创建时会都会经历一个生命周期。vue针对每个�
 
 ### mounted
 
-在组件被挂载之后调用
+在组件被挂载之后调用，也就是vue解析完模板并将初始的DOM放入页面之后，刷新页面调用一次。
 
 ### beforeUpdate
 
@@ -64,6 +66,8 @@ vue组件实例被创建时会都会经历一个生命周期。vue针对每个�
                 }
             },
             beforeCreate() {
+                //钩子函数中的this指向vm
+                console.log(this)
                 console.log('beforeCreate')
             },
             created() {
