@@ -132,14 +132,14 @@ VUE提供了大部分的按键修饰符，但如果没有定义可以通过具�
         Vue.config.keyCodes.enter = 13
         // Vue.config.keyCodes.f1 = 112
         new Vue({
-			el:'#root',
-			methods: {
-				showInfo(e){
-					// console.log(e.key,e.keyCode)
-					console.log(e.target.value)
-				}
-			},
-		})
+            el:'#root',
+            methods: {
+                showInfo(e){
+                    // console.log(e.key,e.keyCode)
+                    console.log(e.target.value)
+                }
+            },
+        })
     </script>
 </body>
 ```
@@ -159,16 +159,16 @@ VUE提供了大部分的按键修饰符，但如果没有定义可以通过具�
     <script>
         Vue.config.keyCodes.c = 67
         new Vue({
-			el:'#root',
-			methods: {
+            el:'#root',
+            methods: {
                 showInfo2(e) {
                     alert('hello world')
                 },
                 showInfo3(e) {
                     alert('这是一个搞笑的故事')
                 }
-			},
-		})
+            },
+        })
     </script>
 </body>
 ```
