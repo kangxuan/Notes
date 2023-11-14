@@ -305,3 +305,100 @@ vue要使用组件，首先定义组件、然后注册组件、最后使用组�
     </script>
 </body>
 ```
+
+# 组件插槽
+
+对于一些组件内部有一些结构不同的，需要在组件内部自定义内容，就需要使用插槽。插槽一般有默认的内容，需要定制内容，将定制的内容写到组件内部便可以替换默认插槽内容。
+
+```html
+<body>
+    <div id="root">
+        <!-- 组件中没有任何结构则展示组件本身内容，显示插槽默认 -->
+        <cpn></cpn>
+        <cpn>
+            <!-- cpn内部可以替换默认插槽内容 -->
+            <span style="color: red;">这是插槽内容111</span>
+        </cpn>
+        <cpn>
+            <h2 style="color: aqua;">这是插槽内容222</h2>
+        </cpn>
+    </div>
+    <template id="cpn">
+        <div>
+            {{message}}
+            <!-- 定义插槽默认内容，使用slot标签定义 -->
+            <slot><button>默认插槽按钮</button></slot>
+            <br>
+        </div>
+    </template>
+    <script>
+        // 定义组件
+        const cpn = {
+            template: "#cpn",
+            data() {
+                return {
+                    message: '我是子组件'
+                }
+            },
+        }
+
+        const vm = new Vue({
+            el: '#root',
+            // 注册局部组件
+            components: {
+                cpn
+            }
+        })
+    </script>
+</body>
+```
+
+![image](../images/WechatIMG157.jpg)
+
+### 使用具名插槽
+
+可以让插槽按指定的顺序填充，而没有具名的插槽将按照填充的顺序排列，具名插槽可以按照开发人员自定义排列
+
+```html
+<body>
+    <div id="root">
+        <cpn>
+            <!-- 虽然没具名的插槽在前面，但按照有具名的排序，这个插槽会显示到最后 -->
+            <span>没具名</span>
+            <!-- 正常的写法 -->
+            <slot slot="left">左边的内容</slot>
+            <!-- 新写法 -->
+            <slot v-slot:center>中间的内容</slot>
+            <!-- 新写法的缩写 -->
+            <slot #right>右边的内容</slot>
+        </cpn>
+    </div>
+    <template id="cpn">
+        <div>
+            <slot name="left">左边的插槽</slot>
+            <slot name="center">中间的插槽</slot>
+            <slot name="right">右边的插槽</slot>
+            <slot>未具名插槽</slot>
+        </div>
+    </template>
+    <script>
+        const cpn = {
+            template: '#cpn',
+        }
+
+        const vm = new Vue({
+            el: '#root',
+            data() {
+                return {
+                    message: '我是父组件消息'
+                }
+            },
+            components: {
+                cpn
+            }
+        })
+    </script>
+</body>
+```
+
+![image](/Users/kx/workspace/Notes/前端/images/WechatIMG158.jpg)
