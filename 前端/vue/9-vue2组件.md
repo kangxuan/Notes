@@ -126,6 +126,16 @@ vue要使用组件，首先定义组件、然后注册组件、最后使用组�
 </body>
 ```
 
+# VueComponent和Vue的内置关系
+
+组件实际上VueComponent创建出来的对象，Vm是Vue创建的对象，VueComponent和Vue基本上相同，但是Vue有的VueComponent是没有的，比如说el。
+
+![](/Users/kx/Library/Application%20Support/marktext/images/2023-11-19-20-01-35-image.png)
+
+VueComponent的原型对象的隐式原型属性`__proto__`并没有直接指向Object，而是指向Vue的原型对象，所以组件上找不到的属性会去Vue上找。
+
+所以得出结论：`VueComponent.prototype.__proto__ === Vue.prototype`，这个结论也就是为了VueComponent找不到的属性可以去Vue上去找。
+
 # 组件分离写法
 
 在上面的代码中，template都定义在组件内部，这样会导致html代码都挤到一个字符串中，非常不方便，可以使用分离写法。
