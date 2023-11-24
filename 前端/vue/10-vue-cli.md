@@ -28,25 +28,23 @@ npm run serve
 # vue-cli结构分析
 
 ``` 
-	├── node_modules 
-	├── public
-	│   ├── favicon.ico: 页签图标
-	│   └── index.html: 主页面
-	├── src
-	│   ├── assets: 存放静态资源
-	│   │   └── logo.png
-	│   │── component: 存放组件
-	│   │   └── HelloWorld.vue
-	│   │── App.vue: 汇总所有组件
-	│   │── main.js: 入口文件
-	├── .gitignore: git版本管制忽略的配置
-	├── babel.config.js: babel的配置文件
-	├── package.json: 应用包配置文件 
-	├── README.md: 应用描述文件
-	├── package-lock.json：包版本控制文件
+├── node_modules 
+├── public
+│   ├── favicon.ico: 页签图标
+│   └── index.html: 主页面
+├── src
+│   ├── assets: 存放静态资源
+│   │   └── logo.png
+│   │── component: 存放组件
+│   │   └── HelloWorld.vue
+│   │── App.vue: 汇总所有组件
+│   │── main.js: 入口文件
+├── .gitignore: git版本管制忽略的配置
+├── babel.config.js: babel的配置文件
+├── package.json: 应用包配置文件 
+├── README.md: 应用描述文件
+├── package-lock.json: 包版本控制文件
 ```
-
-# 关于不同版本的Vue
 
 ### vue.js与vue.runtime.xxx.js的区别：
 
@@ -65,5 +63,55 @@ vue inspect > output.js
 ```
 
 如需要对配置进行修改，vue-cli提供了一个文件`vue.config.js`可以进行定制配置，具体配置参数参考：[配置参考 | Vue CLI](https://cli.vuejs.org/zh/config/)
+
+```js
+// 示例配置入口文件
+module.exports = {
+  pages: {
+    index: {
+      // 入口文件
+      entry: 'src/index/main.js'
+    }
+  }
+}
+```
+
+# ref属性
+
+ref属性用来给元素或子组件注册引用信息（类似id）
+
+```html
+<template>
+    <div>
+        <!-- 给普通的DOM元素打ref标识 -->
+        <h1 v-text="msg" ref="title"></h1>
+        <button ref="btn" @click="showDOM">点我输入上方的DOM元素</button>
+        <!-- 给子组件打ref标识 -->
+        <SchoolInfo ref="sch"></SchoolInfo>
+    </div>
+</template>
+
+<script>
+    import SchoolInfo from './components/SchoolInfo.vue'
+    export default {
+        name: 'App',
+        components: {SchoolInfo},
+        data() {
+            return {
+                msg: 'welcome to vue'
+            }
+        },
+        methods: {
+            showDOM() {
+                // ref放在DOM元素上返回的是真实的DOM元素
+                console.log(this.$refs.title)
+                console.log(this.$refs.btn)
+                // ref写在组件上可以返回组件实例对象
+                console.log(this.$refs.sch)
+            }
+        }
+    }
+</script>
+```
 
 
