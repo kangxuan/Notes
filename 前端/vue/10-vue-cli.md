@@ -152,4 +152,141 @@ props: {
 
 **备注**：props是只读的，Vue底层会监测你对props的修改，如果进行了修改，就会发出警告，若业务需求确实需要修改，那么请复制props的内容到data中一份，然后去修改data中的数据。
 
+# mixin（混入）
+
+可以把多个组件公用的配置或功能提取出来形成一个混入对象
+
+定义混合
+
+```js
+export const hunhe = {
+    methods: {
+        showName() {
+            alert(this.name)
+        }
+    },
+    mounted() {
+        console.log('哈哈哈')
+    },
+}
+// 配置数据
+export const hunhe2 = {
+    data() {
+        return {
+            x: 100,
+            y: 200
+        }
+    },
+}
+```
+
+使用混入
+
+```js
+// 第一种全局混入，一般在入口文件中使用，会在vc和vm上都有
+import {hunhe, hunhe2} from './mixin'
+Vue.mixin(hunhe)
+Vue.mixin(hunhe2)
+
+// 第二种局部混入，一般在组件中使用
+import {hunhe,hunhe2} from '../mixin'
+export default {
+    name:'Student',
+    data() {
+        return {
+            name:'张三',
+            sex:'男'
+        }
+    },
+    mixins:[hunhe,hunhe2]
+}
+```
+
+**原则**：data、methods这些混合如果和组件的冲突，以组件的配置为准；如果是生命周期钩子冲突，都会被执行。
+
+# 插件使用
+
+用来增强vue，本质是包含install方法的一个对象，install的第一个参数是Vue，第二个以后的参数是使用者传递的参数
+
+### 1. 定义插件
+
+一般单独起一个插件js文件
+
+```js
+// 导出
+export const plugins = {
+    install(Vue, a, b) {
+        console.log('@@@', a, b)
+
+        //全局过滤器
+		Vue.filter('mySlice',function(value){
+			return value.slice(0,4)
+		})
+
+        //定义全局指令
+		Vue.directive('fbind',{
+			//指令与元素成功绑定时（一上来）
+			bind(element,binding){
+				element.value = binding.value
+			},
+			//指令所在元素被插入页面时
+			inserted(element){
+				element.focus()
+			},
+			//指令所在的模板被重新解析时
+			update(element,binding){
+				element.value = binding.value
+			}
+		})
+
+        //定义混入
+		Vue.mixin({
+			data() {
+				return {
+					x:100,
+					y:200
+				}
+			},
+		})
+
+        //给Vue原型上添加一个方法（vm和vc就都能用了）
+		Vue.prototype.hello = ()=>{alert('你好啊')}
+    }
+}
+```
+
+### 2. 导入插件
+
+```js
+// 导入插件
+import {plugins} from './plugins'
+
+// 使用插件
+Vue.use(plugins, 1, 2)
+```
+
+### 3. 组件中使用插件定义的功能
+
+```html
+<template>
+  <div>
+    <h2>学生姓名：{{name}}</h2>
+    <h2>学生性别：{{gender}}</h2>
+    <input type="text" v-fbind:value="name">
+  </div>
+</template>
+```
+
+# scoped样式
+
+scoped作用在style标签上，让样式在局部生效，防止冲突
+
+```html
+<style scoped>
+    .demo {
+        background-color: aqua;
+    }
+</style>
+```
+
 
