@@ -27,7 +27,7 @@ npm run serve
 
 # vue-cli结构分析
 
-``` 
+```
 ├── node_modules 
 ├── public
 │   ├── favicon.ico: 页签图标
@@ -113,5 +113,43 @@ ref属性用来给元素或子组件注册引用信息（类似id）
     }
 </script>
 ```
+
+# props配置项
+
+props可以让组件接收到外部传来的数据
+
+### 1. 传递数据
+
+```html
+<Demo name="xxx">
+```
+
+### 2. 接收数据
+
+简单接收
+
+```js
+props: ["name"]
+```
+
+只限制类型
+
+```js
+props: {name: String}
+```
+
+限制类型、必要性、指定默认值
+
+```js
+props: {
+    name: {
+        type: String, // 限制类型
+        required: true, // 限制必要性
+        default: 'shanla', // 指定默认值
+    }
+}
+```
+
+**备注**：props是只读的，Vue底层会监测你对props的修改，如果进行了修改，就会发出警告，若业务需求确实需要修改，那么请复制props的内容到data中一份，然后去修改data中的数据。
 
 
