@@ -772,7 +772,7 @@ history对象用来管理历史对象
 
 - 以键值对的形式存储使用
 
-- 只能存储字符串
+-  只能存储字符串
 
 **用法**
 
@@ -813,6 +813,10 @@ console.log(JSON.parse(info))
 - 以键值对的形式存储使用
 
 - 用法和localStorage类似
+
+### webStorage
+
+localStorage和sessionStorage统称为webStorage，存储内容一般为5M左右（不同浏览器可能不一样）。xxxStorage.getItem(xxx)如果获取不到数据，会返回null，对应的JSON.parse(null)也会得到null。
 
 # 正则表达式
 
