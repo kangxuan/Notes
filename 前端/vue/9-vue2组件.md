@@ -245,7 +245,11 @@ VueComponent的原型对象的隐式原型属性`__proto__`并没有直接指向
 
 ### 子组件向父组件传递值
 
-通过内置的`$emit`，调用一个父组件的定义的函数对父组件的值进行操作。
+通过内置的`$emit`，调用一个父组件给子组件定义的事件来实现子组件向父组件传递的效果。
+
+**有两种方法**
+
+1. 父组件调用子组件时使用`@`或`v-on`直接绑定自定义组件
 
 ```html
 <body>
@@ -315,6 +319,43 @@ VueComponent的原型对象的隐式原型属性`__proto__`并没有直接指向
     </script>
 </body>
 ```
+
+2. 第二种是使用ref，然后通过ref给子组件定义自定义事件。
+
+```html
+<Demo ref="demo"/>
+......
+<script>
+mounted(){
+   this.$refs.xxx.$on('atguigu',this.test)
+}
+</script>
+```
+
+**调用自定义事件**
+
+```js
+// this.$emit('xxx', 数据)
+this.$emit('num1change', this.dnumber1)
+```
+
+**解绑自定义事件**
+
+```js
+// 在子组件中调用$off
+this.$off('showData')
+```
+
+**组件中绑定原生事件**
+
+```html
+<!-- 组件默认使用的是自定义组件，绑定原生组件必须使用native修饰 -->
+<StudentInfo ref="student" @click.native="clickMsg"/>
+```
+
+**注意事项**
+
+1. 通过`this.$refs.xxx.$on('atguigu',回调)`绑定自定义事件时，回调要么配置在methods中，要么用箭头函数，否则this指向会出问题！
 
 # 组件插槽
 
