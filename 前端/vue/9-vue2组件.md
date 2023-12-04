@@ -410,6 +410,41 @@ beforeDestroy() {
 this.$bus.$emit('hello', this.name)
 ```
 
+# 发布订阅
+
+### 1. pubsub
+
+**安装pubsub**
+
+```shell
+npm i pubsub-js
+```
+
+**使用pubsub**
+
+```js
+// 订阅消息
+...
+mounted() {
+    this.pubId = pubsub.subscribe('hello', (msgName, data) => {
+        console.log('有人发布了hello消息，hello消息的回调执行了',msgName,data)
+    })
+},
+beforeDestroy() {
+    pubsub.unsubscribe(this.pubId) // 取消订阅
+}
+...
+
+// 发布消息
+...
+methods: {
+    sendStudentName() {
+        pubsub.publish('hello', 666)
+    }
+}
+...
+```
+
 # 组件插槽
 
 对于一些组件内部有一些结构不同的，需要在组件内部自定义内容，就需要使用插槽。插槽一般有默认的内容，需要定制内容，将定制的内容写到组件内部便可以替换默认插槽内容。
