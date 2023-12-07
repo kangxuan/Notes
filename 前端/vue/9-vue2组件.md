@@ -445,6 +445,61 @@ methods: {
 ...
 ```
 
+# Vue封装的过渡和动画
+
+### 1. 作用
+
+在插入、更新或移除DOM元素时，在合适的时候给元素添加样式名。
+
+![image](../images/WechatIMG186.jpg)
+
+### 2. 写法
+
+1. 准备好样式
+   
+   1. 元素进入的样式
+      
+      1. v-enter: 进入的起点
+      
+      2. v-enter-active: 进入的过程
+      
+      3. v-enter-to: 进入的终点
+   
+   2. 元素离开的样式
+      
+      1. v-leave: 离开的起点
+      
+      2. v-leave-active：离开的过程
+      
+      3. v-leave-to: 离开的终点
+   
+   ```css
+   <style scoped>
+       h1 {
+           background-color: orange;
+       }
+       /* 进入的起点，离开的终点 */
+       .hello-enter, .hello-leave-to {
+           transform: translateX(-100%);
+       }
+       .hello-enter-active, .hello-leave-active {
+           transition: 0.5s linear;
+       }
+       /* 进入的终点，离开的起点 */
+       .hello-enter-to, .hello-leave {
+           transform: translateX(0);
+       }
+   </style>
+   ```
+
+2. 使用`transition`包裹要过渡的元素，若是多个元素有相同的效果则用`transition-group`，且要给每个元素添加一个`key`。
+
+```html
+<transition name="hello" :appear="true">
+    <h1 v-show="isShow">hello world</h1>
+</transition>
+```
+
 # 组件插槽
 
 对于一些组件内部有一些结构不同的，需要在组件内部自定义内容，就需要使用插槽。插槽一般有默认的内容，需要定制内容，将定制的内容写到组件内部便可以替换默认插槽内容。
