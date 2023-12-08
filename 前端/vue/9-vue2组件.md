@@ -502,97 +502,89 @@ methods: {
 
 # 组件插槽
 
-对于一些组件内部有一些结构不同的，需要在组件内部自定义内容，就需要使用插槽。插槽一般有默认的内容，需要定制内容，将定制的内容写到组件内部便可以替换默认插槽内容。
+作用是让父组件向子组件指定位置插入html结构，也是一种组件间通信的方式，拢共分为默认插槽、具名插槽、作用域插槽。
+
+### 使用默认插槽
+
+默认插槽是在子组件中定义一个插槽，父组件使用子组件时中间的内容就是会替换插槽。
 
 ```html
-<body>
-    <div id="root">
-        <!-- 组件中没有任何结构则展示组件本身内容，显示插槽默认 -->
-        <cpn></cpn>
-        <cpn>
-            <!-- cpn内部可以替换默认插槽内容 -->
-            <span style="color: red;">这是插槽内容111</span>
-        </cpn>
-        <cpn>
-            <h2 style="color: aqua;">这是插槽内容222</h2>
-        </cpn>
-    </div>
-    <template id="cpn">
+父组件中：
+    <Category>
+        <div>html结构1</div>
+    </Category>
+子组件中：
+    <template>
         <div>
-            {{message}}
-            <!-- 定义插槽默认内容，使用slot标签定义 -->
-            <slot><button>默认插槽按钮</button></slot>
-            <br>
+        <!-- 定义插槽 -->
+            <slot>插槽默认内容...</slot>
         </div>
     </template>
-    <script>
-        // 定义组件
-        const cpn = {
-            template: "#cpn",
-            data() {
-                return {
-                    message: '我是子组件'
-                }
-            },
-        }
-
-        const vm = new Vue({
-            el: '#root',
-            // 注册局部组件
-            components: {
-                cpn
-            }
-        })
-    </script>
-</body>
 ```
-
-![image](../images/WechatIMG157.jpg)
 
 ### 使用具名插槽
 
-可以让插槽按指定的顺序填充，而没有具名的插槽将按照填充的顺序排列，具名插槽可以按照开发人员自定义排列
+可以使用多个插槽，并让插槽按指定的顺序填充，而没有具名的插槽将按照填充的顺序排列，具名插槽可以按照开发人员自定义排列
 
 ```html
-<body>
-    <div id="root">
-        <cpn>
-            <!-- 虽然没具名的插槽在前面，但按照有具名的排序，这个插槽会显示到最后 -->
-            <span>没具名</span>
-            <!-- 正常的写法 -->
-            <slot slot="left">左边的内容</slot>
-            <!-- 新写法 -->
-            <slot v-slot:center>中间的内容</slot>
-            <!-- 新写法的缩写 -->
-            <slot #right>右边的内容</slot>
-        </cpn>
-    </div>
-    <template id="cpn">
+父组件中：
+    <Category>
+        <template slot="center">
+            <div>html结构1</div>
+        </template>
+      
+        <template v-slot:footer>
+            <div>html结构2</div>
+        </template>
+    </Category>
+子组件中：
+    <template>
         <div>
-            <slot name="left">左边的插槽</slot>
-            <slot name="center">中间的插槽</slot>
-            <slot name="right">右边的插槽</slot>
-            <slot>未具名插槽</slot>
+            <!-- 定义插槽 -->
+            <slot name="center">插槽默认内容...</slot>
+            <slot name="footer">插槽默认内容...</slot>
         </div>
-    </template>
-    <script>
-        const cpn = {
-            template: '#cpn',
-        }
-
-        const vm = new Vue({
-            el: '#root',
-            data() {
-                return {
-                    message: '我是父组件消息'
-                }
-            },
-            components: {
-                cpn
-            }
-        })
-    </script>
-</body>
+    </template>
 ```
 
-![image](/Users/kx/workspace/Notes/前端/images/WechatIMG158.jpg)
+### 使用作用域插槽
+
+数据在子组件中，但根据数据生成的结构需要组件的使用者来决定。这种情况需要使用作用域插槽。
+
+```html
+父组件中：
+     <Category>
+         <template scope="scopeData">
+             <!-- 生成的是ul列表 -->
+             <ul>
+                 <li v-for="g in scopeData.games" :key="g">{{g}}</li>
+             </ul>
+         </template>
+     </Category>
+
+     <Category>
+         <template slot-scope="scopeData">
+             <!-- 生成的是h4标题 -->
+             <h4 v-for="g in scopeData.games" :key="g">{{g}}</h4>
+         </template>
+     </Category>
+子组件中：
+     <template>
+         <div>
+             <slot :games="games"></slot>
+         </div>
+     </template>
+
+     <script>
+         export default {
+             name:'Category',
+             props:['title'],
+             //数据在子组件自身
+             data() {
+                 return {
+                     games:['红色警戒','穿越火线','劲舞团','超级玛丽']
+                 }
+             },
+         }
+     </script>
+```
