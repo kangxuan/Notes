@@ -82,4 +82,221 @@ new Vue({
 <router-view></router-view>
 ```
 
+# 注意点
+
+- 路由组件一般放在`pages`文件夹下，一般组件通常放在`components`下。
+
+- 路由组件切换会先销毁以前的组件，然后再挂载要切换的组件。
+
+- 每个组件都有自己的`route`信息，存储着自己的路由信息。
+
+- 整个应用只有一个`router`信息，里面存储着更多的方法。
+
+# 多级路由
+
+路由组件中包含其他子组件可以使用`children`配置子路由
+
+```js
+export default new VueRouter({
+    routes: [
+        {
+            path: '/about',
+            component: BlogAbout
+        },
+        {
+            path: '/home',
+            component: BlogHome,
+            children: [ // 通过children配置子路由
+                {
+                    path: 'message', // 子路由不用使用/
+                    component: HomeMessage
+                },
+                {
+                    path: 'news',
+                    component: HomeNews
+                }
+            ]
+        }
+    ]
+})
+```
+
+在路由组件中使用子路由
+
+```html
+<!-- 这里的to路由要写完整的 -->
+<router-link class="list-group-item" active-class="active" to="/home/news">News</router-link>
+```
+
+# query参数
+
+父组件传递参数
+
+```html
+<template>
+  <div>
+    <ul>
+        <li v-for="m in messages" :key="m.id">
+          <!-- to的字符串写法 -->
+          <!-- <router-link :to="`/home/message/detail?id=${m.id}&title=${m.title}`">{{m.title}}</router-link>&nbsp;&nbsp; -->
+          <!-- to的对象写法 -->
+          <router-link :to="{
+            path: '/home/message/detail',
+            query: {
+              id: m.id,
+              title: m.title
+            }
+          }">{{m.title}}</router-link>
+        </li>
+      </ul>
+      <hr>
+      <router-view></router-view>
+  </div>
+</template>
+```
+
+子组件接收query参数通过`this.$route.query`进行接收
+
+```html
+<template>
+  <div>
+    id:{{this.$route.query.id}},title:{{this.$route.query.title}}
+  </div>
+</template>
+```
+
+# 路由命名
+
+由于套娃式会导致多级路由的路径越来越长，通常可以给层级太深的路由配置名称，简化路径。
+
+给路由命名：
+
+```js
+export default new VueRouter({
+    routes: [
+        {
+            path: '/about',
+            component: BlogAbout
+        },
+        {
+            path: '/home',
+            component: BlogHome,
+            children: [
+                {
+                    path: 'message',
+                    component: HomeMessage,
+                    children: [
+                        {
+                            name: 'hello', // 给路由命令
+                            path: 'detail',
+                            component: HomeMessageDetail
+                        }
+                    ]
+                },
+                {
+                    path: 'news',
+                    component: HomeNews
+                }
+            ]
+        }
+    ]
+})
+```
+
+使用命名路由：
+
+```html
+<template>
+  <div>
+    <ul>
+        <li v-for="m in messages" :key="m.id">
+          <!-- 使用命令定位路由 -->
+          <router-link :to="{
+            name: 'hello',
+            query: {
+              id: m.id,
+              title: m.title
+            }
+          }">{{m.title}}</router-link>
+        </li>
+      </ul>
+      <hr>
+      <router-view></router-view>
+  </div>
+</template>
+```
+
+# params参数
+
+配置路由，声明接收params参数
+
+```js
+export default new VueRouter({
+    routes: [
+        {
+            path: '/about',
+            component: BlogAbout
+        },
+        {
+            path: '/home',
+            component: BlogHome,
+            children: [
+                {
+                    path: 'message',
+                    component: HomeMessage,
+                    children: [
+                        {
+                            name: 'hello',
+                            path: 'detail/:id/:title', // 配置接收params参数规则
+                            component: HomeMessageDetail
+                        }
+                    ]
+                },
+                {
+                    path: 'news',
+                    component: HomeNews
+                }
+            ]
+        }
+    ]
+})
+```
+
+传递参数
+
+```html
+<template>
+  <div>
+    <ul>
+        <li v-for="m in messages" :key="m.id">
+          <!-- 第一种：to的字符串写法 -->
+          <!-- <router-link :to="`/home/message/detail/${m.id}/${m.title}`">{{m.title}}</router-link>&nbsp;&nbsp; -->
+          <!-- 第二种：to的对象写法 -->
+          <router-link :to="{
+            name: 'hello',
+            params: {
+              id: m.id,
+              title: m.title
+            }
+          }">{{m.title}}</router-link>
+        </li>
+      </ul>
+      <hr>
+      <router-view></router-view>
+  </div>
+</template>
+```
+
+> 特别注意：使用to的对象写法时，不能写path配置，必须写成name的配置。
+
+接收参数
+
+```html
+<template>
+  <div>
+    id:{{this.$route.params.id}},title:{{this.$route.params.title}}
+  </div>
+</template>
+```
+
 
