@@ -299,4 +299,88 @@ export default new VueRouter({
 </template>
 ```
 
+# props传递数据
+
+让路由组件更方便的收到数据。在路由中配置，使用时通过props声明。
+
+```js
+...
+{
+    name: 'hello',
+    // path: 'detail/:id/:title',
+    path: 'detail',
+    component: HomeMessageDetail,
+    // props第一种写法：对象写法，该对象中的所有k-v都会以props的形式传给Detail组件
+    // props:{a: 1, b: 2}
+    // props第二种写法：布尔值，如果为true时，会将params参数放到props中
+    // props: true,
+    // props第三种写法：函数
+    props($route) {
+        return {
+            id: $route.query.id,
+            title: $route.query.title,
+            a: 1, 
+            b: 'hello'
+        }
+    }
+}
+...
+```
+
+# 浏览器浏览记录模式
+
+### 1. push模式
+
+这种模式是默认的，是对记录记录进行追加，通过前进后退可以进行访问
+
+### 2. replace模式
+
+这种模式是替换当前的记录。
+
+```html
+<!-- 开启replace模式 -->
+<router-link replace="true" class="list-group-item" active-class="active" to="/home/news">News</router-link>
+<!-- 可省去true -->
+<router-link replace class="list-group-item" active-class="active" to="/home/news">News</router-link>
+```
+
+# 编程式路由导航
+
+不借助`<router-link>`实现跳转，让路由跳转更加灵活
+
+```js
+this.$router.push({
+  name: 'hello',
+  query: {
+    id: xxx,
+    title: xxx
+  }
+})
+this.$router.replace({
+  name: 'hello',
+  query: {
+    id: xxx,
+    title: xxx
+  }
+})
+
+this.$router.forward() //前进
+this.$router.back() //后退
+this.$router.go(n) //可前进也可后退，n>0则为前进n步，n<0则为后退n步
+```
+
+# 缓存路由组件
+
+让不展示的路由组件保持挂载，不被销毁。
+
+```html
+<!-- 缓存多个路由组件 -->
+<!-- <keep-alive :include="['News','Message']"> -->
+
+<!-- 缓存一个路由组件 -->
+<keep-alive include="News">
+	<router-view></router-view>
+</keep-alive>
+```
+
 
