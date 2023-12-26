@@ -385,10 +385,84 @@ this.$router.go(n) //可前进也可后退，n>0则为前进n步，n<0则为后�
 
 # 路由守卫
 
-路由守卫的作用是对路由进行全选控制
+路由守卫的作用是对路由进行权限控制
 
 ### 1. 全局守卫
 
+针对router全局进行权限控制
+
+```js
+...
+// 全局前置路由守卫---初始化时被调用，每次路由切换之前被调用
+router.beforeEach((to, from, next) => {
+    console.log('前置路由守卫', to, from)
+    if (to.meta.isAuth === true) {
+        if (localStorage.getItem('school') === 'hechixueyuan') {
+            next()
+        } else {
+            alert("学校名称不对")
+        }
+    } else {
+        next()
+    }
+})
+
+// 全局后置路由守卫---初始化的时候被调用，每次路由切换之后被调用
+router.afterEach((to, from) => {
+    console.log('后置路由守卫', to, from)
+    document.title = to.meta.title || '默认标题'
+})
+...
+```
+
 ### 2. 独享守卫
 
+针对某一个路由的权限控制
+
+```js
+{
+    path: 'news',
+    component: HomeNews,
+    meta: {isAuth: true, title: '新闻'},
+    // 进入之前调用
+    beforeEnter: (to, from, next) => {
+        console.log('独享路由守卫', to, from)
+        if (to.meta.isAuth) {
+            if (localStorage.getItem('school') === 'hechixueyuan') {
+                next()
+            } else {
+                alert('学校名不对，无权限查看！')
+            }
+        } else {
+            next()
+        }
+    }
+}
+```
+
 ### 3. 组件内守卫
+
+写在组件内的守卫，分为进入守卫和离开守卫。
+
+```js
+...
+// 进入守卫：通过路由规则，进入该组件时被调用
+beforeRouteEnter (to, from, next) {
+  console.log('About--beforeRouteEnter', to, from)
+  if (to.meta.isAuth) {
+    if (localStorage.getItem('school') === 'hechixueyuan') {
+      next()
+    } else {
+      alert('学校名不对，无权限查看！')
+    }
+  } else {
+    next()
+  }
+},
+// 离开守卫：通过路由规则，离开该组件时被调用
+beforeRouteLeave (to, from, next) {
+  console.log('About--beforeRouteLeave', to, from)
+  next()
+}
+...
+```
