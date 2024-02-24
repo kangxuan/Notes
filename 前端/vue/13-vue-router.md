@@ -138,7 +138,7 @@ export default new VueRouter({
     <ul>
         <li v-for="m in messages" :key="m.id">
           <!-- to的字符串写法 -->
-          <!-- <router-link :to="`/home/message/detail?id=${m.id}&title=${m.title}`">{{m.title}}</router-link>&nbsp;&nbsp; -->
+          <!-- <router-link :to="`/home/message/detail?id=${m.id}&title=${m.title}`">{{m.title}}</router-link>   -->
           <!-- to的对象写法 -->
           <router-link :to="{
             path: '/home/message/detail',
@@ -270,7 +270,7 @@ export default new VueRouter({
     <ul>
         <li v-for="m in messages" :key="m.id">
           <!-- 第一种：to的字符串写法 -->
-          <!-- <router-link :to="`/home/message/detail/${m.id}/${m.title}`">{{m.title}}</router-link>&nbsp;&nbsp; -->
+          <!-- <router-link :to="`/home/message/detail/${m.id}/${m.title}`">{{m.title}}</router-link>   -->
           <!-- 第二种：to的对象写法 -->
           <router-link :to="{
             name: 'hello',
@@ -379,7 +379,7 @@ this.$router.go(n) //可前进也可后退，n>0则为前进n步，n<0则为后�
 
 <!-- 缓存一个路由组件 -->
 <keep-alive include="News">
-	<router-view></router-view>
+    <router-view></router-view>
 </keep-alive>
 ```
 
@@ -484,5 +484,3 @@ url`#`之后的叫做hash值，hash值不会带给服务器
 1. 地址干净，美观 。
 2. 兼容性和hash模式相比略差。
 3. 应用部署上线时需要后端人员支持，解决刷新页面服务端404的问题。
-
-
