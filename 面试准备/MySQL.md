@@ -45,18 +45,26 @@ order by entry_date_num desc;
 1. 事务的四大特性
 
 ```
+CAID：
 1. 原子性：事务是不可分割的最小操作单元，要么全部成功，要么全部失败。
-2. 一致性：事务完成后，必须使所有的数据都保持一致性，通过数据库约束等来保证一致性。
+    InnoDB引擎提供了两种事务日志：redo log和undo log，其中redo log保证了持久性，
+undo log保证了事务的原子性和隔离性，修改时会生成undo log，当事务执行失败或事务回滚
+时，调用undo log来回滚到最初状态（撤销所有已经执行成功的语句）。
+2. 一致性：事务应该保证数据库状态从一个一致性状态到另一个一致性状态，一致性状态数据库中
+的数据应该满足完整性约束
+    一致性包括约束一致性和数据一致性。
 3. 隔离性：数据库系统提供的隔离机制，保证事务在外部并发的影响下不受影响，是独立环境下
 运行。
 4. 持久性：事务提交或回滚后，数据的改变是永久的。
+    保证持久性依赖redo log，redo log包含了redo log buffer以及磁盘redo log。当
+出现宕机情况，会从redo log重新加载。
 ```
 
 2. 并发的事务问题
 
 ```
 1. 脏读
-    是读取到其他未提交事务的数据
+    一个事务读到了另一个事务修改但未提交的数据
     比如A和B事务，B修改了数据但未提交，A读取到数据已经被修改了。
 2. 不可重复读
     一个事务先后读取相同数据，两次数据不一致（和幻读相比，关注的是修改）
@@ -182,6 +190,118 @@ order by a, b，索引不生效），但要满足最左前缀原则，这里和w
 一致才会生效。
     4. 如果使用asc、desc会导致filesort，如果非要解决这个问题，需要建立特定索引
 create index idx_A_B on table_name(A asc,B desc)，但没有必要。
+```
+
+12. InnoDB和MyISAM的区别？
+
+```
+
+```
+
+13. 5种以上的MySQL的优化建议？
+
+```
+
+```
+
+14. 说一下MVCC的内部细节
+
+```
+MVCC是多版本并发控制，是指在数据库出现高并发的数据访问时，对数据进行多版本处理，并通过
+事务的可见性来保证事务能看到自己应该看到的版本。
+VCC如何实现：
+1. 行记录的三个隐藏字段
+    row_id:在表没有主键或唯一索引，InnoDB会给行自动添加一个row_id隐藏列作为主键
+    txt_id:事务对该行执行了增删改操作，会将这个事务ID存到txt_id中
+    roll_ptr:回滚指针，指向undo log的指针
+2. undo log多版本链
+    每条数据的每次修改都会产生一个版本，版本之间通过undo log链条来连接的，从而形成了
+多版本多版本链。
+3. Readview
+    Readview是InnoDB实现MVCC时用到的一致性读视图，简单理解就是在每个时刻的状态拍成
+照片记录下来，那么之后获取某个时刻的数据就是原来的照片上的数据，不会变化。
+    Readview比较重要的四个字段？
+    m_ids:用来表示MySQL中正在执行的事务ID
+    min_trx_id:就是m_ids中最小的事务ID
+    max_trx_id:就是m_ids中最大的事务ID
+    creator_trx_id:就是当前事务的ID
+    通过Readview判断记录的某个版本是否可见？
+    trx_id == creator_trx_id:表示当前事务正在访问自己修改的记录，该版本可见
+    trx_id < min_trx_id:表示当前事务在这个版本之前已经提交，所以该版本可见
+    trx_id >= max_trx_id:表示当前事务在这个版本之后，所以该版本不可见
+    trx_id >= min_trx_id && trx_id < max_trx_id:
+        继续判断trx_id是否在m_ids中
+            如果在：说明在创建该Readview时，当前事务活跃，所以该版本不可见
+            如果不在：说明在创建该Readview时，当前事务已经提交，所以该版本可见
+    何时生成Readview快照？
+    在RC隔离级别下：每次读取数据前都会生成一个Readview
+    在RR隔离级别下：在一个事务中，只在第一次读数据前生成一个Readview。
+4. 快照读和当前读
+    在MVCC并发控制中，读操作可分为快照读和当前读
+        快照读：快照读是当前事务读取的一个快照（undo log链上的某一个版本），他解决了
+加锁导致的两个问题：修改时不能读取数据以及读取时不能修改数据
+        当前读：当前读应该要读取最新的数据，需要对数据进行加锁
+            共享锁：insert/update/delete ... lock in share mode,
+            排它锁：select for update
+总结：
+1. 并发情况下，写-写操作有加锁方案，但为了更一步提高性能，InnoDB提供了MVCC，目的是为了
+解决读-写、写-读操作下不加锁也能安全进行。
+2. MVCC的本质就是访问版本连，并判断哪个版本可见的过程，该判断算法就是trx_id和Readview
+中的各个字段进行判断
+3. Readview在不同隔离级别下生成的时机也不同。
+```
+
+15. 如何做慢查询优化
+
+```
+先开启慢查询日志slow_query_log（可说可不说）
+说出慢查询优化的思路（主要）
+1. 首先弄清楚SQL性能下降的原因，从等待时间长（锁表导致的）和执行时间长两个方面考虑
+2. 优先优化高并发场景的SQL
+3. 定位优化对象的性能瓶颈，从三个方面考虑
+    IO瓶颈（数据访问消耗太多的时间，查看是否正确使用了索引）
+    CPU瓶颈（数据运算消耗太多时间，查看分组和排序是否使用了索引）
+    带宽（加大带宽）
+4. 明确优化目标，评估具体优化到什么程度合适（结合用户体验和消耗的资源）
+5. 从explain入手分析
+6. 减少数据库连接的消耗
+7. 尽可能在索引中完成排序、分组。
+8. 减少*的使用，select *肯定会导致回表问题
+9. 尽量只使用最有效的where过滤条件，where条件不是越多越好
+10. 尽量避免复杂的join和子查询，join最好不要超过3张表
+11. 合理设计并利用索引
+    如何判断是否需要创建索引：
+        查询频繁的字段应该创建索引
+        选择差异性大的字段创建索引
+        更新非常频繁的索引最好不要建索引，因为索引维护成本增加
+    如何选择合适的索引：
+12. 索引失效的一些场景
+```
+
+16. InnoDB内存相关参数优化？
+
+```
+1. 缓冲池内存大小设置调整
+    大的缓冲池内存会减少磁盘IO，建议在专业的rds服务器上，将缓冲池内存大小设置为物理内存
+的60%-80%。
+    查看当前buffer pool的大小：
+        show variables like "%innodb_buffer_pool_size%";
+    设置当前buffer pool的大小：
+        set global innodb_buffer_pool_size = 13223232323;
+2. 评估缓冲池内存大小是否合适
+    通过分析缓冲池命中率来验证：
+        查看相关参数：
+            show status like "%innodb_buffer_pool_read%";
+            Innodb_buffer_pool_read_ahead_rnd    0
+            Innodb_buffer_pool_read_ahead    63
+            Innodb_buffer_pool_read_ahead_evicted    0
+            Innodb_buffer_pool_read_requests    58614
+            Innodb_buffer_pool_reads    1364
+        命中率计算公式：
+            Innodb_buffer_pool_read_requests/(Innodb_buffer_pool_reads+Innodb_buffer_pool_read_requests) * 100
+        当这个值低于90%，应该考虑增加innodb_buffer_pool_size的大小。
+3. Page页大小配置调整
+    
 ```
 
 
