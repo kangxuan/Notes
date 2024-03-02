@@ -204,6 +204,20 @@ filemtime() // 更新时间
 file_get_contents()
 # 打开并写入数据
 file_put_contents()
+
+# 循环读取文件内容
+$f = fopen("ex.txt", "r")
+while(!feof($f)) {
+    // 读取一行
+    $line = fgets($f);
+    echo $line . "<br>";
+}
+fclose($f)
+
+$lines = file("ex.txt", FILE_IGNORE_NEW_LINE)
+forreach($lines as $line) {
+    echo $line . "<br>"
+}
 ```
 
 15. 目录操作
@@ -227,6 +241,8 @@ rmdir()
 mkdir()
 # 重命名或移动
 rename()
+
+# 循环读取文件
 ```
 
 16. PHP7新增的新特性
@@ -316,8 +332,6 @@ function directory($dir)
 $a = "1c" + 1; $a = 2;
 $b = "c1" + 1; $b = 1;
 ```
-
-
 
 # 中级
 
@@ -571,7 +585,10 @@ echo a(1, 2)(3, 4, 5)(6);  // 输出：21
 15. PHP7底层优化
 
 ```
-
+1. PHP7将zval的数据结构调整了，占用的字节数减少了
+2. PHP7通过参数传输优化了函数调用
+3. PHP7优化了数据的底层存储结构，由hashtable+linkedlist优化成了zval array，实际上
+就是将hashtable和linkedlist分配到同一块内存空间，提高查询效率。
 ```
 
 16. PHP-FPM与nginx的通信机制
@@ -600,4 +617,69 @@ PHP7使用哈希表来存储数组元素。为了解决哈希冲突的问题，P
 来查找目标元素。可以通过改变桶的个数来控制哈希表的性能和空间占用率。此外，PHP7还会
 动态调整哈希表的尺寸和重新哈希来控制哈希冲突的个数。
 所以php数组是由哈希表+双向链表实现。
+```
+
+18. 如何用原生代码实现RPC远程调用？
+
+```
+么是RPC？
+RPC叫做远程过程调用
+服务端搭建：
+创建一个接收服务index.php
+<?php
+    // 建立一个socket服务
+    $socketServer = stream_socket_server("tcp:127.0.0.1:8887", $errno, $errstr);
+    if (!$socketServer) {
+        echo "建立socket服务失败";
+        die(1);
+    }
+    while(1) {
+        // 接收服务请求
+        $buff = stream_socket_accept($socketServer);
+        // 读取数据
+        $data = fread($buff, 2048);
+        // 解析数据
+        $json = json_decode($data, true);
+        // 判断类文件是否存在
+        $class = $json['class'];
+        $file = $class.".php";
+        require($file);
+        if (!file_exists($file) {
+            continue;
+        }
+        $method = $json['method'];
+        $obj = new $class();
+        $objData = $obj->$method();
+        frwrite($buff, json_encode($objData));
+        fclose($buff);
+    }
+
+创建具体的服务user.php
+<?php
+    class User {
+        public function getName() {
+            return [
+                "code":1,
+                "data": "sdf",
+                "msg": "success"
+            ];
+        }
+    }
+
+创建客户端client.php
+<?php
+    $client = stream_socket_client("tcp://127.0.0.1:8887", $errno, $errstr);
+    if (!$client) {
+        echo "客户端创建失败";
+        die(1);
+    }
+    // 请求数据
+    frwite(json_encode([
+        "class" => "user",
+        "method" => "getName"    
+    ]))
+    // 接收数据
+    $returnData = json_decode(fread($client, 2048));
+    fclose($client);‘
+
 ```
