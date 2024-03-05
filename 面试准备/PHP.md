@@ -587,7 +587,7 @@ echo a(1, 2)(3, 4, 5)(6);  // 输出：21
 ```
 1. PHP7将zval的数据结构调整了，占用的字节数减少了
 2. PHP7通过参数传输优化了函数调用
-3. PHP7优化了数据的底层存储结构，由hashtable+linkedlist优化成了zval array，实际上
+3. PHP7优化了数组的底层存储结构，由hashtable+linkedlist优化成了zval array，实际上
 就是将hashtable和linkedlist分配到同一块内存空间，提高查询效率。
 ```
 
@@ -681,5 +681,4 @@ RPC叫做远程过程调用
     // 接收数据
     $returnData = json_decode(fread($client, 2048));
     fclose($client);‘
-
 ```
