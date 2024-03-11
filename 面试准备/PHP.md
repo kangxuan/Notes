@@ -32,9 +32,9 @@ $_ENV
 
 ```php
 # 1. const定义
-const a = 1
+const a = 1;
 # 2. define("", xxx)，函数定义
-define("a", 1)
+define("a", 1);
 ```
 
 6. 抽象类和接口

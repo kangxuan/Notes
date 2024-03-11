@@ -224,7 +224,12 @@ create index idx_A_B on table_name(A asc,B desc)，但没有必要。
 13. 5种以上的MySQL的优化建议？
 
 ```
-
+1. 最左前缀法则
+2. 范围查询原则
+3. 覆盖索引原则
+4. 查询字段避免使用列运算
+5. 尽量使用联合索引避免单列索引
+6. 
 ```
 
 14. 说一下MVCC的内部细节
@@ -232,7 +237,7 @@ create index idx_A_B on table_name(A asc,B desc)，但没有必要。
 ```
 MVCC是多版本并发控制，高并发的数据访问时，对数据进行多版本处理，并通过
 事务的可见性来保证事务能看到自己应该看到的版本。
-VCC如何实现：
+MVCC如何实现：
 1. 行记录的三个隐藏字段
     row_id:在表没有主键或唯一索引，InnoDB会给行自动添加一个row_id隐藏列作为主键
     txt_id:事务对该行执行了增删改操作，会将这个事务ID存到txt_id中
@@ -471,7 +476,7 @@ SUBQUERY（where中包含子查询）
 table: 哪张表
 prossible_key：可能用到的索引
 key: 肯定用到的索引
-type: 关联类型 system > const > eq_ref > ef > range > indeex > all
+type: 关联类型 system > const > eq_ref > ef > range > index > all
 key_len: 索引长度
 rows: 查询的行数
 filtered：返回行占读取行的百分比
