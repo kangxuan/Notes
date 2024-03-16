@@ -333,6 +333,31 @@ $a = "1c" + 1; $a = 2;
 $b = "c1" + 1; $b = 1;
 ```
 
+22. PHP中有哪些魔术方法
+
+```php
+__construct(): 当一个对象被创建时自动调用的构造函数。
+__destruct(): 当一个对象被销毁时自动调用的析构函数。
+__get($property): 当读取一个不可访问属性时自动调用。
+__set($property, $value): 当给不可访问属性赋值时自动调用。
+__isset($property): 当调用 isset() 或 empty() 检查一个不可访问属性时自动调用。
+__unset($property): 当调用 unset() 删除一个不可访问属性时自动调用。
+__call($method, $arguments): 当调用一个不可访问方法时自动调用。
+__callStatic($method, $arguments): 当调用一个不可访问静态方法时自动调用。
+__toString(): 当对象被当作字符串时自动调用。
+__invoke(): 当对象被当作函数调用时自动调用。
+__clone(): 当对象被克隆时自动调用。
+__debugInfo(): 当对象被传递给 var_dump() 函数时自动调用。
+__sleep(): 在对象被序列化之前自动调用。
+__wakeup(): 在对象被反序列化之后自动调用。
+__set_state($properties): 当调用 var_export() 导出类时自动调用。
+__serialize(): 在对象被序列化时自动调用。
+__unserialize($data): 在对象被反序列化时自动调用。
+__debugInfo(): 当对象被传递给 var_dump() 函数时自动调用。
+```
+
+
+
 # 中级
 
 1. PHP 7 的内存回收原理？
