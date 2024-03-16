@@ -356,6 +356,37 @@ __unserialize($data): 在对象被反序列化时自动调用。
 __debugInfo(): 当对象被传递给 var_dump() 函数时自动调用。
 ```
 
+23. 如何实现链式操作
+
+```php
+// 定义链式操作
+class Calc {
+    private $res;
+
+    public function __construct($in = 0) {
+        $this->res = $in;
+    }
+
+    public function add($val) {
+        $this->res += $val;
+        return $this;
+    }
+
+    public function sub($val) {
+        $this->res -= $val;
+        return $this;
+    }
+
+    public function getRes() {
+        return $res;
+    }
+}
+
+// 调用
+$calc = new Calc(1);
+echo $calc->add(10)->sub(1)->getRes();
+```
+
 
 
 # 中级
