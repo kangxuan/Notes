@@ -378,13 +378,73 @@ class Calc {
     }
 
     public function getRes() {
-        return $res;
+        return $this->res;
     }
 }
 
 // 调用
 $calc = new Calc(1);
 echo $calc->add(10)->sub(1)->getRes();
+```
+
+24. TCP和UDP这些协议有什么区别？
+
+```
+CP（Transmission Control Protocol）和UDP（User Datagram Protocol）是两种最
+常用的传输层协议，它们在网络通信中扮演着不同的角色，具有以下主要区别：
+
+连接性：
+1.TCP是一种面向连接的协议，它在数据传输之前会建立连接，然后确保数据可靠地到达目标，然后
+再关闭连接。
+2. UDP是一种无连接的协议，它不会建立连接，而是直接发送数据包，每个数据包都是独立的，没有顺序，
+不保证可靠性。
+
+可靠性：
+1. TCP提供可靠的数据传输，它通过序列号、确认和重传机制来确保数据的可靠性，以及按顺序
+传输数据包。
+2. UDP不提供可靠性保证，它只是简单地发送数据包，不进行确认或重传，因此可能会丢失数据包，或者数据包的顺序可能被打乱。
+
+延迟和效率：
+1. TCP通常比UDP慢，因为TCP需要进行连接的建立和维护、确认和重传等额外的操作，这些操作
+会增加延迟。
+2. UDP通常比TCP快，因为它没有连接建立和维护的开销，以及额外的确认和重传操作，但它的速
+度是以牺牲可靠性为代价的。
+
+应用场景：
+1. TCP适用于对可靠性要求较高的应用，如文件传输、电子邮件、网页浏览等。
+2. UDP适用于对延迟要求较高、对可靠性要求不那么严格的应用，如实时音频/视频传输、在线游戏
+等。
+
+请求方式：
+
+TCP：
+talnet/curl/nc/socat
+telnet 主机名或IP地址 80
+curl http://example.com/file.txt
+nc 主机名或IP地址 80
+socat - TCP:主机名或IP地址:80
+
+UDP
+nc/socat
+nc -u 主机名或IP地址 端口号
+socat - UDP:主机名或IP地址:端口号
+```
+
+25. composer的常见用法
+
+```shell
+# composer初始化项目，并添加一个composer.json文件
+composer init
+# 添加依赖
+composer require monolog/monolog
+# 安装依赖
+composer install 
+# 更新依赖
+composer update vendor/package-name
+# 查看已安装的依赖
+composer show
+# 发布自己的依赖
+composer publish
 ```
 
 
