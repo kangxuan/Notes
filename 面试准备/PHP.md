@@ -108,46 +108,70 @@ serialize()
 unserialize()
 ```
 
-12. 字符串处理
+12. 字符串处理函数
 
 ```php
-# 将数组通过字符串连接
-implode(",", $arr)
-# 用字符串分割另一个字符串并返回数组
-explode()
-# 反转字符串
-strrev()
-# 
-trim(),ltrim(),rtrim()
-# 获取第一次出现指定字符串的字符串
-strstr()
+strlen：返回字符串的长度
+strpos：返回第一个字符串出现的位置
+substr：返回字符串的子串
+str_replace: 循环替换字符串
+strtolower：字符串转为小写
+strtoupper：字符串转为大写
+trim: 去除字符串两端的空格或指定字符
+explode：分割字符串返回数据
+implode：将数组连接成字符串
+strrev：反转字符串
+urlencode: 对字符串进行URL编码
+urldecode: 对URL编码进行解码
+json_encode: 转换成JSON字符串
+json_decode: 解析JSON字符串
 ```
 
 13. 数组处理
 
 ```php
+# 返回数据的个数
+count()
+# 将一个或多个数组添加到数组的末尾
+array_push()
+# 删除数组中的最后一个元素
+array_pop()
+# 删除数组中的第一个元素
+array_shift()
+# 在数组开头插入一个或多个单元
+array_unshift()
 # 返回数组的（部分）key并返回数组
 array_keys()
 # 返回数组的所有值
 array_values()
 # 计算数组的差集
 array_diff()
-# 合并数组
+# 合并数组（求并集）
 array_megre()
-# 将数组开头的单元移出数组
-array_shift()
-# 在数组开头插入一个或多个单元
-array_unshift()
-# 出栈
-array_pop()
-# 入栈
-array_push()
 # 对数组升降序排序
 sort(), rsort()
 # 对数组键值升降序排序
 asort(),arsort()
 # 对数组键名升降序排序
 ksort()，krsort()
+# 交换数组中的key和value
+array_flip()
+# 返回一个反转顺序的数组
+array_reverse()
+# 去重函数
+array_unique()
+# 搜索值返回key
+array_search()
+# 检查值是否在数组中
+in_array()
+# 将回调函数作用到给定数组的每个元素上，并返回一个新数组
+array_map()
+# 使用回调函数过滤数组中的元素，返回一个新数组
+array_filter()
+# 通过回调函数迭代地将数组简化为单一的值
+array_reduce()
+# 对数组中的每个元素应用用户自定义函数
+array_walk()
 ```
 
 14. 文件操作
@@ -447,7 +471,44 @@ composer show
 composer publish
 ```
 
+26. cooke和session有什么区别
 
+```
+1. 存储位置：cookie存储在浏览器端，session存储在服务端
+2. 安全性：cookie不安全，session安全
+3. 容量限制：cookie大小受限（4K），session理论上没有限制。
+4. 生命周期：cookie一直存储在浏览器端（过期前），即使关闭了浏览器；session默认情况下
+浏览器关闭后被销毁
+5. 跨页面传递：cookie在同一域名下传递，session不受限。
+
+cookie在客户端用于用户状态和个性设置，而session主要在服务端存储用户状态和敏感信息。
+```
+
+27. 几种排序算法
+
+```php
+# 交换类-冒泡排序-时间复杂度是O(n^2)
+# 第一次循环
+3 2 4 6 1 7
+2 3 4 6 1 7
+2 3 4 6 1 7
+2 3 4 6 1 7
+2 3 4 1 6 7
+2 3 4 1 6 7
+function bubbleSort($arr) {
+    $count = count($arr);
+    for ($i = 0; $i < $count-1; $i++) {
+        for($j = 0; $j < $count - $i - 1; $j++) {
+            if ($arr[$j] > $arr[$j+1]) {
+                $temp = $arr[$j];
+                $arr[$j] = $arr[$j+1];
+                $arr[$j+1] = $temp;
+            }
+        }
+    }
+}
+# 交换排序-快速排序
+```
 
 # 中级
 
