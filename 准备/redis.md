@@ -9,27 +9,42 @@ setnx加锁
 ```
 redis有哪些数据？
 1. string：字符串
-    运用：普通数据缓存
+    常见命令：get、set、mset、mget、setex、setnx、incr、decr、incrby、decrby、
+            strlen、getset
+    运用：普通数据缓存、无限点赞（incr）、分布式锁（setnx）
     底层：string
-2. list：有序序列
-    运用：发布订阅
+2. list：有序序列，单key多value，典型的双向链表，从左/右都可以插入，如果key不存在，
+则会新建key，移除key后，如果没有了则删除key。
+    常见命令：lpush、rpush、lrange、lpop、rpop、lindex（按照索引下标获取元素）、
+llen、lrem
+    运用：队列、发布订阅
     底层：list
-3. hash：hash
-    运用：添加购物车、增加商品数量
+3. hash：hash，典型的k-v模式，说的是vlaue也是k-v模式。
+    常见命令：hset、hget、hmget、hgetall（获取所有值）、hlen、hkeys、hvals、
+hincrby、hsetnx
+    运用：添加购物车（hset）、增加商品数量（hincrby）
     底层：hash
-4. set：集合
-    运用：抽奖小程序
+4. set：集合，无序集合不会重复
+    常见命令：sadd、smembers、sismember（是否在集合中）、srem、scard（统计数量）、
+srandmember(随机)、spop、sdiff、sunion、sinter（求交集）
+    运用：抽奖小程序、朋友圈查看共同好友
     底层：set
-5. zset: 有序集合
+5. zset: 有序集合，在set基础上加了一个score
+    常见命令：zadd、zrange（从小到大）、zrem、zrevrange（从大到小）、zrangebyscore、
+zscore、zcard、zcount、zincrby
     运用：排行榜
     底层：zset
-6. bitmap
+6. bitmap：bitmap是由0/1状态表现的二进制位的bit数组，是string类型作为底层结构实现
+的一种统计二值状态的数据类型
+    常见命令：setbit、getbit、bitcount、strlen、bitop
     运用：签到、布隆过滤器
     底层：string
-7. hyperloglog
+7. hyperloglog：针对数据去重的基数统计，是专门用来做基数统计的算法，和集合对比，HyperLogLog
+不存储元素本身，比集合省资源。
     运用：UV统计
     底层：string
-8. geo
+8. geo：GEO主要是为了存储计算经纬度的数据类型，底层是一个zset，只是前面的score变成了经纬度
+    常见命令：geoadd、geopos、geohash、geodist、georadius
     运用：经纬度距离计算
     底层：zset
 9. stream：

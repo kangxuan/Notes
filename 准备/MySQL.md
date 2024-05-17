@@ -72,7 +72,7 @@ undo log保证了事务的原子性和隔离性，修改时会生成undo log，�
 3. 幻读
     一个事务先查询没有读取到数据，然后插入，再插入或删除时发现数据已经存在
 （和不可重复读，关注的是插入和删除）
-    比如说A和B事务，A先查询数据不存在，B先插入了数据并提交，A插入数据失败，然后再次查询
+    比如说A和B事务，A先查询数据不在，B先插入了数据并提交，A插入数据失败，然后再次查询
 发现数据已经存在，仿佛出现了“幻象”
 ```
 
@@ -212,13 +212,7 @@ create index email_5 on tb_user(email(5));
 order by a, b，索引不生效），但要满足最左前缀原则，这里和where不一样，顺序也要保持
 一致才会生效。
     4. 如果使用asc、desc会导致filesort，如果非要解决这个问题，需要建立特定索引
-create index idx_A_B on table_name(A asc,B desc)，但没有必要。
-```
-
-12. InnoDB和MyISAM的区别？
-
-```
-
+create index idx_A_B on table_name(A asc,B desc)，但没有必要。InnoDB和MyISAM的区别？
 ```
 
 13. 5种以上的MySQL的优化建议？
@@ -476,7 +470,7 @@ SUBQUERY（where中包含子查询）
 table: 哪张表
 prossible_key：可能用到的索引
 key: 肯定用到的索引
-type: 关联类型 system > const > eq_ref > ef > range > index > all
+type: 关联类型 system > const > eq_ref > ref > range > index > all
 key_len: 索引长度
 rows: 查询的行数
 filtered：返回行占读取行的百分比

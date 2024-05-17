@@ -111,20 +111,34 @@ unserialize()
 12. 字符串处理函数
 
 ```php
-strlen：返回字符串的长度
-strpos：返回第一个字符串出现的位置
-substr：返回字符串的子串
-str_replace: 循环替换字符串
-strtolower：字符串转为小写
-strtoupper：字符串转为大写
-trim: 去除字符串两端的空格或指定字符
-explode：分割字符串返回数据
-implode：将数组连接成字符串
-strrev：反转字符串
-urlencode: 对字符串进行URL编码
-urldecode: 对URL编码进行解码
-json_encode: 转换成JSON字符串
-json_decode: 解析JSON字符串
+# 返回字符串的长度
+strlen()
+# 返回第一个字符串出现的位置
+strpos()
+# 返回字符串的子串
+substr()
+# 循环替换字符串
+str_replace()
+# 字符串转为小写
+strtolower()
+# 字符串转为大写
+strtoupper()
+# 去除字符串两端的空格或指定字符
+trim()
+# 分割字符串返回数据
+explode()
+# 将数组连接成字符串
+implode()
+# 反转字符串
+strrev()
+# 对字符串进行URL编码
+urlencode()
+# 对URL编码进行解码
+urldecode()
+# 转换成JSON字符串
+json_encode()
+# 解析JSON字符串
+json_decode()
 ```
 
 13. 数组处理
@@ -360,73 +374,96 @@ $b = "c1" + 1; $b = 1;
 22. PHP中有哪些魔术方法
 
 ```php
-__construct(): 当一个对象被创建时自动调用的构造函数。
-__destruct(): 当一个对象被销毁时自动调用的析构函数。
-__get($property): 当读取一个不可访问属性时自动调用。
-__set($property, $value): 当给不可访问属性赋值时自动调用。
-__isset($property): 当调用 isset() 或 empty() 检查一个不可访问属性时自动调用。
-__unset($property): 当调用 unset() 删除一个不可访问属性时自动调用。
-__call($method, $arguments): 当调用一个不可访问方法时自动调用。
-__callStatic($method, $arguments): 当调用一个不可访问静态方法时自动调用。
-__toString(): 当对象被当作字符串时自动调用。
-__invoke(): 当对象被当作函数调用时自动调用。
-__clone(): 当对象被克隆时自动调用。
-__debugInfo(): 当对象被传递给 var_dump() 函数时自动调用。
-__sleep(): 在对象被序列化之前自动调用。
-__wakeup(): 在对象被反序列化之后自动调用。
-__set_state($properties): 当调用 var_export() 导出类时自动调用。
-__serialize(): 在对象被序列化时自动调用。
-__unserialize($data): 在对象被反序列化时自动调用。
-__debugInfo(): 当对象被传递给 var_dump() 函数时自动调用。
+# 构造函数-当一个对象被创建时自动调用
+__construct()
+# 析构函数-当一个对象被销毁时自动调用
+__destruct()
+# 当读取一个不可访问的属性时自动调用
+__get($property)
+# 当给一个不可访问属性赋值时自动调用
+__set($property, $value)
+# 当调用isset()或empty()发现是一个不可访问属性时自动调用
+__isset($property)
+# 当删除一个不可访问属性时自动调用
+__unset($property)
+# 当调用一个不可访问方法时自动调用
+__call($method, $arguments)
+# 当调用一个不可访问静态方法时自动调用
+__callStatic($method, $arguments)
+# 当对象被当做字符串时自动调用
+__toString()
+# 当对象被当做函数调用时自动调用
+__invoke()
+# 当对象被克隆时自动调用
+__clone()
+# 当对象被传递给var_dump()函数时被调用
+__debugInfo()
+# 当对象被序列化之前自动调用
+__sleep()
+# 当对象被反序列化之后自动调用
+__wakeup()
+# 当调用var_export()导出类时自动调用
+__set_state($properties)
+# 当对象被序列化时自动调用
+__serialize()
+# 当对象被反序列化时自动调用
+__unserialize($data)
 ```
 
 23. 如何实现链式操作
 
 ```php
-// 定义链式操作
+// 定义链式操作类
 class Calc {
     private $res;
 
-    public function __construct($in = 0) {
+    public function __construct($in = 0)
+    {
         $this->res = $in;
     }
 
-    public function add($val) {
+    public function add($val)
+    {
         $this->res += $val;
         return $this;
     }
 
-    public function sub($val) {
+    public function sub($val)
+    {
         $this->res -= $val;
         return $this;
     }
 
-    public function getRes() {
+    public function getRes()
+    {
         return $this->res;
     }
 }
 
 // 调用
-$calc = new Calc(1);
-echo $calc->add(10)->sub(1)->getRes();
+$calc = new Cacl(1);
+echo $calc->add(2)->sub(1)->getRes();
+// 结果输出
+2
 ```
 
 24. TCP和UDP这些协议有什么区别？
 
 ```
-CP（Transmission Control Protocol）和UDP（User Datagram Protocol）是两种最
+TCP（Transmission Control Protocol）和UDP（User Datagram Protocol）是两种最
 常用的传输层协议，它们在网络通信中扮演着不同的角色，具有以下主要区别：
 
 连接性：
 1.TCP是一种面向连接的协议，它在数据传输之前会建立连接，然后确保数据可靠地到达目标，然后
 再关闭连接。
-2. UDP是一种无连接的协议，它不会建立连接，而是直接发送数据包，每个数据包都是独立的，没有顺序，
-不保证可靠性。
+2. UDP是一种无连接的协议，它不会建立连接，而是直接发送数据包，每个数据包都是独立的，没
+有顺序，不保证可靠性。
 
 可靠性：
 1. TCP提供可靠的数据传输，它通过序列号、确认和重传机制来确保数据的可靠性，以及按顺序
 传输数据包。
-2. UDP不提供可靠性保证，它只是简单地发送数据包，不进行确认或重传，因此可能会丢失数据包，或者数据包的顺序可能被打乱。
+2. UDP不提供可靠性保证，它只是简单地发送数据包，不进行确认或重传，因此可能会丢失数据包
+，或者数据包的顺序可能被打乱。
 
 延迟和效率：
 1. TCP通常比UDP慢，因为TCP需要进行连接的建立和维护、确认和重传等额外的操作，这些操作
@@ -471,7 +508,7 @@ composer show
 composer publish
 ```
 
-26. cooke和session有什么区别
+26. cookie和session有什么区别
 
 ```
 1. 存储位置：cookie存储在浏览器端，session存储在服务端
@@ -621,7 +658,7 @@ $tag = array("-", "hi", "hello");
 echo str_replace($search, $tag, "hi all, I said hello h h hi"); //-i all, I said -ello - - -i
 echo "\n";
 $letters = array('a', 'p');
-$fruit   = array('apple', 'pear');
+$fruit   = array('apple', 'pear'); // apearpearle pear
 $text    = 'a p';
 $output  = str_replace($letters, $fruit, $text); //apearpearle pear
 echo $output;
@@ -735,7 +772,7 @@ function runTaskInBackground($command)
 
 14. 实现如下函数(PHP 7) echo a(1, 3); //4
     echo a(3)(5); //8
-    echo a(1, 2)(3, 4, 5)(6); //21
+    echo a(12)(35)(6); //21
 
 ```php
 function a(...$args) {
@@ -799,7 +836,7 @@ PHP7使用哈希表来存储数组元素。为了解决哈希冲突的问题，P
 18. 如何用原生代码实现RPC远程调用？
 
 ```
-么是RPC？
+什么是RPC？
 RPC叫做远程过程调用
 服务端搭建：
 创建一个接收服务index.php
