@@ -772,7 +772,7 @@ function runTaskInBackground($command)
 
 14. 实现如下函数(PHP 7) echo a(1, 3); //4
     echo a(3)(5); //8
-    echo a(12)(35)(6); //21
+    echo a(1+2)(3+4+5)(6); //21
 
 ```php
 function a(...$args) {
@@ -793,7 +793,7 @@ function a(...$args) {
 // 示例使用
 echo a(1, 3);        // 输出：4
 echo a(3)(5);        // 输出：8
-echo a(1, 2)(3, 4, 5)(6);  // 输出：21
+echo a(1+2)(3+4+5)(6);  // 输出：21
 ```
 
 15. PHP7底层优化
@@ -835,64 +835,69 @@ PHP7使用哈希表来存储数组元素。为了解决哈希冲突的问题，P
 
 18. 如何用原生代码实现RPC远程调用？
 
+```php
+<?php
+    // 什么是RPC？
+    // RPC叫做远程过程调用
+    // 服务端搭建：
+    // 创建一个接收服务index.php
+
+    // 建立一个socket服务
+    $socketServer = stream_socket_server("tcp:127.0.0.1:8887", $errno, $errstr);
+    if (!$socketServer) {
+        echo "建立socket服务失败";
+        die(1);
+    }
+    while(1) {
+        // 接收服务请求
+        $buff = stream_socket_accept($socketServer);
+        // 读取数据
+        $data = fread($buff, 2048);
+        // 解析数据
+        $json = json_decode($data, true);
+        // 判断类文件是否存在
+        $class = $json['class'];
+        $file = $class.".php";
+        require($file);
+        if (!file_exists($file) {
+            continue;
+        }
+        $method = $json['method'];
+        $obj = new $class();
+        $objData = $obj->$method();
+        frwrite($buff, json_encode($objData));
+        fclose($buff);
+    }
 ```
-什么是RPC？
-RPC叫做远程过程调用
-服务端搭建：
-创建一个接收服务index.php
-<?php
-    // 建立一个socket服务
-    $socketServer = stream_socket_server("tcp:127.0.0.1:8887", $errno, $errstr);
-    if (!$socketServer) {
-        echo "建立socket服务失败";
-        die(1);
-    }
-    while(1) {
-        // 接收服务请求
-        $buff = stream_socket_accept($socketServer);
-        // 读取数据
-        $data = fread($buff, 2048);
-        // 解析数据
-        $json = json_decode($data, true);
-        // 判断类文件是否存在
-        $class = $json['class'];
-        $file = $class.".php";
-        require($file);
-        if (!file_exists($file) {
-            continue;
-        }
-        $method = $json['method'];
-        $obj = new $class();
-        $objData = $obj->$method();
-        frwrite($buff, json_encode($objData));
-        fclose($buff);
-    }
 
-创建具体的服务user.php
+```php
 <?php
-    class User {
-        public function getName() {
-            return [
-                "code":1,
-                "data": "sdf",
-                "msg": "success"
-            ];
-        }
-    }
+    // 创建具体的服务user.php
+    class User {
+        public function getName() {
+            return [
+                "code":1,
+                "data": "sdf",
+                "msg": "success"
+            ];
+        }
+    }
+```
 
-创建客户端client.php
+```php
 <?php
-    $client = stream_socket_client("tcp://127.0.0.1:8887", $errno, $errstr);
-    if (!$client) {
-        echo "客户端创建失败";
-        die(1);
-    }
-    // 请求数据
-    frwite(json_encode([
-        "class" => "user",
-        "method" => "getName"    
-    ]))
-    // 接收数据
-    $returnData = json_decode(fread($client, 2048));
-    fclose($client);‘
+    // 创建客户端client.php
+    $client = stream_socket_client("tcp://127.0.0.1:8887", $errno, $errstr);
+    if (!$client) {
+        echo "客户端创建失败";
+        die(1);
+    }
+    // 请求数据
+    frwite(json_encode([
+        "class" => "user",
+        "method" => "getName"    
+    ]));
+    // 接收数据
+    $returnData = json_decode(fread($client, 2048));
+    fclose($client);
 ```
