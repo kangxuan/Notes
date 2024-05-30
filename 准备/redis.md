@@ -63,7 +63,7 @@ zscore、zcard、zcount、zincrby
 
 ```
 1. 管道（pipeline）导入到批量数据，可以用于热点数据初始化（主要是减少网络连接的时间）
-    cat pipe.tex | redis-cli -a 123 --pipe
+    cat pipe.text | redis-cli -a 123 --pipe
 2. 分布式锁
 3. watch
 4. 事务

@@ -901,3 +901,98 @@ PHP7使用哈希表来存储数组元素。为了解决哈希冲突的问题，P
     $returnData = json_decode(fread($client, 2048));
     fclose($client);
 ```
+
+19. PHP中有哪些调优？
+- PHP配置调优
+  
+  - 错误报告：禁用详细的错误报告，避免泄露敏感信息，只记录必要的错误日志。
+  
+  ```ini
+  ; 设置错误报告级别
+  error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT
+  ; 该选项设置是否将错误信息作为输出的一部分打印到屏幕，off关闭，on开启，生产环境上设置为off
+  display_errors = Off
+  ; 设置是否将脚本运行的错误信息记录到服务器错误日志或者error_log
+  log_errors = On
+  ; 错误日志路径
+  error_log = /path/to/php-error.log
+  ```
+  
+  - 资源限制：设置合理的资源限制，防止单个脚本占用过多的资源，导致服务器性能下降。
+  
+  ```ini
+  max_execution_time = 30      ; 最大执行时间（秒）
+  max_input_time = 60          ; 最大输入解析时间（秒）
+  memory_limit = 256M          ; 最大内存使用量
+  ```
+  
+  - 文件上传：配置上传文件大小和处理时间，避免大文件上传影响性能
+  
+  ```ini
+  upload_max_filesize = 10M    ; 最大上传文件大小
+  post_max_size = 10M          ; 最大POST数据大小
+  max_file_uploads = 20        ; 最大同时上传文件数
+  ```
+  
+  - session设置：优化session存储机制，减少文件系统的负担。
+  
+  ```ini
+  session.gc_maxlifetime = 1440    ; session生命周期（秒）
+  session.save_path = "/var/lib/php/sessions" ; session文件存储路径
+  session.use_strict_mode = 1      ; 严格模式，防止session劫持
+  ```
+  
+  - 启用Opcache：PHP的Opcache拓展能够显著提高脚本的执行速度，通过缓存预编译的字节码来减少解析和编译时间。
+  
+  ```ini
+  opcache.enable = 1
+  opcache.memory_consumption = 128
+  opcache.max_accelerated_files = 10000
+  opcache.validate_timestamps = 1
+  ```
+
+- web服务器配置调优
+  
+  - 启用keep-alive：保持连接活跃，减少建立新连接的开销
+  
+  ```nginx
+  http {
+      # 如果连接限制65s后会关闭连接，通过设置较高的Keep-Alive超时时间，可以减少频繁建立连接的开销提高性能，尤其是在请求量大的情况下
+      keepalive_timeout 65;
+      # 在一个Keep-Alive连接上，服务器最多可以处理100个请求，当请求数达到100个时，服务器会关闭这个链接，通过限制单个链接上的请求数，可以防止连接长时间占用资源，从而提高资源利用率
+      keepalive_requests 100;
+  }
+  ```
+  
+  - 优化缓冲区：调整缓冲区大小，提高数据传输效率
+  
+  ```nginx
+  http {
+      client_body_buffer_size 16K;
+      client_max_body_size 8M;
+      client_header_buffer_size 1k;
+      large_client_header_buffers 4 8k;
+  }
+  ```
+  
+  - 启用压缩：启用Gzip压缩，减少传输的数据量
+  
+  ```nginx
+  http {
+      gzip on;
+      gzip_comp_level 2;
+      gzip_types text/plain application/json application/javascript text/css;
+  }
+  ```
+  
+  - FastCGI缓存：缓存动态内容，提高性能
+  
+  ```nginx
+  http {
+      gzip on;
+      gzip_comp_level 2;
+      gzip_types text/plain application/json application/javascript text/css;
+  }
+  ```
+
+- 
