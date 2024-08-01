@@ -989,10 +989,25 @@ PHP7使用哈希表来存储数组元素。为了解决哈希冲突的问题，P
   
   ```nginx
   http {
-      gzip on;
-      gzip_comp_level 2;
-      gzip_types text/plain application/json application/javascript text/css;
+      # 定义FastCGI缓存的存储路径和结构
+      # /var/cache/nginx 缓存文件存储的根目录
+      # levels=1:2 指定缓存目录的层次结构。在这个例子中缓存将存储在两级子目录中，每集目录名长度为1和2个字符
+      # 例如缓存文件可能存储在：/var/cache/nginx/a/12/34abcd
+      # keys_zone 定义缓存区域的名称和大小
+      # inactive 如果缓存条目在60分钟未被访问，将会被认为不活跃而从缓存中删除
+      fastcgi_cache_path /var/cache/nginx levels=1:2 keys_zone=PHP:10m inactive=60m;
+      # fastcgi_cache_key 定义生成缓存键的格式。缓存键是缓存条目的唯一标识符
+      fastcgi_cache_key "$scheme$request_method$host$request_uri";
+  
+      server {
+          location ~ \.php$ {
+              fastcgi_pass 127.0.0.1:9000;
+              # 启用FastGCI缓存，并指定定义的PHP缓存区域
+              fastcgi_cache PHP;
+              # 定义缓存响应的有效期
+              fastcgi_cache_valid 200 60m;
+              include fastcgi_params;
+          }
+      }
   }
   ```
-
-- 
