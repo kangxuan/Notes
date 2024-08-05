@@ -45,7 +45,7 @@ order by entry_date_num desc;
 1. 事务的四大特性
 
 ```
-CAID：
+ACID：
 1. 原子性：事务是不可分割的最小操作单元，要么全部成功，要么全部失败。
     InnoDB引擎提供了两种事务日志：redo log和undo log，其中redo log保证了持久性，
 undo log保证了事务的原子性和隔离性，修改时会生成undo log，当事务执行失败或事务回滚
