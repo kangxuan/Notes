@@ -250,7 +250,7 @@ undo log多版本链。
     通过Readview判断记录的某个版本是否可见？
     trx_id == creator_trx_id:表示当前事务正在访问自己修改的记录，该版本可见
     trx_id < min_trx_id:表示当前事务在这个版本之前已经提交，所以该版本可见
-    trx_id >= max_trx_id:表示当前事务在这个版本之后，所以该版本不可见
+    trx_id > max_trx_id:表示当前事务在这个版本之后，所以该版本不可见
     trx_id >= min_trx_id && trx_id < max_trx_id:
         继续判断trx_id是否在m_ids中
             如果在：说明在创建该Readview时，当前事务活跃，所以该版本不可见
