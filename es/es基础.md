@@ -1,10 +1,66 @@
+# 概念
+
+### 什么是ElasticSearch？
+
+一个开源的分布式搜索引擎，可以用来实现搜索、日志统计、分析、系统监控等功能。
+
+### 什么是Elastic stack（ELK）？
+
+是以ElasticSearch为核心的技术栈，包括beats、Logstach、Kibana、elasticSearch。
+
+### 什么是Lucene？
+
+是Apache的开源搜索引擎类库，提供了搜索引擎的核心API，ElasticSearch基于它来开发的。
+
+# 正向索引和倒排索引
+
+### 什么是文档和词条？
+
+每一条数据就是一个文档，对文档中的内容进行分词，得到的词语就是词条。
+
+### 什么是正向索引？
+
+基于文档id创建索引，查询词条时需要逐条扫描，先找到文档，再判断文档内容是否包含词条。
+
+### 什么是倒排索引？
+
+先对文档进行分词，对词条创建索引并记录词条所在文档的位置，搜索时先根据词条查询得到文档的id，而后通过id得到文档。
+
+# ES和Mysql
+
+elasticSearch是面向文档存储的，可以是数据库中的一条商品数据，一个订单信息等，文档数据会被序列化成json格式后存储到elasticSearch中。
+
+**数据库中存储**
+
+![数据库中存储](./images/Mysql存储数据.jpg)
+
+**转换成ES中存储**
+
+![ES中存储](./images/ES中存储数据.jpg)
+
+### ES和Mysql概念对比
+
+| Mysql  | ES       | 说明                                            |
+| ------ | -------- | --------------------------------------------- |
+| Table  | Index    | 索引（Index），就是文档的集合，类似数据库中的表（table）             |
+| Row    | Document | 文档（Document），就是一条条数据，类似数据库中的行（row），文档都是json格式 |
+| Column | Field    | 字段（Field），就是json文档中的字段，类似数据库中的列（Column）       |
+| Schema | Mapping  | 映射（Mapping），就是索引中文档的约束，例如字段类型约束               |
+| SQL    | DSL      | DSL是ES中提供的JSON风格的请求语句，用来操作ES的，类似数据库中语句（SQL）   |
+
+### ES和Mysql的关系
+
+ES和Mysql并不是对立的关系，而是互补的关系。Mysql擅长事务类型操作，可以确保数据的安全和一致性，而ES擅长海量数据的搜索、分析、计算。
+
+
+
 # 索引库操作
 
-## 什么是索引库
+### 什么是索引库
 
 和MySQL对比，索引库类比表结构。
 
-## mapping属性
+### mapping属性
 
 mapping是对索引库中，文档的约束，常见的mapping属性包括：
 
@@ -175,7 +231,6 @@ POST /heima/_doc/1
   "_seq_no" : 3,
   "_primary_term" : 1
 }
-
 ```
 
 ## 删除文档
@@ -260,5 +315,3 @@ GET /heima/_doc/1
 [Elasticsearch Clients | Elastic](https://www.elastic.co/guide/en/elasticsearch/client/index.html)
 
 ## PHP使用ES Client
-
-
